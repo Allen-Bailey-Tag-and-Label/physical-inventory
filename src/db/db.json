@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "_id": "a7d184699405e782b0ab3591ffc5c6ff",
+      "firstName": "Bob",
+      "lastName": "McAleavey",
+      "password": "de0863d2d4793dc7:55934add39b6e891d8a4bc3e1db8bab36ba7647bf7c78feb0c55c60917926f87291ce54cf4f49dff81fc808fd37e530f28c4739f3d1e1db772359cfb336b817d",
+      "username": "bmcaleavey"
+    },
+    {
+      "_id": "5ec606b105cb1e6e4b17bd064a2936f6",
+      "firstName": "Scott",
+      "lastName": "Filio",
+      "password": "fe198c9bfb898f75:05028b953887fe23b1fd474fde5646a2ab7f081193c86956f07f41257909337fcf8b05bd25c002278b7ceda5b7ea678a31e5647c35506c6e48bf652fcc3b8dd2",
+      "username": "sfilio"
+    },
+    {
+      "_id": "cc9af386d2ff1347717a2eb1c84a5886",
+      "firstName": "Ken",
+      "lastName": "Norton",
+      "password": "7d04332887d436ab:7ebb88ef6844a159231f446a62f30e0924ab6d649d3f90331bf51b89f9855977ff8cac8c58ccc420c256eab6d1a8ea0c2c354692ab185966927eb2e4c2995e2d",
+      "username": "knorton"
+    },
+    {
+      "_id": "d68dc94dd144f0eda1a5aefa39ec7154",
+      "firstName": "Steve",
+      "lastName": "Krisanda",
+      "password": "31411306b05e34db:1ff22e61ba9f93440f78ec891ed9d86a673a4ef9021c377891ae9f15c2e88cd7070e01b159e4012ffa7392cd8d10c392ec00a14e5b389e1ae6bee398e9372063",
+      "username": "skrisanda"
+    },
+    {
+      "_id": "db73185ce0e43f89cf3c117bf19a8c2d",
+      "firstName": "Mike",
+      "lastName": "Foose",
+      "password": "d170b81c3c24de7e:d7f9db705801104c71e1f73303c5a3569e812a85b07c5625b47ef290f775c2305d013066bf1cad20c04a844d61f804b8794af54b7eaed4bb64524c7d94160e26",
+      "username": "mfoose"
+    },
+    {
+      "_id": "a64e6744204650a00bb0956d5aa62634",
+      "firstName": "Dan",
+      "lastName": "Koenig",
+      "password": "dc9f99869e7b90b3:8d4caffbea8f59503f032da5439dca9ed90b24cd095642b8c4aa94b2b4d0682289abd23fd51f27c4c47000e8d00a9389e25f75aa0221c64771b7e04d331a83fa",
+      "username": "dkoenig"
+    }
+  ]
+}
