@@ -1,0 +1,24 @@
+<script>
+  import { Button, Card, Fieldset, Form, Input } from '$components';
+
+  // props (internal)
+  let password = '';
+  let username = '';
+</script>
+
+<Card>
+  <Form>
+    <div class="text-[1.875rem] font-semibold">Sign In</div>
+    <Fieldset legend="Username">
+      <Input bind:value={username} name="username" />
+    </Fieldset>
+    <Fieldset legend="Password">
+      <Input bind:value={password} name="password" type="password" />
+    </Fieldset>
+    <a
+      class="hover:text-blue-500 focus:text-blue-500 hover:underline focus:underline outline-none transition duration-200"
+      href="/reset-password">Forgot Password?</a
+    >
+    <Button>Sign In</Button>
+  </Form>
+</Card>
