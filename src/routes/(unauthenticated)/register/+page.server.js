@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { init as dbInit } from '$db';
 
 export const actions = {
-  default: async ({ cookies, request }) => {
+  default: async ({ request }) => {
     // get submitted data
     const {
       firstName,
