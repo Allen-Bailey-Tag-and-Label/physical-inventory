@@ -13,7 +13,7 @@ const verifyAuthToken = async ({ event }) => {
   // find user in database
   const db = await dbInit();
   const { users } = db.data;
-  const user = users.filter((obj) => obj.username.toLowerCase() === username.toLowerCase())?.[0];
+  const [user] = users.filter((obj) => obj.username.toLowerCase() === username.toLowerCase());
 
   // check if no username found
   if (user === undefined) throw 'User not in database';
@@ -35,7 +35,7 @@ const verifyAuthToken = async ({ event }) => {
 
 const protectedRoutesHandle = async ({ event, resolve }) => {
   // initialize protected routes
-  const protectedRoutes = ['/dashboard'];
+  const protectedRoutes = ['/dashboard', '/enter-count'];
 
   // check if route is protected
   if (protectedRoutes.includes(event.url.pathname)) {

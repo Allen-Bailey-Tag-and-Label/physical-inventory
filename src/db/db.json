@@ -41,6 +41,13 @@
       "lastName": "Koenig",
       "password": "dc9f99869e7b90b3:8d4caffbea8f59503f032da5439dca9ed90b24cd095642b8c4aa94b2b4d0682289abd23fd51f27c4c47000e8d00a9389e25f75aa0221c64771b7e04d331a83fa",
       "username": "dkoenig"
+    },
+    {
+      "_id": "f2df45e243c6d31f07ff5ebdd92b1bd9",
+      "firstName": "Ed",
+      "lastName": "Guldenschuh",
+      "password": "59bac8c2232d8e7e:5602b962667c78d788aa48046a4e3a7548aa19ac3f2eee572c50c9af8bc57371e58304b47a279688e7c8d219e185846c5c5be06a94a6352458a378753af6af80",
+      "username": "eguldenschuh"
     }
   ]
 }
