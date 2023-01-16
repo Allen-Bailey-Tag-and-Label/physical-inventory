@@ -8,6 +8,7 @@
     form: 'min-w-[320px]',
     input: 'bg-transparent dark:bg-transparent',
     select: 'bg-transparent dark:bg-gray-800',
+    textarea: 'bg-transparent dark:bg-transparent',
     th: 'dark:bg-gray-800'
   });
 
