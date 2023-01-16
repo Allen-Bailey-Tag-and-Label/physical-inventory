@@ -1,6 +1,8 @@
-import crypto from 'crypto';
-import { init as dbInit } from '$db';
 import { fail, redirect } from '@sveltejs/kit';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import { init as dbInit } from '$db';
+import { JWT_SECRET } from '$env/static/private';
 
 export const actions = {
   default: async ({ cookies, request }) => {
@@ -18,6 +20,9 @@ export const actions = {
     // get salt and hash from database
     const [salt, hash] = user.password.split(':');
 
+    // delete password from user
+    delete user.password;
+
     // compare password
     try {
       await new Promise((resolve, reject) => {
@@ -32,8 +37,7 @@ export const actions = {
     }
 
     // generate authToken
-    const authToken = `${username}:${salt}:${hash}`;
-    console.log(authToken);
+    const authToken = jwt.sign(user, JWT_SECRET);
 
     // set auth cookie token
     cookies.set('authToken', authToken, {
@@ -43,9 +47,6 @@ export const actions = {
       maxAge: 60 * 60 * 24 * 7
     });
 
-    console.log(cookies.get('authToken'));
-
-    // throw redirect(301, '/dashboard');
-    return { success: true };
+    throw redirect(301, '/dashboard');
   }
 };

@@ -9,8 +9,6 @@ const file = resolve('./src/db/db.json');
 const adapter = new JSONFile(file);
 const db = new LowDB(adapter);
 
-console.log(file, db);
-
 const init = async () => {
   await db.read();
 
