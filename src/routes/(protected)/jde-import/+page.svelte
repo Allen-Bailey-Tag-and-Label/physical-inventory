@@ -1,13 +1,17 @@
 <script>
   import { enhance } from '$app/forms';
-  import { Button, Fieldset, Form, Textarea } from '$components';
+  import { Button, Fieldset, Form, Select, Textarea } from '$components';
 
   // props (internal)
   let paste = '';
+  let type = 'rawItems';
+  const typeOptions = [
+    { label: 'RAW', value: 'rawItems' },
+    { label: 'FG', value: 'fgItems' }
+  ];
 
   // props (external)
   export let form;
-  $: console.log(form);
 </script>
 
 <div class="flex flex-grow flex-col overflow-y-auto p-[1rem] space-y-[1rem]">
@@ -18,6 +22,9 @@
         Successfully added data for {form?.date}.
       {/if}
     </div>
+    <Fieldset legend="Type">
+      <Select bind:value={type} class="self-start" name="type" options={typeOptions} />
+    </Fieldset>
     <Fieldset class="flex-grow" legend="Paste CSV">
       <Textarea bind:value={paste} class="flex-grow" name="paste" />
     </Fieldset>
