@@ -5,7 +5,10 @@
   // handlers
   const addCountRow = ({ count, itemNumber, i, ticketNumber }) => {
     if (count !== '' && itemNumber !== '' && i === counts.length - 1 && ticketNumber !== '') {
-      counts = [...counts, { count: '', itemNumber: '', uom: '', ticketNumber: '' }];
+      counts = [
+        ...counts,
+        { count: '', description: '', itemNumber: '', uom: '', ticketNumber: '' }
+      ];
     }
   };
 
@@ -13,7 +16,7 @@
   //   let counts = [...Array(50)].map((_) => {
   //     return { count: '', itemNumber: '', uom: '', ticketNumber: '' };
   //   });
-  let counts = [{ count: '', itemNumber: '', uom: '', ticketNumber: '' }];
+  let counts = [{ count: '', description: '', itemNumber: '', uom: '', ticketNumber: '' }];
 
   // props (external)
   export let data;
@@ -34,11 +37,12 @@
         <Thead>
           <Th class="sticky top-0">Ticket Number</Th>
           <Th class="sticky top-0">Item Number</Th>
+          <Th class="sticky top-0">Description</Th>
           <Th class="sticky top-0">UoM</Th>
           <Th class="sticky top-0">Count</Th>
         </Thead>
         <Tbody>
-          {#each counts as { count, itemNumber, ticketNumber, uom }, i}
+          {#each counts as { count, description, itemNumber, ticketNumber, uom }, i}
             <Tr>
               <Td class="px-0 py-0">
                 <Input
@@ -56,6 +60,7 @@
                   }}
                 />
               </Td>
+              <Td>{description}</Td>
               <Td>{uom}</Td>
               <Td class="px-0 py-0">
                 <Input
