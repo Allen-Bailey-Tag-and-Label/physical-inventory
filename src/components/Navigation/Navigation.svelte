@@ -4,8 +4,7 @@
   // props (internal)
   let links = [
     { href: '/dashboard', innerHTML: 'Dashboard' },
-    { href: '/enter-count', innerHTML: 'Enter Count' },
-    { href: '/item-lookup', innerHTML: 'Item Lookup' }
+    { href: '/enter-count', innerHTML: 'Enter Count' }
   ];
 
   // props (external)

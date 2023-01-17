@@ -3,7 +3,7 @@ import { init as dbInit } from '$db';
 export async function load({ locals }) {
   // find users in database
   const db = await dbInit();
-  const { counts, items, users } = db.data;
+  const { counts, items, jdeImports, users } = db.data;
 
   // create options
   const dateOptions = [...Object.keys(counts)]
@@ -21,6 +21,7 @@ export async function load({ locals }) {
     counts,
     dateOptions,
     items,
+    jdeImports,
     user: locals.user,
     userOptions,
     users

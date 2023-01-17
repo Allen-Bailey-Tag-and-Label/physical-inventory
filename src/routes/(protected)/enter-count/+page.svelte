@@ -70,6 +70,7 @@
     .toString()
     .padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
   let entries = [{ count: '', itemNumber: '', ticketNumber: '' }];
+  let search = '';
   const typeOptions = [
     { label: 'RAW', value: 'rawItems' },
     { label: 'FG', value: 'fgItems' }
@@ -78,14 +79,36 @@
   // props (external)
   export let data;
 
+  // props (dynamic)
+  $: searchItems = search.split(' ');
+  $: results =
+    search === ''
+      ? []
+      : Object.keys(data.items)
+          .filter((itemNumber) => {
+            let match = true;
+            searchItems.every((searchItem) => {
+              if (!new RegExp(searchItem, 'gi').test(data.items[itemNumber].description)) {
+                match = false;
+                return false;
+              }
+              return true;
+            });
+            return match;
+          })
+          .map((itemNumber) => {
+            const { description, uom, type } = data.items[itemNumber];
+            return { itemNumber, description, uom, type };
+          });
+
   // lifecycle
   onMount(() => {
     changeHandler();
   });
 </script>
 
-<div class="flex p-[1rem] flex-grow overflow-hidden gap-[1rem]">
-  <div class="flex flex-col flex-grow items-start space-y-[1rem] overflow-hidden">
+<div class="flex flex-grow overflow-hidden">
+  <div class="flex flex-col p-[1rem] flex-grow items-start space-y-[1rem] overflow-hidden">
     <div class="flex space-x-[1rem]">
       <Fieldset legend="Counter">
         <Select
@@ -141,7 +164,7 @@
                   <Td
                     class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
                   >
-                    {data?.items?.[date]?.[itemNumber]?.[key] || ''}
+                    {data?.jdeImports?.[date]?.[itemNumber]?.[key] || ''}
                   </Td>
                 {/each}
                 <Td class="px-0 py-0">
@@ -161,9 +184,22 @@
       </Card>
     {/if}
   </div>
-  <div class="flex flex-col">
+  <div
+    class="flex flex-col p-[1rem] border-l border-black/[.1] dark:border-white/[.1] space-y-[1rem]"
+  >
+    <div>Item Lookup</div>
     <Fieldset legend="Search">
-      <Input />
+      <Input bind:value={search} />
     </Fieldset>
+    {#if search !== ''}
+      <Card
+        class="grid grid-cols-[fit-content(10px)_fit-content(10px)] gap-x-[1rem] overflow-y-auto"
+      >
+        {#each results as { itemNumber, description, uom, type }}
+          <div class="whitespace-nowrap">{description}</div>
+          <div class="whitespace-nowrap">{itemNumber}</div>
+        {/each}
+      </Card>
+    {/if}
   </div>
 </div>
