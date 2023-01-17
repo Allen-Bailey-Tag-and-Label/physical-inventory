@@ -8,7 +8,7 @@
 
 <Card class="flex-row items-center justify-between px-[.5rem] py-[.5rem] rounded-none">
   <slot>
-    <Navigation />
+    <Navigation {data} />
     <div class="flex items-center space-x-[1rem]">
       <div>Welcome {data?.user?.firstName} {data?.user?.lastName}!</div>
       <form method="POST" action="/sign-out" use={enhance}>

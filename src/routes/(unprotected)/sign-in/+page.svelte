@@ -26,10 +26,10 @@
     <Fieldset legend="Password">
       <Input bind:value={password} name="password" type="password" />
     </Fieldset>
-    <a
+    <!-- <a
       class="hover:text-blue-500 focus:text-blue-500 hover:underline focus:underline outline-none transition duration-200"
       href="/reset-password">Forgot Password?</a
-    >
+    > -->
     <Button type="submit">Sign In</Button>
   </Form>
 </Card>

@@ -48,7 +48,7 @@ const protectedRoutesHandle = async ({ event, resolve }) => {
       // set user locals
       event.locals.user = user;
     } catch (error) {
-      console.log(error);
+      console.log({ error });
 
       // delete authToken cookie
       event.cookies.set('authToken', '', {
@@ -87,7 +87,7 @@ const rootRouteHandle = async ({ event, resolve }) => {
       // redirect to dashboard
       return Response.redirect(`${event.url.origin}/dashboard`, 301);
     } catch (error) {
-      console.log(error);
+      console.log({ error });
 
       // redirect to sign-in route if invalid authToken
       return Response.redirect(`${event.url.origin}/sign-in`, 301);

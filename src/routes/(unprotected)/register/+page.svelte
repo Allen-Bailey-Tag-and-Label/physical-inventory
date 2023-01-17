@@ -1,6 +1,6 @@
 <script>
   import { enhance } from '$app/forms';
-  import { Button, Card, Fieldset, Form, Input } from '$components';
+  import { Button, Card, Checkbox, Fieldset, Form, Input } from '$components';
 
   // utilities
   const setUsernameDeleteTimer = () => {
@@ -10,6 +10,7 @@
   };
 
   // props (internal)
+  let isAdmin = false;
   let firstName = '';
   let lastName = '';
   let password = 'ABTL1234$';
@@ -49,6 +50,7 @@
     <Fieldset legend="Password">
       <Input bind:value={password} name="password" type="password" />
     </Fieldset>
+    <Checkbox bind:checked={isAdmin} name="isAdmin">Is Admin?</Checkbox>
     <a
       class="hover:text-blue-500 focus:text-blue-500 hover:underline focus:underline outline-none transition duration-200"
       href="/sign-in">Sign In</a

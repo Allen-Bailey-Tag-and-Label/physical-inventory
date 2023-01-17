@@ -1,7 +1,6 @@
 <script>
-  import { twMerge } from 'tailwind-merge';
   import { onMount } from 'svelte';
-  import { Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
+  import { Card, Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
   import store from './store';
 
   // handlers
@@ -56,7 +55,7 @@
           type: $store.type
         };
       } catch (error) {
-        console.log(error);
+        console.log({ error });
       }
     }
 
@@ -85,79 +84,86 @@
   });
 </script>
 
-<div class="flex flex-col p-[1rem] items-start space-y-[1rem] overflow-hidden">
-  <div class="flex space-x-[1rem]">
-    <Fieldset legend="Counter">
-      <Select
-        bind:value={$store._counter}
-        options={data?.userOptions || []}
-        on:change={changeHandler}
-      />
-    </Fieldset>
-    <Fieldset legend="Verifier">
-      <Select
-        bind:value={$store._verifier}
-        options={data?.userOptions || []}
-        on:change={changeHandler}
-      />
-    </Fieldset>
-    <Fieldset legend="Type">
-      <Select bind:value={$store.type} options={typeOptions} on:change={changeHandler} />
+<div class="flex p-[1rem] flex-grow overflow-hidden gap-[1rem]">
+  <div class="flex flex-col flex-grow items-start space-y-[1rem] overflow-hidden">
+    <div class="flex space-x-[1rem]">
+      <Fieldset legend="Counter">
+        <Select
+          bind:value={$store._counter}
+          options={data?.userOptions || []}
+          on:change={changeHandler}
+        />
+      </Fieldset>
+      <Fieldset legend="Verifier">
+        <Select
+          bind:value={$store._verifier}
+          options={data?.userOptions || []}
+          on:change={changeHandler}
+        />
+      </Fieldset>
+      <Fieldset legend="Type">
+        <Select bind:value={$store.type} options={typeOptions} on:change={changeHandler} />
+      </Fieldset>
+    </div>
+    {#if $store._counter !== '' && $store._verifier !== '' && $store.type !== ''}
+      <Card class="p-0 overflow-y-auto relative">
+        <Table>
+          <Thead>
+            <Th class="sticky top-0">Ticket Number</Th>
+            <Th class="sticky top-0">Item Number</Th>
+            <Th class="sticky top-0">Description</Th>
+            <Th class="sticky top-0">UoM</Th>
+            <Th class="sticky top-0">Count</Th>
+          </Thead>
+          <Tbody>
+            {#each entries as { count, itemNumber, ticketNumber }, i}
+              <Tr class="odd:bg-black/[.05] dark:odd:bg-white/[.05]">
+                <Td class="px-0 py-0">
+                  <Input
+                    bind:value={ticketNumber}
+                    class="rounded-none w-[12rem]"
+                    on:keyup={() => {
+                      keyupHandler({ count, itemNumber, ticketNumber, i });
+                    }}
+                    type="number"
+                  />
+                </Td>
+                <Td class="px-0 py-0">
+                  <Input
+                    bind:value={itemNumber}
+                    class="rounded-none"
+                    on:keyup={() => {
+                      keyupHandler({ count, itemNumber, i });
+                    }}
+                  />
+                </Td>
+                {#each ['description', 'uom'] as key}
+                  <Td
+                    class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
+                  >
+                    {data?.items?.[date]?.[itemNumber]?.[key] || ''}
+                  </Td>
+                {/each}
+                <Td class="px-0 py-0">
+                  <Input
+                    bind:value={count}
+                    class="rounded-none w-[12rem]"
+                    on:keyup={() => {
+                      keyupHandler({ count, itemNumber, ticketNumber, i });
+                    }}
+                    type="number"
+                  />
+                </Td>
+              </Tr>
+            {/each}
+          </Tbody>
+        </Table>
+      </Card>
+    {/if}
+  </div>
+  <div class="flex flex-col">
+    <Fieldset legend="Search">
+      <Input />
     </Fieldset>
   </div>
-  {#if $store._counter !== '' && $store._verifier !== '' && $store.type !== ''}
-    <div class="overflow-y-auto relative">
-      <Table>
-        <Thead>
-          <Th class="sticky top-0">Ticket Number</Th>
-          <Th class="sticky top-0">Item Number</Th>
-          <Th class="sticky top-0">Description</Th>
-          <Th class="sticky top-0">UoM</Th>
-          <Th class="sticky top-0">Count</Th>
-        </Thead>
-        <Tbody>
-          {#each entries as { count, itemNumber, ticketNumber }, i}
-            <Tr class="odd:bg-black/[.05] dark:odd:bg-white/[.05]">
-              <Td class="px-0 py-0">
-                <Input
-                  bind:value={ticketNumber}
-                  class="rounded-none w-[12rem]"
-                  on:keyup={() => {
-                    keyupHandler({ count, itemNumber, ticketNumber, i });
-                  }}
-                  type="number"
-                />
-              </Td>
-              <Td class="px-0 py-0">
-                <Input
-                  bind:value={itemNumber}
-                  class="rounded-none"
-                  on:keyup={() => {
-                    keyupHandler({ count, itemNumber, i });
-                  }}
-                />
-              </Td>
-              {#each ['description', 'uom'] as key}
-                <Td
-                  class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
-                >
-                  {data?.items?.[date]?.[itemNumber]?.[key] || ''}
-                </Td>
-              {/each}
-              <Td class="px-0 py-0">
-                <Input
-                  bind:value={count}
-                  class="rounded-none w-[12rem]"
-                  on:keyup={() => {
-                    keyupHandler({ count, itemNumber, ticketNumber, i });
-                  }}
-                  type="number"
-                />
-              </Td>
-            </Tr>
-          {/each}
-        </Tbody>
-      </Table>
-    </div>
-  {/if}
 </div>

@@ -5,9 +5,16 @@
   let links = [
     { href: '/dashboard', innerHTML: 'Dashboard' },
     { href: '/enter-count', innerHTML: 'Enter Count' },
-    { href: '/item-lookup', innerHTML: 'Item Lookup' },
-    { href: '/jde-import', innerHTML: 'JDE Import' }
+    { href: '/item-lookup', innerHTML: 'Item Lookup' }
   ];
+
+  // props (external)
+  export let data;
+
+  // props (dynamic)
+  $: if (data?.user?.isAdmin) {
+    links = [...links, { href: '/jde-import', innerHTML: 'JDE Import' }];
+  }
 </script>
 
 <div class="flex">

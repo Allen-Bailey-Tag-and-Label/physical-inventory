@@ -6,6 +6,7 @@ export const actions = {
     // get submitted data
     const {
       firstName,
+      isAdmin,
       lastName,
       password: originalPassword
     } = Object.fromEntries(await request.formData());
@@ -32,7 +33,14 @@ export const actions = {
 
     // create user in database
     const db = await dbInit();
-    db.data.users.push({ _id, firstName, lastName, password, username });
+    db.data.users.push({
+      _id,
+      firstName,
+      lastName,
+      password,
+      username,
+      isAdmin: isAdmin === 'on' ? true : false
+    });
     await db.write();
 
     return { success: true, username };

@@ -5,6 +5,7 @@
 
   theme.set({
     card: 'dark:bg-white/[.025]',
+    checkbox: 'bg-transparent dark:bg-tranparent',
     form: 'min-w-[320px]',
     input: 'bg-transparent dark:bg-transparent',
     select: 'bg-transparent dark:bg-gray-800',
