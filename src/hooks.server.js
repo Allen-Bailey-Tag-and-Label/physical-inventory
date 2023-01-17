@@ -31,17 +31,22 @@ const verifyAuthToken = async ({ event }) => {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 24 * 7
   });
+
+  return user;
 };
 
 const protectedRoutesHandle = async ({ event, resolve }) => {
   // initialize protected routes
-  const protectedRoutes = ['/dashboard', '/enter-count'];
+  const protectedRoutes = ['/dashboard', '/enter-count', '/item-lookup'];
 
   // check if route is protected
   if (protectedRoutes.includes(event.url.pathname)) {
     try {
       // verify authToken
-      await verifyAuthToken({ event });
+      const user = await verifyAuthToken({ event });
+
+      // set user locals
+      event.locals.user = user;
     } catch (error) {
       console.log(error);
 
@@ -74,7 +79,10 @@ const rootRouteHandle = async ({ event, resolve }) => {
 
     try {
       // verify authToken
-      await verifyAuthToken({ event });
+      const user = await verifyAuthToken({ event });
+
+      // set user locals
+      event.locals.user = user;
 
       // redirect to dashboard
       return Response.redirect(`${event.url.origin}/dashboard`, 301);

@@ -1,4 +1,5 @@
 <script>
+  import { twMerge } from 'tailwind-merge';
   import { onMount } from 'svelte';
   import { Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
   import store from './store';
@@ -28,7 +29,7 @@
   };
   const keyupHandler = async ({ count, itemNumber, i, ticketNumber }) => {
     // update database
-    if (count !== '' && itemNumber !== '' && ticketNumber !== '') {
+    if (count !== '' && itemNumber !== '' && ticketNumber !== '' && !isNaN(ticketNumber)) {
       try {
         // create formData
         const formData = new FormData();
@@ -44,6 +45,8 @@
           body: formData,
           method: 'POST'
         });
+
+        if (data.counts[date] === undefined) data.counts[date] = {};
 
         data.counts[date][ticketNumber] = {
           _counter: $store._counter,
@@ -114,14 +117,15 @@
         </Thead>
         <Tbody>
           {#each entries as { count, itemNumber, ticketNumber }, i}
-            <Tr>
+            <Tr class="odd:bg-black/[.05] dark:odd:bg-white/[.05]">
               <Td class="px-0 py-0">
                 <Input
                   bind:value={ticketNumber}
-                  class="rounded-none"
+                  class="rounded-none w-[12rem]"
                   on:keyup={() => {
                     keyupHandler({ count, itemNumber, ticketNumber, i });
                   }}
+                  type="number"
                 />
               </Td>
               <Td class="px-0 py-0">
@@ -137,16 +141,17 @@
                 <Td
                   class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
                 >
-                  {data?.[$store.type]?.[date]?.[itemNumber]?.[key] || ''}
+                  {data?.items?.[date]?.[itemNumber]?.[key] || ''}
                 </Td>
               {/each}
               <Td class="px-0 py-0">
                 <Input
                   bind:value={count}
-                  class="rounded-none"
+                  class="rounded-none w-[12rem]"
                   on:keyup={() => {
                     keyupHandler({ count, itemNumber, ticketNumber, i });
                   }}
+                  type="number"
                 />
               </Td>
             </Tr>

@@ -3,8 +3,8 @@
   import { Button, Card, Fieldset, Form, Input } from '$components';
 
   // props (internal)
-  let password = 'ABTL1234$';
-  let username = 'bmcaleavey';
+  let password = '';
+  let username = '';
 
   // props (external)
   export let form;

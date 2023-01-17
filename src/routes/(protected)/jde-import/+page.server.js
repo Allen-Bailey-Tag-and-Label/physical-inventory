@@ -8,7 +8,7 @@ export const actions = {
     // parse pasted data
     paste = paste.split('\r\n').reduce((obj, row) => {
       const [itemNumber, description, uom, quantity, value] = row.split('\t');
-      obj[itemNumber] = { description, uom, quantity, value };
+      obj[itemNumber] = { description, uom, quantity, value, type };
       return obj;
     }, {});
 
@@ -19,7 +19,7 @@ export const actions = {
 
     // add to database
     const db = await dbInit();
-    db.data[type][date] = paste;
+    db.data.items[date] = paste;
     await db.write();
 
     return { date, success: true };

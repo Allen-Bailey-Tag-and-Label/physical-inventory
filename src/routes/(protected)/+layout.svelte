@@ -6,6 +6,6 @@
 </script>
 
 <div class="flex flex-grow flex-col overflow-hidden">
-  <Header />
+  <Header {data} />
   <slot {data} />
 </div>

@@ -1,9 +1,9 @@
 import { init as dbInit } from '$db';
 
-export async function load() {
+export async function load({ locals }) {
   // find users in database
   const db = await dbInit();
-  const { counts, fgItems, rawItems, users } = db.data;
+  const { counts, items, users } = db.data;
 
   // create options
   const dateOptions = [...Object.keys(counts)]
@@ -20,8 +20,8 @@ export async function load() {
   return {
     counts,
     dateOptions,
-    fgItems,
-    rawItems,
+    items,
+    user: locals.user,
     userOptions,
     users
   };
