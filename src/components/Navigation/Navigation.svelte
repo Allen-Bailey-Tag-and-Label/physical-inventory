@@ -5,7 +5,8 @@
   let links = [
     { href: '/dashboard', innerHTML: 'Dashboard' },
     { href: '/enter-count', innerHTML: 'Enter Count' },
-    { href: '/item-lookup', innerHTML: 'Item Lookup' }
+    { href: '/item-lookup', innerHTML: 'Item Lookup' },
+    { href: '/jde-import', innerHTML: 'JDE Import' }
   ];
 </script>
 
