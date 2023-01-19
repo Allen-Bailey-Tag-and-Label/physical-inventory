@@ -36,7 +36,6 @@
         const formData = new FormData();
         formData.append('_counter', $store._counter);
         formData.append('_verifier', $store._verifier);
-        formData.append('date', date);
         formData.append('type', $store.type);
         formData.append('ticketNumber', ticketNumber);
         formData.append('itemNumber', itemNumber);

@@ -1,10 +1,9 @@
 {
   "counts": {
-    "Test Inventory": {},
-    "2023-01-19": {
+    "Test Inventory": {
       "5000": {
         "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
+        "_verifier": "fffc5db2818de5a492519195a93ade16",
         "itemNumber": "50513122 05.2500",
         "count": "5000",
         "type": "rawItems"
