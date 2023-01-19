@@ -1483,6 +1483,7 @@ V1207800 09.0000	LSR VINYL / P7100 / 4.6MIL LSR	SQ	1027	2.6572	2.831`;
   ];
 
   // props (external)
+  export let data;
   export let form;
 </script>
 
@@ -1491,7 +1492,7 @@ V1207800 09.0000	LSR VINYL / P7100 / 4.6MIL LSR	SQ	1027	2.6572	2.831`;
   <Form class="flex-grow" use={[enhance]}>
     <div class="min-h-[1.5rem] text-green-500">
       {#if form?.success}
-        Successfully added data for {form?.date}.
+        Successfully added data for {data.settings.inventoryVersion}.
       {/if}
     </div>
     <Fieldset legend="Type">

@@ -20,7 +20,9 @@
       .map((directory) => {
         const words = directory
           .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+          .map((word) =>
+            word.length === 3 ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1)
+          );
         return words.join(' ');
       }),
     'Physical Inventory',

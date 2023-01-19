@@ -10,20 +10,26 @@
   export let data;
 
   // props (dynamic)
-  $: itemsCounted = Object.keys(data.counts[date]).map(
-    (ticketNumber) => data.counts[date][ticketNumber].itemNumber
+  $: itemsCounted = Object.keys(data.counts[data.settings.inventoryVersion]).map(
+    (ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber].itemNumber
   );
   $: itemsNotCounted = Object.keys(data.items).filter(
     (itemNumber) => !itemsCounted.includes(itemNumber)
   );
-  $: ticketsUserCounted = Object.keys(data.counts[date])
-    .filter((ticketNumber) => data.counts[date][ticketNumber]._counter === data.user._id)
-    .map((ticketNumber) => data.counts[date][ticketNumber]);
-  $: ticketsUserVerified = Object.keys(data.counts[date])
-    .filter((ticketNumber) => data.counts[date][ticketNumber]._verifier === data.user._id)
-    .map((ticketNumber) => data.counts[date][ticketNumber]);
-  $: totalTickets = Object.keys(data.counts[date]).map(
-    (ticketNumber) => data.counts[date][ticketNumber]
+  $: ticketsUserCounted = Object.keys(data.counts[data.settings.inventoryVersion])
+    .filter(
+      (ticketNumber) =>
+        data.counts[data.settings.inventoryVersion][ticketNumber]._counter === data.user._id
+    )
+    .map((ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]);
+  $: ticketsUserVerified = Object.keys(data.counts[data.settings.inventoryVersion])
+    .filter(
+      (ticketNumber) =>
+        data.counts[data.settings.inventoryVersion][ticketNumber]._verifier === data.user._id
+    )
+    .map((ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]);
+  $: totalTickets = Object.keys(data.counts[data.settings.inventoryVersion]).map(
+    (ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]
   );
   $: cards = [
     { title: 'Tickets I Counted', value: ticketsUserCounted.length },

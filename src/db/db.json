@@ -1,131 +1,11 @@
 {
   "counts": {
-    "2023-01-16": {
+    "Test Inventory": {},
+    "2023-01-19": {
       "5000": {
         "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
         "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5001": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5002": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5003": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.5000",
-        "count": "5000",
-        "type": "rawItems"
-      }
-    },
-    "2023-01-17": {
-      "5000": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5001": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5002": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5003": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5004": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5005": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5006": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5007": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5008": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5009": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5010": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5011": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "15702850 08.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "5012": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-        "itemNumber": "50513101 04.0000",
-        "count": "5000",
-        "type": "rawItems"
-      },
-      "6000": {
-        "_counter": "a64e6744204650a00bb0956d5aa62634",
-        "_verifier": "a7d184699405e782b0ab3591ffc5c6ff",
-        "itemNumber": "50510101 00.8750",
+        "itemNumber": "50513122 05.2500",
         "count": "5000",
         "type": "rawItems"
       }
@@ -10445,7 +10325,7 @@
     }
   },
   "jdeImports": {
-    "2023-01-17": {
+    "Test Inventory": {
       "15702850 08.0000": {
         "description": "MOCR BOND 28# WHITE 8\"",
         "uom": "LB",
@@ -20759,6 +20639,9 @@
       }
     }
   },
+  "settings": {
+    "inventoryVersion": "Test Inventory"
+  },
   "users": [
     {
       "_id": "a7d184699405e782b0ab3591ffc5c6ff",
@@ -20823,6 +20706,14 @@
       "password": "3ffd4ab86affc425:d7d49767aec9a8ee566ca813c66404de34ded2cdc30eac8bfdb2a1c320b20ca6bd01d20ed8031b8f31e19766bb6ad24be2ca65a206578ed5fe07cba6ff467609",
       "username": "dvonglis",
       "isAdmin": true
+    },
+    {
+      "_id": "fffc5db2818de5a492519195a93ade16",
+      "firstName": "Tom",
+      "lastName": "Livermore",
+      "password": "563414a0b06f813e:b8c80e8e364fe087a2cf934f6f494cf8683fa933abac4b7d564ecb9fc2fd24a8f9f43a0d66537115584c44bcb49e15f10e7e52a5e1e66f0c2d081dec9ff57cbf",
+      "username": "tlivermore",
+      "isAdmin": false
     }
   ]
 }

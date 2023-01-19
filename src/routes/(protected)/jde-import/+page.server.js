@@ -16,17 +16,12 @@ export const actions = {
       return obj;
     }, {});
 
-    // get date
-    const date = `${new Date().getFullYear()}-${(new Date().getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
-
     // add to database
     const db = await dbInit();
     db.data.items = { ...db.data.items, ...items };
-    db.data.jdeImports[date] = paste;
+    db.data.jdeImports[db.data.settings.inventoryVersion] = paste;
     await db.write();
 
-    return { date, success: true };
+    return { success: true };
   }
 };

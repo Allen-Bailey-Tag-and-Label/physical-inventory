@@ -7,19 +7,21 @@
   const changeHandler = async () => {
     if ($store._counter !== '' && $store._verifier !== '' && $store.type !== '') {
       entries = [
-        ...[...Object.keys(data.counts?.[date])]
+        ...[...Object.keys(data.counts?.[data.settings.inventoryVersion])]
           .filter(
             (ticketNumber) =>
-              data.counts[date][ticketNumber]._counter === $store._counter &&
-              data.counts[date][ticketNumber]._verifier === $store._verifier &&
-              data.counts[date][ticketNumber].type === $store.type
+              data.counts[data.settings.inventoryVersion][ticketNumber]._counter ===
+                $store._counter &&
+              data.counts[data.settings.inventoryVersion][ticketNumber]._verifier ===
+                $store._verifier &&
+              data.counts[data.settings.inventoryVersion][ticketNumber].type === $store.type
           )
           .map((ticketNumber) => {
             return {
               ticketNumber,
-              itemNumber: data.counts?.[date][ticketNumber].itemNumber,
-              count: data.counts?.[date][ticketNumber].count,
-              type: data.counts?.[date][ticketNumber].type
+              itemNumber: data.counts?.[data.settings.inventoryVersion][ticketNumber].itemNumber,
+              count: data.counts?.[data.settings.inventoryVersion][ticketNumber].count,
+              type: data.counts?.[data.settings.inventoryVersion][ticketNumber].type
             };
           }),
         { count: '', itemNumber: '', ticketNumber: '' }
@@ -45,9 +47,10 @@
           method: 'POST'
         });
 
-        if (data.counts[date] === undefined) data.counts[date] = {};
+        if (data.counts[data.settings.inventoryVersion] === undefined)
+          data.counts[data.settings.inventoryVersion] = {};
 
-        data.counts[date][ticketNumber] = {
+        data.counts[data.settings.inventoryVersion][ticketNumber] = {
           _counter: $store._counter,
           _verifier: $store._verifier,
           itemNumber,
@@ -164,7 +167,7 @@
                   <Td
                     class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
                   >
-                    {data?.jdeImports?.[date]?.[itemNumber]?.[key] || ''}
+                    {data?.jdeImports?.[data.settings.inventoryVersion]?.[itemNumber]?.[key] || ''}
                   </Td>
                 {/each}
                 <Td class="px-0 py-0">

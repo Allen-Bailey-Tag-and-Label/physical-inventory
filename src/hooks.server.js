@@ -2,6 +2,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import jwt from 'jsonwebtoken';
 import { init as dbInit } from '$db';
 import { JWT_SECRET } from '$env/static/private';
+import { protectedLinks } from '$components/Navigation';
 
 const verifyAuthToken = async ({ event }) => {
   // get authToken cookie
@@ -37,7 +38,7 @@ const verifyAuthToken = async ({ event }) => {
 
 const protectedRoutesHandle = async ({ event, resolve }) => {
   // initialize protected routes
-  const protectedRoutes = ['/dashboard', '/enter-count', '/item-lookup'];
+  const protectedRoutes = protectedLinks.map(({ href }) => href);
 
   // check if route is protected
   if (protectedRoutes.includes(event.url.pathname)) {

@@ -1,19 +1,14 @@
 <script>
   import { page } from '$app/stores';
-
-  // props (internal)
-  let links = [
-    { href: '/dashboard', innerHTML: 'Dashboard' },
-    { href: '/enter-count', innerHTML: 'Enter Count' }
-  ];
+  import { adminLinks, defaultLinks } from './index';
 
   // props (external)
   export let data;
 
   // props (dynamic)
-  $: if (data?.user?.isAdmin) {
-    links = [...links, { href: '/jde-import', innerHTML: 'JDE Import' }];
-  }
+  $: links = [...defaultLinks, ...(data.user?.isAdmin ? adminLinks : [])].sort((a, b) =>
+    a.innerHTML < b.innerHTML ? -1 : a.innerHTML > b.innerHTML ? 1 : 0
+  );
 </script>
 
 <div class="flex">
