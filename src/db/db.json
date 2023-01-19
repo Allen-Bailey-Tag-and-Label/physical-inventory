@@ -121,6 +121,13 @@
         "itemNumber": "50513101 04.0000",
         "count": "5000",
         "type": "rawItems"
+      },
+      "6000": {
+        "_counter": "a64e6744204650a00bb0956d5aa62634",
+        "_verifier": "a7d184699405e782b0ab3591ffc5c6ff",
+        "itemNumber": "50510101 00.8750",
+        "count": "5000",
+        "type": "rawItems"
       }
     }
   },
