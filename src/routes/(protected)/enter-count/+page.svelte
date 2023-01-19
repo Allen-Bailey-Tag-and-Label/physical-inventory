@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import { Card, Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
+  import layoutStore from '../store';
   import store from './store';
 
   // handlers

@@ -1,35 +1,19 @@
-import crypto from 'crypto';
+import crypto from 'crypto-js';
 import { init as dbInit } from '$db';
 
 export const actions = {
   default: async ({ request }) => {
     // get submitted data
-    const {
-      firstName,
-      isAdmin,
-      lastName,
-      password: originalPassword
-    } = Object.fromEntries(await request.formData());
-
-    // create unique salt
-    const salt = crypto.randomBytes(8).toString('hex');
+    let { firstName, isAdmin, lastName, password } = Object.fromEntries(await request.formData());
 
     // get hashed password
-    const hash = await new Promise((resolve, reject) => {
-      crypto.scrypt(originalPassword, salt, 64, (err, derivedKey) => {
-        if (err) reject(err);
-        resolve(derivedKey.toString('hex'));
-      });
-    });
-
-    // update password with salt and hash
-    const password = `${salt}:${hash}`;
+    password = JSON.stringify(crypto.SHA256(password).words);
 
     // generate username
     const username = `${firstName.charAt(0).toLowerCase()}${lastName.toLowerCase()}`;
 
     // generate _id
-    const _id = crypto.randomBytes(16).toString('hex');
+    const _id = Math.random().toString(16).slice(2);
 
     // create user in database
     const db = await dbInit();

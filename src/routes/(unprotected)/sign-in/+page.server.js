@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import crypto from 'crypto';
+import crypto from 'crypto-js';
 import jwt from 'jsonwebtoken';
 import { init as dbInit } from '$db';
 import { JWT_SECRET } from '$env/static/private';
@@ -17,24 +17,14 @@ export const actions = {
     // check if no username found
     if (user === undefined) return fail(401, { error: 'Incorrect username provided.' });
 
-    // get salt and hash from database
-    const [salt, hash] = user.password.split(':');
+    // hash password
+    const hash = JSON.stringify(crypto.SHA256(password).words);
+
+    // check if password doesn't match
+    if (hash !== user.password) return fail(401, { error: 'Invalid credentials passed.' });
 
     // delete password from user
     delete user.password;
-
-    // compare password
-    try {
-      await new Promise((resolve, reject) => {
-        crypto.scrypt(password, salt, 64, (err, derivedKey) => {
-          if (err) reject(err);
-          if (hash !== derivedKey.toString('hex')) reject('Incorrect credentials passed.');
-          resolve();
-        });
-      });
-    } catch (error) {
-      return fail(401, { error });
-    }
 
     // generate authToken
     const authToken = jwt.sign(user, JWT_SECRET);

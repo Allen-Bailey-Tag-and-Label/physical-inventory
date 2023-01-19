@@ -1,14 +1,6 @@
 {
   "counts": {
-    "Test Inventory": {
-      "5000": {
-        "_counter": "a7d184699405e782b0ab3591ffc5c6ff",
-        "_verifier": "fffc5db2818de5a492519195a93ade16",
-        "itemNumber": "50513122 05.2500",
-        "count": "5000",
-        "type": "rawItems"
-      }
-    }
+    "Test Inventory": {}
   },
   "items": {
     "15702850 08.0000": {
@@ -20643,75 +20635,123 @@
   },
   "users": [
     {
-      "_id": "a7d184699405e782b0ab3591ffc5c6ff",
+      "_id": "b52d89be9f859",
       "firstName": "Bob",
       "lastName": "McAleavey",
-      "password": "de0863d2d4793dc7:55934add39b6e891d8a4bc3e1db8bab36ba7647bf7c78feb0c55c60917926f87291ce54cf4f49dff81fc808fd37e530f28c4739f3d1e1db772359cfb336b817d",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
       "username": "bmcaleavey",
       "isAdmin": true
     },
     {
-      "_id": "5ec606b105cb1e6e4b17bd064a2936f6",
-      "firstName": "Scott",
-      "lastName": "Filio",
-      "password": "fe198c9bfb898f75:05028b953887fe23b1fd474fde5646a2ab7f081193c86956f07f41257909337fcf8b05bd25c002278b7ceda5b7ea678a31e5647c35506c6e48bf652fcc3b8dd2",
-      "username": "sfilio",
-      "isAdmin": false
-    },
-    {
-      "_id": "cc9af386d2ff1347717a2eb1c84a5886",
-      "firstName": "Ken",
-      "lastName": "Norton",
-      "password": "7d04332887d436ab:7ebb88ef6844a159231f446a62f30e0924ab6d649d3f90331bf51b89f9855977ff8cac8c58ccc420c256eab6d1a8ea0c2c354692ab185966927eb2e4c2995e2d",
-      "username": "knorton",
-      "isAdmin": false
-    },
-    {
-      "_id": "d68dc94dd144f0eda1a5aefa39ec7154",
-      "firstName": "Steve",
-      "lastName": "Krisanda",
-      "password": "31411306b05e34db:1ff22e61ba9f93440f78ec891ed9d86a673a4ef9021c377891ae9f15c2e88cd7070e01b159e4012ffa7392cd8d10c392ec00a14e5b389e1ae6bee398e9372063",
-      "username": "skrisanda",
-      "isAdmin": false
-    },
-    {
-      "_id": "db73185ce0e43f89cf3c117bf19a8c2d",
-      "firstName": "Mike",
-      "lastName": "Foose",
-      "password": "d170b81c3c24de7e:d7f9db705801104c71e1f73303c5a3569e812a85b07c5625b47ef290f775c2305d013066bf1cad20c04a844d61f804b8794af54b7eaed4bb64524c7d94160e26",
-      "username": "mfoose",
-      "isAdmin": false
-    },
-    {
-      "_id": "a64e6744204650a00bb0956d5aa62634",
-      "firstName": "Dan",
-      "lastName": "Koenig",
-      "password": "dc9f99869e7b90b3:8d4caffbea8f59503f032da5439dca9ed90b24cd095642b8c4aa94b2b4d0682289abd23fd51f27c4c47000e8d00a9389e25f75aa0221c64771b7e04d331a83fa",
-      "username": "dkoenig",
-      "isAdmin": false
-    },
-    {
-      "_id": "f2df45e243c6d31f07ff5ebdd92b1bd9",
-      "firstName": "Ed",
-      "lastName": "Guldenschuh",
-      "password": "59bac8c2232d8e7e:5602b962667c78d788aa48046a4e3a7548aa19ac3f2eee572c50c9af8bc57371e58304b47a279688e7c8d219e185846c5c5be06a94a6352458a378753af6af80",
-      "username": "eguldenschuh",
-      "isAdmin": false
-    },
-    {
-      "_id": "2387223fb600020af03b4a58e16b1613",
+      "_id": "3e9e110f7d278",
       "firstName": "Diane",
       "lastName": "Vonglis",
-      "password": "3ffd4ab86affc425:d7d49767aec9a8ee566ca813c66404de34ded2cdc30eac8bfdb2a1c320b20ca6bd01d20ed8031b8f31e19766bb6ad24be2ca65a206578ed5fe07cba6ff467609",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
       "username": "dvonglis",
       "isAdmin": true
     },
     {
-      "_id": "fffc5db2818de5a492519195a93ade16",
+      "_id": "5a89d7a274158",
+      "firstName": "John",
+      "lastName": "Grieco",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "jgrieco",
+      "isAdmin": false
+    },
+    {
+      "_id": "cfb4bb57469fc",
       "firstName": "Tom",
       "lastName": "Livermore",
-      "password": "563414a0b06f813e:b8c80e8e364fe087a2cf934f6f494cf8683fa933abac4b7d564ecb9fc2fd24a8f9f43a0d66537115584c44bcb49e15f10e7e52a5e1e66f0c2d081dec9ff57cbf",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
       "username": "tlivermore",
+      "isAdmin": false
+    },
+    {
+      "_id": "949a22034e08b",
+      "firstName": "Steve",
+      "lastName": "Krisanda",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "skrisanda",
+      "isAdmin": false
+    },
+    {
+      "_id": "18a7428713ecc",
+      "firstName": "Ken",
+      "lastName": "Norton",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "knorton",
+      "isAdmin": false
+    },
+    {
+      "_id": "6be25bcfbefaa",
+      "firstName": "Scott",
+      "lastName": "Filio",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "sfilio",
+      "isAdmin": false
+    },
+    {
+      "_id": "367c1c8a7278f",
+      "firstName": "Ryan",
+      "lastName": "Coleman",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "rcoleman",
+      "isAdmin": false
+    },
+    {
+      "_id": "2e950ae616c6c",
+      "firstName": "Jeff",
+      "lastName": "Pike",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "jpike",
+      "isAdmin": false
+    },
+    {
+      "_id": "5b53a08775752",
+      "firstName": "Dan",
+      "lastName": "Koenig",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "dkoenig",
+      "isAdmin": false
+    },
+    {
+      "_id": "5288584e9d91b",
+      "firstName": "Mike",
+      "lastName": "Foose",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "mfoose",
+      "isAdmin": false
+    },
+    {
+      "_id": "a4d8895a06ead",
+      "firstName": "Mark",
+      "lastName": "Napier",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "mnapier",
+      "isAdmin": false
+    },
+    {
+      "_id": "0e6ec3f07cd3c",
+      "firstName": "Tom",
+      "lastName": "Kane",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "tkane",
+      "isAdmin": false
+    },
+    {
+      "_id": "7693a7b84b709",
+      "firstName": "Phil",
+      "lastName": "Carlson",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "pcarlson",
+      "isAdmin": false
+    },
+    {
+      "_id": "a69d77bcc05f2",
+      "firstName": "Bob",
+      "lastName": "Paduano",
+      "password": "[1226909172,1048829856,-911534046,-1553008224,915755715,1926886420,-1754226148,-245312548]",
+      "username": "bpaduano",
       "isAdmin": false
     }
   ]
