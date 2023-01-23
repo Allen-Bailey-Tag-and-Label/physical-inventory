@@ -11,8 +11,6 @@
 
   // props (external)
   export let data;
-
-  $: console.log(data);
 </script>
 
 <div class="flex flex-col flex-grow overflow-hidden space-y-[1rem] p-[1rem] items-start">

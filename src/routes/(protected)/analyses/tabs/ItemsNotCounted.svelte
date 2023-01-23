@@ -1,5 +1,5 @@
 <script>
-  import { Card, Input, Table, Tbody, Td, Th, Thead, Tr } from '$components';
+  import { Datatable } from '$components';
   import { currencyFormat, integerFormat } from '$lib/format';
 
   // props (internal)
@@ -69,30 +69,4 @@
     });
 </script>
 
-<Card class="p-0 relative rounded-none overflow-y-auto">
-  <Table>
-    <Thead>
-      <Tr>
-        {#each columns as { th }}
-          <Th>{th}</Th>
-        {/each}
-      </Tr>
-      <Tr>
-        {#each columns as { filter, filterClasses }}
-          <Th class="px-0 py-0 top-auto"
-            ><Input bind:value={filter} class="rounded-none {filterClasses}" /></Th
-          >
-        {/each}
-      </Tr>
-    </Thead>
-    <Tbody>
-      {#each rows as row}
-        <Tr>
-          {#each columns as { classes, key, format }}
-            <Td class={classes}>{format(row[key])}</Td>
-          {/each}
-        </Tr>
-      {/each}
-    </Tbody>
-  </Table>
-</Card>
+<Datatable {columns} {rows} />

@@ -7,8 +7,6 @@
   // props (external)
   export let data;
 
-  console.log(data.count.items);
-
   $: before = [...data.count.items].reduce(
     (obj, item) => {
       obj[item.type] = obj[item.type] + +item.quantity * +item.value;
