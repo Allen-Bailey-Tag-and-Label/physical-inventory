@@ -1,10 +1,11 @@
 <script>
   import { Input, Label } from '$components';
-  import { ItemsNotCounted, Overall } from './tabs';
+  import { AllItems, ItemsNotCounted, Overall } from './tabs';
 
   // props (internal)
   let currentTab = 'Overall';
   const tabs = [
+    { component: AllItems, tab: 'All Items' },
     { component: ItemsNotCounted, tab: 'Items Not Counted' },
     { component: Overall, tab: 'Overall' }
   ];

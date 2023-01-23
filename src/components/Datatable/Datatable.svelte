@@ -68,7 +68,7 @@
     <Select bind:value={sortDirection} options={sortDirectionOptions} />
   </Fieldset>
 </div>
-<Card class="p-0 overflow-y-auto relative rounded-none">
+<Card class="p-0 overflow-auto max-w-full relative rounded-none">
   <Table>
     <Thead>
       <Tr>
