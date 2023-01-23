@@ -11,7 +11,7 @@
     select: 'bg-transparent dark:bg-gray-800',
     table: 'bg-transparent dark:bg-transparent',
     textarea: 'bg-transparent dark:bg-transparent',
-    th: 'dark:bg-gray-800 sticky top-0 border-b-0 shadow-[inset_0_-1px_0_rgba(0,0,0,.1)] dark:shadow-[inset_0_-1px_0_rgba(255,255,255,.1)]',
+    th: 'dark:bg-gray-800 sticky top-0 border-b-0 shadow-[inset_0_-1px_0_rgba(0,0,0,1)] dark:shadow-[inset_0_-1px_0_rgba(255,255,255,1)]',
     tr: 'transition duration-200 odd:bg-black/[.05] dark:odd:bg-white/[.05] hover:bg-blue-500/[.05] hover:odd:bg-blue-500/[.1]'
   });
 

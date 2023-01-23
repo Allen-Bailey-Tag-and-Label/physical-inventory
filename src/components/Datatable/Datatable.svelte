@@ -73,12 +73,12 @@
     <Thead>
       <Tr>
         {#each columns as { th }}
-          <Th>{th}</Th>
+          <Th class="shadow-[0_0_0_rgba(0,0,0,0)] dark:shadow-[0_0_0_rgba(0,0,0,0)]">{th}</Th>
         {/each}
       </Tr>
       <Tr>
         {#each columns as { filter, filterClasses }}
-          <Th class="px-0 py-0 top-[calc(2.5rem_-_1px)]">
+          <Th class="px-0 py-0 top-[calc(2.5rem_-_0px)]">
             <Input bind:value={filter} class="rounded-none {filterClasses}" />
           </Th>
         {/each}
