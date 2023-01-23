@@ -36,10 +36,27 @@
         formData.append('count', count);
         formData.append('inventoryVersion', data.settings.inventoryVersion);
 
-        await fetch('/enter-count', {
-          body: formData,
-          method: 'POST'
-        });
+        // check if user is online
+        if ($layoutStore.online) {
+          await fetch('/enter-count', {
+            body: formData,
+            method: 'POST'
+          });
+        }
+
+        // check if user is offline
+        if (!$layoutStore.online && browser) {
+          // get offlineTickets
+          const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || [];
+
+          // add to offlineTickets
+          offlineTickets.push(Object.fromEntries(formData));
+
+          // set offlineTickets
+          localStorage.setItem('offlineTickets', JSON.stringify(offlineTickets));
+
+          console.log(JSON.parse(localStorage.getItem('offlineTickets')));
+        }
       } catch (error) {
         console.log({ error });
       }
@@ -49,6 +66,46 @@
     if (count !== '' && itemNumber !== '' && i === entries.length - 1 && ticketNumber !== '') {
       entries = [...entries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
+  };
+  const updateOfflineTickets = async () => {
+    // get offlineTickets
+    const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || [];
+
+    // upload each
+    await Promise.all(
+      offlineTickets.map(
+        async ({
+          _counter,
+          _verifier,
+          type,
+          ticketNumber,
+          itemNumber,
+          count,
+          inventoryVersion
+        }) => {
+          // create formData
+          const formData = new FormData();
+          formData.append('_counter', _counter);
+          formData.append('_verifier', _verifier);
+          formData.append('type', type);
+          formData.append('ticketNumber', ticketNumber);
+          formData.append('itemNumber', itemNumber);
+          formData.append('count', count);
+          formData.append('inventoryVersion', inventoryVersion);
+
+          try {
+            await fetch('/enter-count', {
+              body: formData,
+              method: 'POST'
+            });
+
+            localStorage.setItem('offlineTickets', JSON.stringify([]));
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      )
+    );
   };
 
   // props (internal)
@@ -63,6 +120,9 @@
   export let data;
 
   // props (dynamic)
+  $: if ($layoutStore.online && browser) {
+    updateOfflineTickets();
+  }
   $: userOptions = [...data.users]
     .map((user) => {
       return { label: `${user.firstName} ${user.lastName}`, value: user._id };
