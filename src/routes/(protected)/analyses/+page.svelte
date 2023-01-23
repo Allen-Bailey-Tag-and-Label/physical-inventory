@@ -1,12 +1,12 @@
 <script>
-  import { Input, Label } from '$components';
+  import { Label } from '$components';
   import { AllItems, ItemsNotCounted, Overall } from './tabs';
+  import store from './store';
 
   // props (internal)
-  let currentTab = 'Overall';
   const tabs = [
     { component: AllItems, tab: 'All Items' },
-    { component: ItemsNotCounted, tab: 'Items Not Counted' },
+    // { component: ItemsNotCounted, tab: 'Items Not Counted' },
     { component: Overall, tab: 'Overall' }
   ];
 
@@ -21,13 +21,13 @@
     {#each tabs as { tab }}
       <Label class="relative">
         <input
-          bind:group={currentTab}
+          bind:group={$store.currentTab}
           class="w-0 h-0 absolute top-0 left-0 opacity-0"
           type="radio"
           value={tab}
         />
         <div
-          class="flex px-[1rem] py-[.5rem] border-b {currentTab !== tab
+          class="flex px-[1rem] py-[.5rem] border-b {$store.currentTab !== tab
             ? 'cursor-pointer border-black/[.1] dark:border-white/[.1]'
             : 'border-blue-500'}"
         >
@@ -36,5 +36,5 @@
       </Label>
     {/each}
   </div>
-  <svelte:component this={tabs.find((tab) => tab.tab === currentTab).component} {data} />
+  <svelte:component this={tabs.find((tab) => tab.tab === $store.currentTab).component} {data} />
 </div>
