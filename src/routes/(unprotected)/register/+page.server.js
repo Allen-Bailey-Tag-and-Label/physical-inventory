@@ -1,5 +1,5 @@
 import crypto from 'crypto-js';
-import { init as dbInit } from '$db';
+import * as db from '$db';
 
 export const actions = {
   default: async ({ request }) => {
@@ -12,20 +12,17 @@ export const actions = {
     // generate username
     const username = `${firstName.charAt(0).toLowerCase()}${lastName.toLowerCase()}`;
 
-    // generate _id
-    const _id = Math.random().toString(16).slice(2);
-
     // create user in database
-    const db = await dbInit();
-    db.data.users.push({
-      _id,
-      firstName,
-      lastName,
-      password,
-      username,
-      isAdmin: isAdmin === 'on' ? true : false
+    await db.insertOne({
+      collection: 'users',
+      doc: {
+        firstName,
+        lastName,
+        password,
+        username,
+        isAdmin: isAdmin === 'on' ? true : false
+      }
     });
-    await db.write();
 
     return { success: true, username };
   }

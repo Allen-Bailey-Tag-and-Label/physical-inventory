@@ -8,7 +8,7 @@
   export let data;
 </script>
 
-<Card class="flex-row items-center justify-between px-[.5rem] py-[.5rem] rounded-none">
+<Card class="flex-row items-center justify-between px-[.5rem] py-[.0rem] rounded-none">
   <slot>
     <Navigation {data} />
     <div class="flex items-center space-x-[1rem]">

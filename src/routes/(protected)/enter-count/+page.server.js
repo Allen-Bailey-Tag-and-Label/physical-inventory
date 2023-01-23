@@ -1,25 +1,41 @@
-import { init as dbInit } from '$db';
+import * as db from '$db';
+
+export const load = async () => {
+  // get current settings
+  const [settings] = await db.find({ collection: 'settings' });
+
+  // get other collections
+  const [[count], users] = await Promise.all([
+    await db.find({
+      collection: 'counts',
+      query: { inventoryVersion: settings.inventoryVersion }
+    }),
+    await db.find({ collection: 'users' })
+  ]);
+
+  return { count, settings, users };
+};
 
 export const actions = {
   default: async ({ request }) => {
     // get submitted data
-    const { _counter, _verifier, type, ticketNumber, itemNumber, count } = await Object.fromEntries(
+    const { inventoryVersion, ticketNumber, ...item } = await Object.fromEntries(
       await request.formData()
     );
 
-    // update database
-    const db = await dbInit();
-    if (db.data.counts[db.data.settings.inventoryVersion] === undefined)
-      db.data.counts[db.data.settings.inventoryVersion] = {};
-
-    db.data.counts[db.data.settings.inventoryVersion][ticketNumber] = {
-      _counter,
-      _verifier,
-      itemNumber,
-      count,
-      type
+    // initialize update variable
+    const update = {
+      $set: {}
     };
-    await db.write();
+
+    // update ticketNumber
+    update.$set[`tickets.${ticketNumber}`] = { ...item, ticketNumber, createdAt: new Date() };
+
+    await db.findOneAndUpdate({
+      collection: 'counts',
+      query: { inventoryVersion },
+      update
+    });
 
     return { success: true };
   }

@@ -10,7 +10,7 @@
     input: 'bg-transparent dark:bg-transparent',
     select: 'bg-transparent dark:bg-gray-800',
     textarea: 'bg-transparent dark:bg-transparent',
-    th: 'dark:bg-gray-800'
+    th: 'dark:bg-gray-800 sticky top-0'
   });
 
   $: title = [

@@ -1,23 +1,27 @@
-import { init as dbInit } from '$db';
+import * as db from '$db';
+
+export const load = async () => {
+  // get current settings
+  const [settings] = await db.find({ collection: 'settings' });
+
+  return { settings };
+};
 
 export const actions = {
   default: async ({ request }) => {
     // get submitted data
     const { inventoryVersion } = Object.fromEntries(await request.formData());
 
-    // connect to db
-    const db = await dbInit();
-
     // update settings
-    db.data.settings.inventoryVersion = inventoryVersion;
-
-    // check if value exists in counts and jdeImports
-    if (db.data.counts?.[inventoryVersion] === undefined) db.data.counts[inventoryVersion] = {};
-    if (db.data.jdeImports?.[inventoryVersion] === undefined)
-      db.data.jdeImports[inventoryVersion] = {};
-
-    // update db
-    await db.write();
+    await db.findOneAndUpdate({
+      collection: 'settings',
+      query: { index: 0 },
+      update: {
+        $set: {
+          inventoryVersion
+        }
+      }
+    });
 
     return { inventoryVersion, success: true };
   }

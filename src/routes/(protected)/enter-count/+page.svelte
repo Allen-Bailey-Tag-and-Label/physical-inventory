@@ -8,32 +8,24 @@
   // handlers
   const changeHandler = async () => {
     if ($store._counter !== '' && $store._verifier !== '' && $store.type !== '') {
-      entries = [
-        ...[...Object.keys(data.counts?.[data.settings.inventoryVersion])]
-          .filter(
-            (ticketNumber) =>
-              data.counts[data.settings.inventoryVersion][ticketNumber]._counter ===
-                $store._counter &&
-              data.counts[data.settings.inventoryVersion][ticketNumber]._verifier ===
-                $store._verifier &&
-              data.counts[data.settings.inventoryVersion][ticketNumber].type === $store.type
-          )
-          .map((ticketNumber) => {
-            return {
-              ticketNumber,
-              itemNumber: data.counts?.[data.settings.inventoryVersion][ticketNumber].itemNumber,
-              count: data.counts?.[data.settings.inventoryVersion][ticketNumber].count,
-              type: data.counts?.[data.settings.inventoryVersion][ticketNumber].type
-            };
-          }),
-        { count: '', itemNumber: '', ticketNumber: '' }
-      ];
+      const initialEntries =
+        Object.values(data.count?.tickets)?.filter(
+          ({ _counter, _verifier, type }) =>
+            _counter === $store._counter && _verifier === $store._verifier && type === $store.type
+        ) || [];
+      entries = [...initialEntries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
   };
-  const keyupHandler = async ({ count, itemNumber, i, ticketNumber }) => {
+  const rowChangeHandler = async ({ count, itemNumber, i, ticketNumber }) => {
     // update database
     if (count !== '' && itemNumber !== '' && ticketNumber !== '' && !isNaN(ticketNumber)) {
       try {
+        // evaluate count
+        if (count.charAt(0) === '=') count = eval(count.slice(1));
+
+        // check if count is not a number
+        if (isNaN(count)) throw `${count} is not a number`;
+
         // create formData
         const formData = new FormData();
         formData.append('_counter', $store._counter);
@@ -42,22 +34,12 @@
         formData.append('ticketNumber', ticketNumber);
         formData.append('itemNumber', itemNumber);
         formData.append('count', count);
+        formData.append('inventoryVersion', data.settings.inventoryVersion);
 
         await fetch('/enter-count', {
           body: formData,
           method: 'POST'
         });
-
-        if (data.counts[data.settings.inventoryVersion] === undefined)
-          data.counts[data.settings.inventoryVersion] = {};
-
-        data.counts[data.settings.inventoryVersion][ticketNumber] = {
-          _counter: $store._counter,
-          _verifier: $store._verifier,
-          itemNumber,
-          count,
-          type: $store.type
-        };
       } catch (error) {
         console.log({ error });
       }
@@ -70,40 +52,37 @@
   };
 
   // props (internal)
-  const date = `${new Date().getFullYear()}-${(new Date().getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
   let entries = [{ count: '', itemNumber: '', ticketNumber: '' }];
   let search = '';
   const typeOptions = [
-    { label: 'RAW', value: 'rawItems' },
-    { label: 'FG', value: 'fgItems' }
+    { label: 'RAW', value: 'raw' },
+    { label: 'FG', value: 'fg' }
   ];
 
   // props (external)
   export let data;
 
   // props (dynamic)
+  $: userOptions = [...data.users]
+    .map((user) => {
+      return { label: `${user.firstName} ${user.lastName}`, value: user._id };
+    })
+    .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
   $: searchItems = search.split(' ');
   $: results =
     search === ''
       ? []
-      : Object.keys(data.items)
-          .filter((itemNumber) => {
-            let match = true;
-            searchItems.every((searchItem) => {
-              if (!new RegExp(searchItem, 'gi').test(data.items[itemNumber].description)) {
-                match = false;
-                return false;
-              }
-              return true;
-            });
-            return match;
-          })
-          .map((itemNumber) => {
-            const { description, uom, type } = data.items[itemNumber];
-            return { itemNumber, description, uom, type };
+      : [...data.count.items].filter(({ description }) => {
+          let match = true;
+          searchItems.every((searchItem) => {
+            if (!new RegExp(searchItem, 'gi').test(description)) {
+              match = false;
+              return false;
+            }
+            return true;
           });
+          return match;
+        });
 
   // lifecycle
   onMount(() => {
@@ -117,14 +96,14 @@
       <Fieldset legend="Counter">
         <Select
           bind:value={$store._counter}
-          options={data?.userOptions || []}
+          options={userOptions || []}
           on:change={changeHandler}
         />
       </Fieldset>
       <Fieldset legend="Verifier">
         <Select
           bind:value={$store._verifier}
-          options={data?.userOptions || []}
+          options={userOptions || []}
           on:change={changeHandler}
         />
       </Fieldset>
@@ -133,14 +112,14 @@
       </Fieldset>
     </div>
     {#if $store._counter !== '' && $store._verifier !== '' && $store.type !== ''}
-      <Card class="p-0 overflow-y-auto relative">
+      <Card class="p-0 overflow-y-auto relative rounded-none">
         <Table>
           <Thead>
-            <Th class="sticky top-0">Ticket Number</Th>
-            <Th class="sticky top-0">Item Number</Th>
-            <Th class="sticky top-0">Description</Th>
-            <Th class="sticky top-0">UoM</Th>
-            <Th class="sticky top-0">Count</Th>
+            <Th>Ticket Number</Th>
+            <Th>Item Number</Th>
+            <Th>Description</Th>
+            <Th>UoM</Th>
+            <Th>Count</Th>
           </Thead>
           <Tbody>
             {#each entries as { count, itemNumber, ticketNumber }, i}
@@ -149,8 +128,8 @@
                   <Input
                     bind:value={ticketNumber}
                     class="rounded-none w-[12rem]"
-                    on:keyup={() => {
-                      keyupHandler({ count, itemNumber, ticketNumber, i });
+                    on:change={() => {
+                      rowChangeHandler({ count, itemNumber, ticketNumber, i });
                     }}
                     type="number"
                   />
@@ -159,8 +138,8 @@
                   <Input
                     bind:value={itemNumber}
                     class="rounded-none"
-                    on:keyup={() => {
-                      keyupHandler({ count, itemNumber, i });
+                    on:change={() => {
+                      rowChangeHandler({ count, itemNumber, i });
                     }}
                   />
                 </Td>
@@ -168,17 +147,18 @@
                   <Td
                     class="ring ring-transparent ring-offset-1 ring-offset-black/[.1] dark:ring-offset-white/[.1]"
                   >
-                    {data?.jdeImports?.[data.settings.inventoryVersion]?.[itemNumber]?.[key] || ''}
+                    {[...data.count.items]?.filter((item) => item.itemNumber === itemNumber)?.[0]?.[
+                      key
+                    ] || ''}
                   </Td>
                 {/each}
                 <Td class="px-0 py-0">
                   <Input
                     bind:value={count}
                     class="rounded-none w-[12rem]"
-                    on:keyup={() => {
-                      keyupHandler({ count, itemNumber, ticketNumber, i });
+                    on:change={() => {
+                      rowChangeHandler({ count, itemNumber, ticketNumber, i });
                     }}
-                    type="number"
                   />
                 </Td>
               </Tr>

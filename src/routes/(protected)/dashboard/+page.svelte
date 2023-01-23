@@ -2,40 +2,31 @@
   import { Card } from '$components';
 
   // props (internal)
-  const date = `${new Date().getFullYear()}-${(new Date().getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
 
   // props (external)
   export let data;
 
   // props (dynamic)
-  $: itemsCounted = Object.keys(data.counts[data.settings.inventoryVersion]).map(
-    (ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber].itemNumber
+  $: ticketsUserCounted =
+    Object.values(data.count?.tickets)?.filter((ticket) => ticket._counter === data.user._id) || [];
+  $: ticketsUserVerified =
+    Object.values(data.count?.tickets)?.filter((ticket) => ticket._verifier === data.user._id) ||
+    [];
+  $: totalTickets = Object.values(data.count?.tickets) || [];
+  $: itemsCounted = Object.keys(
+    Object.values(data.count?.tickets)?.reduce((obj, ticket) => {
+      obj[ticket.itemNumber] = ticket.itemNumber;
+      return obj;
+    }, {}) || {}
   );
-  $: itemsNotCounted = Object.keys(data.items).filter(
-    (itemNumber) => !itemsCounted.includes(itemNumber)
-  );
-  $: ticketsUserCounted = Object.keys(data.counts[data.settings.inventoryVersion])
-    .filter(
-      (ticketNumber) =>
-        data.counts[data.settings.inventoryVersion][ticketNumber]._counter === data.user._id
-    )
-    .map((ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]);
-  $: ticketsUserVerified = Object.keys(data.counts[data.settings.inventoryVersion])
-    .filter(
-      (ticketNumber) =>
-        data.counts[data.settings.inventoryVersion][ticketNumber]._verifier === data.user._id
-    )
-    .map((ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]);
-  $: totalTickets = Object.keys(data.counts[data.settings.inventoryVersion]).map(
-    (ticketNumber) => data.counts[data.settings.inventoryVersion][ticketNumber]
+  $: itemsNotCounted = [...data.count.items].filter(
+    (item) => !itemsCounted.includes(item.itemNumber)
   );
   $: cards = [
     { title: 'Tickets I Counted', value: ticketsUserCounted.length },
     { title: 'Tickets I Verified', value: ticketsUserVerified.length },
     { title: 'Total Tickets Entered', value: totalTickets.length },
-    { title: 'Items Counted', value: Object.keys(data.items).length - itemsNotCounted.length },
+    { title: 'Items Counted', value: itemsCounted.length },
     { title: 'Items Not Counted', value: itemsNotCounted.length }
   ];
 </script>
@@ -50,4 +41,5 @@
       </Card>
     {/each}
   </div>
+  <!-- <div>{JSON.stringify(data)}</div> -->
 </div>

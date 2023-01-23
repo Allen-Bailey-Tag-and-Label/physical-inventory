@@ -7,7 +7,15 @@
 
   // props (dynamic)
   $: links = [...defaultLinks, ...(data.user?.isAdmin ? adminLinks : [])].sort((a, b) =>
-    a.innerHTML < b.innerHTML ? -1 : a.innerHTML > b.innerHTML ? 1 : 0
+    a.innerHTML === 'Dashboard'
+      ? -1
+      : b.innerHTML === 'Dashboard'
+      ? 1
+      : a.innerHTML < b.innerHTML
+      ? -1
+      : a.innerHTML > b.innerHTML
+      ? 1
+      : 0
   );
 </script>
 
@@ -15,10 +23,10 @@
   <slot>
     {#each links as { href, innerHTML }}
       <a
-        class="px-[1rem] py-[.5rem] ring ring-transparent transition duration-200 {$page.url
+        class="px-[1rem] py-[1rem] ring ring-transparent transition duration-200 border-b {$page.url
           .pathname === href
-          ? 'bg-blue-500 text-white'
-          : 'hover:bg-black/[.1] focus:bg-black/[.1] focus:ring-primary-500/[.3] dark:hover:bg-white/[.1] dark:focus:bg-white/[.1]'}"
+          ? 'border-blue-500 cursor-default'
+          : 'border-transparent hover:bg-black/[.1] focus:bg-black/[.1] focus:ring-primary-500/[.3] dark:hover:bg-white/[.1] dark:focus:bg-white/[.1]'}"
         {href}>{innerHTML}</a
       >
     {/each}

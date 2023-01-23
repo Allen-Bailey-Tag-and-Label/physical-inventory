@@ -1,26 +1,33 @@
-import { init as dbInit } from '$db';
+import * as db from '$db';
+
+export const load = async () => {
+  // get current settings
+  const [settings] = await db.find({ collection: 'settings' });
+
+  return { settings };
+};
 
 export const actions = {
   default: async ({ request }) => {
+    // get current settings
+    const [settings] = await db.find({ collection: 'settings' });
+
     // get submitted data
-    let { paste, type } = Object.fromEntries(await request.formData());
+    let { paste } = Object.fromEntries(await request.formData());
 
-    // initialize items object
-    const items = {};
+    // get items
+    const items = paste.split('\r\n').reduce((array, row) => {
+      const [itemNumber, description, uom, quantity, value, type] = row.split('\t');
+      array.push({ itemNumber, description, uom, quantity, value, type });
+      return array;
+    }, []);
 
-    // parse pasted data
-    paste = paste.split('\r\n').reduce((obj, row) => {
-      const [itemNumber, description, uom, quantity, value] = row.split('\t');
-      obj[itemNumber] = { description, uom, quantity, value, type };
-      items[itemNumber] = { description, uom, quantity, value, type };
-      return obj;
-    }, {});
-
-    // add to database
-    const db = await dbInit();
-    db.data.items = { ...db.data.items, ...items };
-    db.data.jdeImports[db.data.settings.inventoryVersion] = paste;
-    await db.write();
+    // send to database
+    await db.findOneAndUpdate({
+      collection: 'counts',
+      query: { inventoryVersion: settings.inventoryVersion },
+      update: { $set: { items } }
+    });
 
     return { success: true };
   }

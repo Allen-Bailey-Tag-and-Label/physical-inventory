@@ -1,6 +1,6 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import jwt from 'jsonwebtoken';
-import { init as dbInit } from '$db';
+import * as db from '$db';
 import { JWT_SECRET } from '$env/static/private';
 import { protectedLinks } from '$components/Navigation';
 
@@ -12,9 +12,7 @@ const verifyAuthToken = async ({ event }) => {
   const { username } = jwt.verify(authToken, JWT_SECRET);
 
   // find user in database
-  const db = await dbInit();
-  const { users } = db.data;
-  const [user] = users.filter((obj) => obj.username.toLowerCase() === username.toLowerCase());
+  const user = await db.findOne({ collection: 'users', query: { username } });
 
   // check if no username found
   if (user === undefined) throw 'User not in database';
@@ -77,7 +75,6 @@ const rootRouteHandle = async ({ event, resolve }) => {
   if (event.url.pathname === '/') {
     // redirect to sign-in route if authToken is undefined
     if (authToken === undefined) return Response.redirect(`${event.url.origin}/sign-in`, 301);
-
     try {
       // verify authToken
       const user = await verifyAuthToken({ event });
@@ -100,4 +97,4 @@ const rootRouteHandle = async ({ event, resolve }) => {
   return response;
 };
 
-export const handle = sequence(protectedRoutesHandle, rootRouteHandle);
+export const handle = sequence(rootRouteHandle, protectedRoutesHandle);

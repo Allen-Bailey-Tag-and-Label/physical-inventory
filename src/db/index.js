@@ -1,23 +1,59 @@
-import { Low as LowDB } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
-import { resolve } from 'path';
+import { MongoClient } from 'mongodb';
+import { MONGO_DB, MONGO_PASSWORD, MONGO_URI } from '$env/static/private';
 
-// get file path
-const file = resolve('./src/db/db.json');
+const client = new MongoClient(
+  MONGO_URI.replace('?retryWrites', `${MONGO_DB}?retryWrites`).replace('<password>', MONGO_PASSWORD)
+);
+let connection;
 
-// configure lowdb to write to JSONFile
-const adapter = new JSONFile(file);
-const db = new LowDB(adapter);
-
-const init = async () => {
-  await db.read();
-
-  if (db?.data === null) {
-    db.data = { users: [] };
-    await db.write();
-  }
-
-  return db;
+const connect = async () => {
+  if (connection === undefined) connection = await client.connect();
 };
 
-export { init };
+const insertOne = async ({ collection = undefined, doc = undefined }) => {
+  // await connection
+  await connect();
+
+  // create doc
+  const createdDoc = await client
+    .db()
+    .collection(collection)
+    .findOneAndUpdate(doc, { $set: {} }, { upsert: true, returnDocument: 'after' });
+
+  return JSON.parse(JSON.stringify(createdDoc));
+};
+
+const find = async ({ collection = undefined, query = {} }) => {
+  // await connection
+  await connect();
+
+  // find documents
+  const docs = await client.db().collection(collection).find(query).toArray();
+
+  return JSON.parse(JSON.stringify(docs));
+};
+
+const findOne = async ({ collection = undefined, query = {} }) => {
+  // await connection
+  await connect();
+
+  // find document
+  const doc = await client.db().collection(collection).findOne(query);
+
+  return JSON.parse(JSON.stringify(doc));
+};
+
+const findOneAndUpdate = async ({ collection = undefined, query = {}, update = {} }) => {
+  // await connection
+  await connect();
+
+  // find document and update
+  const doc = await client
+    .db()
+    .collection(collection)
+    .findOneAndUpdate(query, update, { upsert: true, returnDocument: 'after' });
+
+  return JSON.parse(JSON.stringify(doc));
+};
+
+export { insertOne, find, findOne, findOneAndUpdate };

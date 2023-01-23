@@ -1,6 +1,8 @@
 const adminLinks = [
+  { href: '/analyses', innerHTML: 'Analyses' },
   { href: '/jde-import', innerHTML: 'JDE Import' },
-  { href: '/settings', innerHTML: 'Settings' }
+  { href: '/settings', innerHTML: 'Settings' },
+  { href: '/ticket-list', innerHTML: 'Ticket List' }
 ];
 const defaultLinks = [
   { href: '/dashboard', innerHTML: 'Dashboard' },

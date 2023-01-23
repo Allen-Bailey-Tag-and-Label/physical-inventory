@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import crypto from 'crypto-js';
 import jwt from 'jsonwebtoken';
-import { init as dbInit } from '$db';
+import * as db from '$db';
 import { JWT_SECRET } from '$env/static/private';
 
 export const actions = {
@@ -10,9 +10,10 @@ export const actions = {
     const { password, username } = Object.fromEntries(await request.formData());
 
     // find user in database
-    const db = await dbInit();
-    const { users } = db.data;
-    const user = users.filter((obj) => obj.username.toLowerCase() === username.toLowerCase())?.[0];
+    const user = await db.findOne({
+      collection: 'users',
+      query: { username: new RegExp(username, 'i') }
+    });
 
     // check if no username found
     if (user === undefined) return fail(401, { error: 'Incorrect username provided.' });
