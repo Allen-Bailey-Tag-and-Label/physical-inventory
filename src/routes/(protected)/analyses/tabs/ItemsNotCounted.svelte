@@ -34,7 +34,9 @@
       filterClasses: 'w-full',
       format: integerFormat,
       key: 'quantity',
-      th: 'Quantity'
+      th: 'Quantity',
+      sortFn: (v) => +v,
+      total: true
     },
     { classes: '', filter: '', filterClasses: 'w-[6rem]', format: (v) => v, key: 'uom', th: 'UoM' },
     {
@@ -43,6 +45,7 @@
       filterClasses: 'w-full',
       format: (v) => v,
       key: 'value',
+      sortFn: (v) => parseFloat(v),
       th: '07'
     },
     {
@@ -51,7 +54,8 @@
       filterClasses: 'w-full',
       format: currencyFormat,
       key: 'extended',
-      th: 'Extended'
+      th: 'Extended',
+      total: true
     }
   ];
 

@@ -10,7 +10,7 @@
     input: 'bg-transparent dark:bg-transparent',
     select: 'bg-transparent dark:bg-gray-800',
     textarea: 'bg-transparent dark:bg-transparent',
-    th: 'dark:bg-gray-800 sticky top-0'
+    th: 'dark:bg-gray-800 sticky top-0 border-b-0 shadow-[inset_0_-1px_0_rgba(0,0,0,.1)] dark:shadow-[inset_0_-1px_0_rgba(255,255,255,.1)]'
   });
 
   $: title = [

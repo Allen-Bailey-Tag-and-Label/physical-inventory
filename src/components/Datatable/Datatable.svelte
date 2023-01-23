@@ -40,16 +40,20 @@
           ? 1
           : 0) * sortDirection
     );
+  $: totals = [...columns].map(({ key }) =>
+    [...datatableRows].reduce((total, row) => total + +row[key], 0)
+  );
 
   // lifecycle
   onMount(() => {
     columns = columns.map((column) => {
       return {
+        classes: '',
         filter: '',
         filterClasses: 'w-full',
-        classes: '',
         format: (v) => v,
         sortFn: (v) => v,
+        total: false,
         ...column
       };
     });
@@ -74,7 +78,7 @@
       </Tr>
       <Tr>
         {#each columns as { filter, filterClasses }}
-          <Th class="px-0 py-0 top-[2.5rem]">
+          <Th class="px-0 py-0 top-[calc(2.5rem_-_1px)]">
             <Input bind:value={filter} class="rounded-none {filterClasses}" />
           </Th>
         {/each}
@@ -89,5 +93,17 @@
         </Tr>
       {/each}
     </Tbody>
+    {#if [...columns].filter(({ total }) => total).length > 0}
+      <tfoot>
+        <Tr>
+          {#each columns as { classes, format, total }, i}
+            <Td
+              class="bottom-0 bg-white dark:bg-gray-800 sticky font-semibold shadow-[inset_0_1px_0_rgba(0,0,0,.1)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,.1)] {classes}"
+              >{total ? format(totals[i]) : ''}</Td
+            >
+          {/each}
+        </Tr>
+      </tfoot>
+    {/if}
   </Table>
 </Card>
