@@ -67,7 +67,8 @@
       format: integerFormat,
       key: 'count',
       sortFn: (v) => +v,
-      th: 'Count'
+      th: 'Count',
+      total: true
     }
   ];
 
