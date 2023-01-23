@@ -26,6 +26,11 @@
         // check if count is not a number
         if (isNaN(count)) throw `${count} is not a number`;
 
+        // add another row
+        if (count !== '' && itemNumber !== '' && i === entries.length - 1 && ticketNumber !== '') {
+          entries = [...entries, { count: '', itemNumber: '', ticketNumber: '' }];
+        }
+
         // create formData
         const formData = new FormData();
         formData.append('_counter', $store._counter);
@@ -60,11 +65,6 @@
       } catch (error) {
         console.log({ error });
       }
-    }
-
-    // add another row
-    if (count !== '' && itemNumber !== '' && i === entries.length - 1 && ticketNumber !== '') {
-      entries = [...entries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
   };
   const updateOfflineTickets = async () => {
@@ -216,7 +216,7 @@
                   <Input
                     bind:value={count}
                     class="rounded-none w-[12rem]"
-                    on:change={() => {
+                    on:keyup={() => {
                       rowChangeHandler({ count, itemNumber, ticketNumber, i });
                     }}
                   />
