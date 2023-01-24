@@ -13,14 +13,21 @@ export const actions = {
     const [settings] = await db.find({ collection: 'settings' });
 
     // get submitted data
-    let { paste } = Object.fromEntries(await request.formData());
+    let { fgPaste, rawPaste } = Object.fromEntries(await request.formData());
 
     // get items
-    const items = paste.split('\r\n').reduce((array, row) => {
-      const [itemNumber, description, uom, quantity, value, type] = row.split('\t');
-      array.push({ itemNumber, description, uom, quantity, value, type });
-      return array;
-    }, []);
+    const items = [
+      ...fgPaste.split('\r\n').reduce((array, row) => {
+        const [itemNumber, description, uom, quantity, value] = row.split('\t');
+        array.push({ itemNumber, description, uom, quantity, value, type: 'fg' });
+        return array;
+      }, []),
+      ...rawPaste.split('\r\n').reduce((array, row) => {
+        const [itemNumber, description, uom, quantity, value] = row.split('\t');
+        array.push({ itemNumber, description, uom, quantity, value, type: 'raw' });
+        return array;
+      }, [])
+    ];
 
     // send to database
     await db.findOneAndUpdate({
