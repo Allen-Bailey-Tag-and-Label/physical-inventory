@@ -6,6 +6,7 @@ const adminLinks = [
 ];
 const defaultLinks = [
   { href: '/dashboard', innerHTML: 'Dashboard' },
+  { href: '/common-item-entry', innerHTML: 'Common Item Entry' },
   { href: '/enter-count', innerHTML: 'Enter Count' }
 ];
 const protectedLinks = [...adminLinks, ...defaultLinks];
