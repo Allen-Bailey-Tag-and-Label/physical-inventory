@@ -63,17 +63,23 @@
     // get column headers
     const headers = [...columns].map(({ th }) => th.replace(new RegExp(separator, 'gi'), ''));
 
-    // get body
-    const body = [...datatableRows].map((row) =>
-      [...columns]
-        .map(({ key, format }) => format(row[key]).replace(new RegExp(separator, 'gi'), ''))
-        .join(separator)
-    );
+    try {
+      // get body
+      const body = [...datatableRows].map((row) =>
+        [...columns]
+          .map(({ key, format }) => {
+            return format(row[key]).toString().replace(new RegExp(separator, 'gi'), '');
+          })
+          .join(separator)
+      );
 
-    // create table string
-    const string = [headers.join(separator), ...body].join('\r\n');
+      // create table string
+      const string = [headers.join(separator), ...body].join('\r\n');
 
-    return string;
+      return string;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // props (internal)
