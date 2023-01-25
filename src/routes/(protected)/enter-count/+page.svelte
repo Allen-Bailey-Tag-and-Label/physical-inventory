@@ -8,11 +8,13 @@
   // handlers
   const changeHandler = async () => {
     if ($store._counter !== '' && $store._verifier !== '' && $store.type !== '') {
-      const initialEntries =
-        Object.values(data.count?.tickets)?.filter(
+      const initialEntries = [
+        ...(Object.values(data.count?.tickets)?.filter(
           ({ _counter, _verifier, type }) =>
             _counter === $store._counter && _verifier === $store._verifier && type === $store.type
-        ) || [];
+        ) || []),
+        ...(browser ? JSON.parse(localStorage.getItem('offlineTickets')) : [])
+      ];
       entries = [...initialEntries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
   };

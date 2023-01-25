@@ -8,19 +8,19 @@
   // handlers
   const changeHandler = async () => {
     if ($store._counter !== '' && $store._verifier !== '' && $store.type !== '') {
-      const initialEntries =
-        Object.values(data.count?.tickets)
-          ?.filter(
-            ({ _counter, _verifier, type }) =>
-              _counter === $store._counter && _verifier === $store._verifier && type === $store.type
-          )
-          .map((entry) => {
-            const materialCode = entry.itemNumber.substring(0, 3);
-            const weightCode = entry.itemNumber.substring(3, 6);
-            const colorCode = entry.itemNumber.substring(6, 8);
-            const widthCode = entry.itemNumber.substring(9, 16);
-            return { materialCode, weightCode, colorCode, widthCode, ...entry };
-          }) || [];
+      const initialEntries = [
+        ...(Object.values(data.count?.tickets)?.filter(
+          ({ _counter, _verifier, type }) =>
+            _counter === $store._counter && _verifier === $store._verifier && type === $store.type
+        ) || []),
+        ...(browser ? JSON.parse(localStorage.getItem('offlineTickets')) : [])
+      ].map((entry) => {
+        const materialCode = entry.itemNumber.substring(0, 3);
+        const weightCode = entry.itemNumber.substring(3, 6);
+        const colorCode = entry.itemNumber.substring(6, 8);
+        const widthCode = entry.itemNumber.substring(9, 16);
+        return { materialCode, weightCode, colorCode, widthCode, ...entry };
+      });
       entries = [
         ...initialEntries,
         {
