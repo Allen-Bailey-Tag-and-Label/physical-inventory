@@ -92,6 +92,15 @@
       filter: '',
       filterClasses: 'w-full',
       format: currencyFormat,
+      key: 'countExtended',
+      th: 'Count Extended',
+      total: true
+    },
+    {
+      classes: 'font-mono text-right',
+      filter: '',
+      filterClasses: 'w-full',
+      format: currencyFormat,
       key: 'varianceExtended',
       th: 'Variance Extended',
       total: true
