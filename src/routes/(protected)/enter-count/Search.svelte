@@ -1,11 +1,20 @@
 <script>
-  import { Card, Fieldset, Input } from '$components';
+  import { copy } from '@svelte-put/copy';
+  import { Clipboard } from 'sveltewind/components/icons';
+  import { Button, Card, Fieldset, Icon, Input } from '$components';
+
+  // handlers
+  const copyHandler = (itemNumber) => {
+    entries[entries.length - 1].itemNumber = itemNumber;
+    search = '';
+  };
 
   // props (internal)
   let search = '';
 
   // props (external)
   export let data;
+  export let entries;
   export let results = [];
 
   // props (dynamic)
@@ -36,10 +45,17 @@
     <Input bind:value={search} />
   </Fieldset>
   {#if search !== ''}
-    <Card class="grid grid-cols-[fit-content(10px)_fit-content(10px)] gap-x-[1rem] overflow-y-auto">
+    <Card
+      class="grid grid-cols-[fit-content(10px)_fit-content(10px)_fit-content(10px)] gap-x-[1rem] overflow-y-auto items-center gap-y-[.25rem]"
+    >
       {#each results as { itemNumber, description }}
         <div class="whitespace-nowrap">{description}</div>
         <div class="whitespace-nowrap">{itemNumber}</div>
+        <div class="relative">
+          <Button class="px-[.5rem]" on:copied={() => copyHandler(itemNumber)} use={[copy]}>
+            <Icon src={Clipboard} />
+          </Button>
+        </div>
       {/each}
     </Card>
   {/if}

@@ -10,6 +10,7 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
+    "@svelte-put/copy": "^1.1.0",
     "@sveltejs/adapter-auto": "^1.0.0",
     "@sveltejs/adapter-node": "^1.1.4",
     "@sveltejs/adapter-vercel": "^1.0.5",

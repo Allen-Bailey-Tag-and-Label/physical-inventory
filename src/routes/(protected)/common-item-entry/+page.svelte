@@ -398,5 +398,5 @@
       </Card>
     {/if}
   </div>
-  <Search bind:results {data} />
+  <Search bind:entries bind:results {data} />
 </div>
