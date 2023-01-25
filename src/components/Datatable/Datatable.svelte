@@ -35,6 +35,7 @@
   };
 
   // props (internal)
+  let mounted = false;
   const sortDirectionOptions = [
     { label: 'ASC', value: 1 },
     { label: 'DESC', value: -1 }
@@ -91,66 +92,69 @@
         ...column
       };
     });
+    mounted = true;
   });
 </script>
 
-<div class="flex space-x-[1rem]">
-  {#if sortable}
-    <Fieldset legend="Sort By">
-      <Select bind:value={sortBy} options={sortByOptions} />
+{#if mounted}
+  <div class="flex space-x-[1rem]">
+    {#if sortable}
+      <Fieldset legend="Sort By">
+        <Select bind:value={sortBy} options={sortByOptions} />
+      </Fieldset>
+      <Fieldset legend="Sort Direction">
+        <Select bind:value={sortDirection} options={sortDirectionOptions} />
+      </Fieldset>
+    {/if}
+    <Fieldset class="items-start" legend="Copy To Clipboard">
+      <Button class="px-[.5rem]" on:click={copyClickHandler}>
+        <Icon src={Clipboard} />
+      </Button>
     </Fieldset>
-    <Fieldset legend="Sort Direction">
-      <Select bind:value={sortDirection} options={sortDirectionOptions} />
-    </Fieldset>
-  {/if}
-  <Fieldset class="items-start" legend="Copy To Clipboard">
-    <Button class="px-[.5rem]" on:click={copyClickHandler}>
-      <Icon src={Clipboard} />
-    </Button>
-  </Fieldset>
-</div>
-<Card class="p-0 overflow-auto max-w-full relative rounded-none">
-  <Table>
-    <Thead>
-      <Tr>
-        {#each columns as { th }}
-          <Th
-            class={filterable
-              ? 'shadow-[0_0_0_rgba(0,0,0,0)] dark:shadow-[0_0_0_rgba(0,0,0,0)]'
-              : ''}>{th}</Th
-          >
-        {/each}
-      </Tr>
-      {#if filterable}
+  </div>
+  <Card class="p-0 overflow-auto max-w-full relative rounded-none">
+    <Table>
+      <Thead>
         <Tr>
-          {#each columns as { filter, filterClasses }}
-            <Th class="px-0 py-0 top-[calc(2.5rem_-_0px)]">
-              <Input bind:value={filter} class="rounded-none {filterClasses}" />
-            </Th>
-          {/each}
-        </Tr>
-      {/if}
-    </Thead>
-    <Tbody>
-      {#each datatableRows as row}
-        <Tr>
-          {#each columns as { classes, key, format }}
-            <Td class={classes}>{format(row[key])}</Td>
-          {/each}
-        </Tr>
-      {/each}
-    </Tbody>
-    {#if [...columns].filter(({ total }) => total).length > 0}
-      <tfoot>
-        <Tr>
-          {#each columns as { classes, format, total }, i}
-            <Td
-              class="bottom-0 bg-white dark:bg-gray-800 sticky font-semibold shadow-[inset_0_1px_0_rgba(0,0,0,.1)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,.1)] {classes}"
-              >{total ? format(totals[i]) : ''}</Td
+          {#each columns as { th }}
+            <Th
+              class={filterable
+                ? 'shadow-[0_0_0_rgba(0,0,0,0)] dark:shadow-[0_0_0_rgba(0,0,0,0)]'
+                : ''}>{th}</Th
             >
           {/each}
         </Tr>
-      </tfoot>
-    {/if}
-  </Table>
-</Card>
+        {#if filterable}
+          <Tr>
+            {#each columns as { filter, filterClasses }}
+              <Th class="px-0 py-0 top-[calc(2.5rem_-_0px)]">
+                <Input bind:value={filter} class="rounded-none {filterClasses}" />
+              </Th>
+            {/each}
+          </Tr>
+        {/if}
+      </Thead>
+      <Tbody>
+        {#each datatableRows as row}
+          <Tr>
+            {#each columns as { classes, key, format }}
+              <Td class={classes}>{format(row[key])}</Td>
+            {/each}
+          </Tr>
+        {/each}
+      </Tbody>
+      {#if [...columns].filter(({ total }) => total).length > 0}
+        <tfoot>
+          <Tr>
+            {#each columns as { classes, format, total }, i}
+              <Td
+                class="bottom-0 bg-white dark:bg-gray-800 sticky font-semibold shadow-[inset_0_1px_0_rgba(0,0,0,1)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,1)] {classes}"
+                >{total ? format(totals[i]) : ''}</Td
+              >
+            {/each}
+          </Tr>
+        </tfoot>
+      {/if}
+    </Table>
+  </Card>
+{/if}

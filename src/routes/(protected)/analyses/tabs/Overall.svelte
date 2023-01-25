@@ -1,8 +1,14 @@
 <script>
-  import { Card, Table, Tbody, Td, Th, Thead, Tr } from '$components';
+  import { Datatable } from '$components';
   import { currencyFormat } from '$lib/format';
 
   // props (internal)
+  const columns = [
+    { classes: '', key: 'description', th: '' },
+    { format: currencyFormat, classes: 'font-mono text-right', key: 'fg', th: 'FG' },
+    { format: currencyFormat, classes: 'font-mono text-right', key: 'raw', th: 'RAW' },
+    { format: currencyFormat, classes: 'font-mono text-right', key: 'total', th: 'Total' }
+  ];
 
   // props (external)
   export let data;
@@ -24,50 +30,15 @@
   );
   $: variance = { fg: after.fg - before.fg, raw: after.raw - before.raw };
   $: rows = [
-    { description: 'Before', object: before },
-    { description: 'After', object: after },
-    { description: 'Variance', object: variance, addClasses: true }
+    { description: 'Before', fg: before.fg, raw: before.raw, total: before.fg + before.raw },
+    { description: 'After', fg: after.fg, raw: after.raw, total: after.fg + after.raw },
+    {
+      description: 'Variance',
+      fg: variance.fg,
+      raw: variance.raw,
+      total: variance.fg + variance.raw
+    }
   ];
 </script>
 
-<Card class="rounded-none relative font-mono p-0">
-  <Table>
-    <Thead>
-      <Th />
-      <Th class="text-center">FG</Th>
-      <Th class="text-center">RAW</Th>
-      <Th class="text-center">Total</Th>
-    </Thead>
-    <Tbody>
-      {#each rows as { addClasses = false, description, object }}
-        <Tr>
-          <Td>{description}</Td>
-          <Td
-            class="text-right {!addClasses
-              ? ''
-              : object?.fg < 0
-              ? 'text-red-500 selection:bg-red-500 selection:text-white'
-              : 'text-green-500 selection:bg-green-500 selection:text-white'}"
-            >{currencyFormat(object?.fg)}</Td
-          >
-          <Td
-            class="text-right {!addClasses
-              ? ''
-              : object?.raw < 0
-              ? 'text-red-500 selection:bg-red-500 selection:text-white'
-              : 'text-green-500 selection:bg-green-500 selection:text-white'}"
-            >{currencyFormat(object?.raw)}</Td
-          >
-          <Td
-            class="text-right {!addClasses
-              ? ''
-              : object?.fg + object?.raw < 0
-              ? 'text-red-500 selection:bg-red-500 selection:text-white'
-              : 'text-green-500 selection:bg-green-500 selection:text-white'}"
-            >{currencyFormat(object?.fg + object?.raw)}</Td
-          >
-        </Tr>
-      {/each}
-    </Tbody>
-  </Table>
-</Card>
+<Datatable {columns} filterable={false} {rows} sortable={false} />
