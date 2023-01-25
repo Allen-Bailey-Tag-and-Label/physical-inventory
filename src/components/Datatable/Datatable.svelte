@@ -1,6 +1,38 @@
 <script>
-  import { Card, Fieldset, Input, Select, Table, Tbody, Td, Th, Thead, Tr } from '$components';
+  import { copyToClipboard } from '@svelte-put/copy';
   import { onMount } from 'svelte';
+  import { Clipboard } from 'sveltewind/components/icons';
+  import {
+    Button,
+    Card,
+    Fieldset,
+    Icon,
+    Input,
+    Select,
+    Table,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr
+  } from '$components';
+
+  // handlers
+  const copyClickHandler = () => {
+    // get column headers
+    const headers = [...columns].map(({ th }) => th);
+
+    // get body
+    const body = [...datatableRows].map((row) =>
+      [...columns].map(({ key, format }) => format(row[key])).join('\t')
+    );
+
+    // create tsv (tab separated view)
+    const tsv = [headers.join('\t'), ...body].join('\r\n');
+
+    // copy to clipboard
+    copyToClipboard(tsv);
+  };
 
   // props (internal)
   const sortDirectionOptions = [
@@ -10,7 +42,9 @@
 
   // props (external)
   export let columns = [];
+  export let filterable = true;
   export let rows = [];
+  export let sortable = true;
   export let sortBy = [...columns][0].key;
   export let sortDirection = 1;
 
@@ -61,11 +95,18 @@
 </script>
 
 <div class="flex space-x-[1rem]">
-  <Fieldset legend="Sort By">
-    <Select bind:value={sortBy} options={sortByOptions} />
-  </Fieldset>
-  <Fieldset legend="Sort Direction">
-    <Select bind:value={sortDirection} options={sortDirectionOptions} />
+  {#if sortable}
+    <Fieldset legend="Sort By">
+      <Select bind:value={sortBy} options={sortByOptions} />
+    </Fieldset>
+    <Fieldset legend="Sort Direction">
+      <Select bind:value={sortDirection} options={sortDirectionOptions} />
+    </Fieldset>
+  {/if}
+  <Fieldset class="items-start" legend="Copy To Clipboard">
+    <Button class="px-[.5rem]" on:click={copyClickHandler}>
+      <Icon src={Clipboard} />
+    </Button>
   </Fieldset>
 </div>
 <Card class="p-0 overflow-auto max-w-full relative rounded-none">
@@ -73,16 +114,22 @@
     <Thead>
       <Tr>
         {#each columns as { th }}
-          <Th class="shadow-[0_0_0_rgba(0,0,0,0)] dark:shadow-[0_0_0_rgba(0,0,0,0)]">{th}</Th>
+          <Th
+            class={filterable
+              ? 'shadow-[0_0_0_rgba(0,0,0,0)] dark:shadow-[0_0_0_rgba(0,0,0,0)]'
+              : ''}>{th}</Th
+          >
         {/each}
       </Tr>
-      <Tr>
-        {#each columns as { filter, filterClasses }}
-          <Th class="px-0 py-0 top-[calc(2.5rem_-_0px)]">
-            <Input bind:value={filter} class="rounded-none {filterClasses}" />
-          </Th>
-        {/each}
-      </Tr>
+      {#if filterable}
+        <Tr>
+          {#each columns as { filter, filterClasses }}
+            <Th class="px-0 py-0 top-[calc(2.5rem_-_0px)]">
+              <Input bind:value={filter} class="rounded-none {filterClasses}" />
+            </Th>
+          {/each}
+        </Tr>
+      {/if}
     </Thead>
     <Tbody>
       {#each datatableRows as row}
