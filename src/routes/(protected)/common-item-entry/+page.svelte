@@ -3,7 +3,7 @@
   import { browser } from '$app/environment';
   import { Card, Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
   import layoutStore from '../store';
-  import store from './store';
+  import store from '../enter-count/store';
 
   // handlers
   const changeHandler = async () => {
@@ -332,7 +332,7 @@
                 <Td class="px-0 py-0">
                   <Input
                     bind:value={colorCode}
-                    class="rounded-none w-[10rem]"
+                    class="rounded-none w-[9rem]"
                     on:keyup={() => {
                       updateItemNumber({
                         materialCode,
@@ -389,7 +389,7 @@
                 <Td class="px-0 py-0">
                   <Input
                     bind:value={count}
-                    class="rounded-none w-[12rem]"
+                    class="rounded-none w-[12rem] text-right"
                     on:keyup={() => {
                       addOrUpdateDatabaseHandler({
                         count,
