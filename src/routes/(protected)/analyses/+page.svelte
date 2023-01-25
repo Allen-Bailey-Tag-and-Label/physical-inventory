@@ -1,11 +1,12 @@
 <script>
   import { Label } from '$components';
-  import { AllItems, ItemsNotCounted, Overall } from './tabs';
+  import { AllItems, Employees, ItemsNotCounted, Overall } from './tabs';
   import store from './store';
 
   // props (internal)
   const tabs = [
     { component: AllItems, tab: 'All Items' },
+    { component: Employees, tab: 'Employees' },
     // { component: ItemsNotCounted, tab: 'Items Not Counted' },
     { component: Overall, tab: 'Overall' }
   ];
