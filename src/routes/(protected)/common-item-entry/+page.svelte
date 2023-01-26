@@ -30,7 +30,7 @@
             _counter === $store._counter && _verifier === $store._verifier && type === $store.type
         ) || [];
       const localStorageEntries = browser
-        ? Object.values(JSON.parse(localStorage.getItem('offlineTickets') || {}))
+        ? Object.values(JSON.parse(localStorage.getItem('offlineTickets')) || {})
         : [];
       const initialEntries = [...serverEntries, ...localStorageEntries].map((entry) => {
         const materialCode = entry.itemNumber.substring(0, 3);
