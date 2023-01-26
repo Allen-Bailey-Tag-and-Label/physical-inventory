@@ -161,7 +161,7 @@
       </Fieldset>
     </div>
     {#if $store._counter !== '' && $store._verifier !== '' && $store.type !== ''}
-      <Card class="p-0 overflow-y-auto relative rounded-none">
+      <Card class="p-0 overflow-auto max-w-full relative rounded-none">
         <Table>
           <Thead>
             <Th>Ticket Number</Th>
