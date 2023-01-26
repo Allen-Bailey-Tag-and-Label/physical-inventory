@@ -24,13 +24,15 @@
   // handlers
   const changeHandler = async () => {
     if ($store._counter !== '' && $store._verifier !== '' && $store.type !== '') {
-      const initialEntries = [
-        ...(Object.values(data.count?.tickets)?.filter(
+      const serverEntries =
+        Object.values(data.count?.tickets)?.filter(
           ({ _counter, _verifier, type }) =>
             _counter === $store._counter && _verifier === $store._verifier && type === $store.type
-        ) || []),
-        ...(browser ? JSON.parse(localStorage.getItem('offlineTickets')) : [])
-      ].map((entry) => {
+        ) || [];
+      const localStorageEntries = browser
+        ? Object.values(JSON.parse(localStorage.getItem('offlineTickets') || {}))
+        : [];
+      const initialEntries = [...serverEntries, ...localStorageEntries].map((entry) => {
         const materialCode = entry.itemNumber.substring(0, 3);
         const weightCode = entry.itemNumber.substring(3, 6);
         const colorCode = entry.itemNumber.substring(6, 8);
@@ -41,11 +43,11 @@
         ...initialEntries,
         {
           count: '',
-          itemNumber: initialEntries?.[0]?.itemNumber || '',
-          materialCode: initialEntries?.[0]?.materialCode || '',
-          weightCode: initialEntries?.[0]?.weightCode || '',
-          colorCode: initialEntries?.[0]?.colorCode || '',
-          widthCode: initialEntries?.[0]?.widthCode || '',
+          itemNumber: initialEntries?.[initialEntries.length - 1]?.itemNumber || '',
+          materialCode: initialEntries?.[initialEntries.length - 1]?.materialCode || '',
+          weightCode: initialEntries?.[initialEntries.length - 1]?.weightCode || '',
+          colorCode: initialEntries?.[initialEntries.length - 1]?.colorCode || '',
+          widthCode: initialEntries?.[initialEntries.length - 1]?.widthCode || '',
           ticketNumber: ''
         }
       ];

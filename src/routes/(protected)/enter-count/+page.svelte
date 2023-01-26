@@ -29,11 +29,9 @@
           ({ _counter, _verifier, type }) =>
             _counter === $store._counter && _verifier === $store._verifier && type === $store.type
         ) || [];
-      console.log(serverEntries.length);
       const localStorageEntries = browser
-        ? Object.values(JSON.parse(localStorage.getItem('offlineTickets')))
+        ? Object.values(JSON.parse(localStorage.getItem('offlineTickets') || {}))
         : [];
-      console.log(localStorageEntries.length);
       const initialEntries = [...serverEntries, ...localStorageEntries];
       entries = [...initialEntries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
