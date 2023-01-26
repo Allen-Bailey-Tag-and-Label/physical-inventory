@@ -1,9 +1,24 @@
 <script>
   import { onMount } from 'svelte';
+  import { Trash } from 'sveltewind/components/icons';
   import { browser } from '$app/environment';
-  import { Card, Fieldset, Input, Table, Tbody, Td, Th, Thead, Tr, Select } from '$components';
+  import {
+    Button,
+    Card,
+    Fieldset,
+    Icon,
+    Input,
+    Table,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr,
+    Select
+  } from '$components';
   import layoutStore from '../store';
   import store from '../enter-count/store';
+  import DeleteModal from '../enter-count/DeleteModal.svelte';
   import Search from '../enter-count/Search.svelte';
 
   // handlers
@@ -83,7 +98,7 @@
 
         // check if user is online
         if ($layoutStore.online) {
-          await fetch('/enter-count', {
+          await fetch('/enter-count?/update', {
             body: formData,
             method: 'POST'
           });
@@ -104,6 +119,22 @@
         console.log({ error });
       }
     }
+  };
+  const trashButtonClickHandler = async ({ i, ticketNumber }) => {
+    confirmModal.fn = async () => {
+      console.log('yup');
+      const formData = new FormData();
+      formData.append('ticketNumber', ticketNumber);
+      formData.append('inventoryVersion', data.settings.inventoryVersion);
+      const response = await fetch('/enter-count?/delete', {
+        body: formData,
+        method: 'POST'
+      });
+      console.log(response);
+      entries = [...entries].filter((_, index) => index !== i);
+    };
+    confirmModal.ticketNumber = ticketNumber;
+    confirmModal.show = true;
   };
   const updateItemNumber = async ({ materialCode, weightCode, colorCode, widthCode, i }) => {
     entries[i].itemNumber = `${materialCode}${weightCode}${colorCode} ${widthCode}`;
@@ -156,6 +187,11 @@
   };
 
   // props (internal)
+  const confirmModal = {
+    fn: () => {},
+    show: false,
+    ticketNumber: ''
+  };
   let entries = [
     {
       count: '',
@@ -168,7 +204,6 @@
     }
   ];
   let results;
-  let search = '';
   const typeOptions = [
     { label: 'RAW', value: 'raw' },
     { label: 'FG', value: 'fg' }
@@ -218,6 +253,7 @@
       <Card class="p-0 overflow-auto max-w-full relative rounded-none">
         <Table>
           <Thead>
+            <Th class="px-0 py-0" />
             <Th>Ticket Number</Th>
             <Th>Item Number</Th>
             <Th>Material Code</Th>
@@ -231,6 +267,19 @@
           <Tbody>
             {#each entries as { count, itemNumber, materialCode, weightCode, widthCode, colorCode, ticketNumber }, i}
               <Tr class="odd:bg-black/[.05] dark:odd:bg-white/[.05]">
+                <Td class="px-0 py-0">
+                  {#if i !== entries.length - 1}
+                    <Button
+                      class="px-[.5rem] bg-red-500 hover:bg-red-600 focus:bg-red-600 focus:ring-red-500/[.3]"
+                      on:click={() => {
+                        trashButtonClickHandler({ ticketNumber, i });
+                      }}
+                      tabindex="-1"
+                    >
+                      <Icon src={Trash} />
+                    </Button>
+                  {/if}
+                </Td>
                 <Td class="px-0 py-0">
                   <Input
                     bind:value={ticketNumber}
@@ -400,3 +449,9 @@
   </div>
   <Search bind:entries bind:results {data} />
 </div>
+
+<DeleteModal
+  bind:fn={confirmModal.fn}
+  bind:show={confirmModal.show}
+  ticketNumber={confirmModal.ticketNumber}
+/>

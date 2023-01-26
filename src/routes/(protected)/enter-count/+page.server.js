@@ -17,7 +17,27 @@ export const load = async () => {
 };
 
 export const actions = {
-  default: async ({ request }) => {
+  delete: async ({ request }) => {
+    // get submitted data
+    const { inventoryVersion, ticketNumber } = await Object.fromEntries(await request.formData());
+
+    // initialize update variable
+    const update = {
+      $unset: {}
+    };
+
+    // update ticketNumber
+    update.$unset[`tickets.${ticketNumber}`] = '';
+
+    await db.findOneAndUpdate({
+      collection: 'counts',
+      query: { inventoryVersion },
+      update
+    });
+
+    return { success: true };
+  },
+  update: async ({ request }) => {
     // get submitted data
     const { inventoryVersion, ticketNumber, ...item } = await Object.fromEntries(
       await request.formData()
