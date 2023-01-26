@@ -85,17 +85,7 @@
       const item = data.count.items.find((item) => item.itemNumber === itemNumber);
 
       // create description, uom and jdeOnHand variables
-      const { description, uom } = item;
-
-      // // update createdAt time
-      // createdAt = new Date(createdAt);
-      // createdAt = `${createdAt.getMonth() + 1}/${createdAt.getDate()}/${createdAt
-      //   .getFullYear()
-      //   .toString()
-      //   .slice(-2)} ${(createdAt.getHours() % 12).toString().padStart(2, '0')}:${createdAt
-      //   .getMinutes()
-      //   .toString()
-      //   .padStart(2, '0')} ${createdAt.getHours() >= 12 ? 'PM' : 'AM'}`;
+      const { description, uom } = item || { description: '', uom: '' };
 
       return {
         ticketNumber,

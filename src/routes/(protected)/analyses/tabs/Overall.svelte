@@ -23,7 +23,7 @@
   $: after = Object.values(data.count.tickets).reduce(
     (obj, ticket) => {
       const item = data.count.items.find((obj) => obj.itemNumber === ticket.itemNumber);
-      obj[ticket.type] = obj[ticket.type] + +ticket.count * item.value;
+      if (item !== undefined) obj[ticket.type] = obj[ticket.type] + +ticket.count * item.value;
       return obj;
     },
     { fg: 0, raw: 0 }

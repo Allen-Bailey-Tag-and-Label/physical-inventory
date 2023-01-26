@@ -110,7 +110,7 @@
 
       // loop over columns
       columns.forEach(({ filter, key }) => {
-        if (filter !== '' && !new RegExp(filter, 'gi').test(obj[key])) {
+        if (filter !== '' && !new RegExp(filter, 'gi').test(obj?.[key] || '')) {
           return (keepRow = false);
         }
       });
@@ -125,7 +125,7 @@
           : 0) * sortDirection
     );
   $: totals = [...columns].map(({ key }) =>
-    [...datatableRows].reduce((total, row) => total + +row[key], 0)
+    [...datatableRows].reduce((total, row) => total + (+row?.[key] || 0), 0)
   );
 
   // lifecycle
@@ -220,7 +220,7 @@
           {#each datatableRows as row}
             <Tr>
               {#each columns as { classes, key, format }}
-                <Td class={classes}>{format(row[key])}</Td>
+                <Td class={classes}>{format(row?.[key] || '')}</Td>
               {/each}
             </Tr>
           {/each}

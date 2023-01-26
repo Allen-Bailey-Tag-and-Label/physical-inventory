@@ -14,7 +14,7 @@
           ({ _counter, _verifier, type }) =>
             _counter === $store._counter && _verifier === $store._verifier && type === $store.type
         ) || []),
-        ...(browser ? JSON.parse(localStorage.getItem('offlineTickets')) : [])
+        ...(browser ? Object.values(JSON.parse(localStorage.getItem('offlineTickets'))) : [])
       ];
       entries = [...initialEntries, { count: '', itemNumber: '', ticketNumber: '' }];
     }
@@ -55,10 +55,10 @@
         // check if user is offline
         if (!$layoutStore.online && browser) {
           // get offlineTickets
-          const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || [];
+          const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || {};
 
           // add to offlineTickets
-          offlineTickets.push(Object.fromEntries(formData));
+          offlineTickets[ticketNumber] = Object.fromEntries(formData);
 
           // set offlineTickets
           localStorage.setItem('offlineTickets', JSON.stringify(offlineTickets));
