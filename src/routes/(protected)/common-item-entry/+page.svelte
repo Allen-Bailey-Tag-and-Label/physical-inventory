@@ -165,11 +165,11 @@
   };
   const updateOfflineTickets = async () => {
     // get offlineTickets
-    const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || [];
+    const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || {};
 
     // upload each
     await Promise.all(
-      offlineTickets.map(
+      Object.values(offlineTickets).map(
         async ({
           _counter,
           _verifier,
