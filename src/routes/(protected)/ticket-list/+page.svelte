@@ -78,8 +78,8 @@
   $: rows = Object.values(data.count?.tickets).map(
     ({ ticketNumber, _counter, _verifier, itemNumber, count, createdAt }) => {
       // find username of counter and verifier
-      _counter = data.users.find((user) => user._id === _counter).username;
-      _verifier = data.users.find((user) => user._id === _verifier).username;
+      _counter = data.users.find((user) => user._id === _counter)?.username;
+      _verifier = data.users.find((user) => user._id === _verifier)?.username;
 
       // find item
       const item = data.count.items.find((item) => item.itemNumber === itemNumber);
