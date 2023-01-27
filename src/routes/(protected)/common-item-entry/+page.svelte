@@ -190,7 +190,7 @@
           formData.append('inventoryVersion', inventoryVersion);
 
           try {
-            await fetch('/enter-count', {
+            await fetch('/enter-count?/update', {
               body: formData,
               method: 'POST'
             });
