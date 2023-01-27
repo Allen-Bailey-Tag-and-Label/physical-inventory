@@ -23,7 +23,7 @@
 
   // props (internal)
   let rows = [];
-  const uomOptions = ['EA', 'LB', 'SQ', 'UN'].map((uom) => {
+  const uomOptions = ['EA', 'FT', 'LB', 'SQ', 'UN'].map((uom) => {
     return { label: uom, value: uom };
   });
 
