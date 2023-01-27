@@ -1803,7 +1803,7 @@ V1207800 09.0000	LSR VINYL / P7100 / 4.6MIL LSR	SQ	1027	2.6572`;
   export let form;
 </script>
 
-<div class="flex flex-grow flex-col overflow-y-auto p-[1rem] space-y-[1rem]">
+<div class="flex flex-grow flex-col overflow-auto max-w-full p-[1rem] space-y-[1rem]">
   <div>JDE Import</div>
   <Form class="flex-grow" use={[enhance]}>
     <div class="min-h-[1.5rem] text-green-500">

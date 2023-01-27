@@ -46,7 +46,7 @@
   </Fieldset>
   {#if search !== ''}
     <Card
-      class="grid grid-cols-[fit-content(10px)_fit-content(10px)_fit-content(10px)] gap-x-[1rem] overflow-y-auto items-center gap-y-[.25rem]"
+      class="grid grid-cols-[fit-content(10px)_fit-content(10px)_fit-content(10px)] gap-x-[1rem] overflow-auto items-center gap-y-[.25rem]"
     >
       {#each results as { itemNumber, description }}
         <div class="whitespace-nowrap">{description}</div>
