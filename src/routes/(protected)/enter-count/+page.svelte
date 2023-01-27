@@ -79,8 +79,6 @@
 
           // set offlineTickets
           localStorage.setItem('offlineTickets', JSON.stringify(offlineTickets));
-
-          console.log(JSON.parse(localStorage.getItem('offlineTickets')));
         }
       } catch (error) {
         console.log({ error });
@@ -89,15 +87,31 @@
   };
   const trashButtonClickHandler = async ({ i, ticketNumber }) => {
     confirmModal.fn = async () => {
-      console.log('yup');
       const formData = new FormData();
       formData.append('ticketNumber', ticketNumber);
       formData.append('inventoryVersion', data.settings.inventoryVersion);
-      const response = await fetch('/enter-count?/delete', {
-        body: formData,
-        method: 'POST'
-      });
-      console.log(response);
+
+      // check if user is online
+      if ($layoutStore.online) {
+        const response = await fetch('/enter-count?/delete', {
+          body: formData,
+          method: 'POST'
+        });
+      }
+
+      // check if user is offline
+      if (!$layoutStore.online && browser) {
+        // get offlineTickets
+        const offlineTickets = JSON.parse(localStorage.getItem('offlineTickets')) || [];
+
+        if (offlineTickets?.[ticketNumber] !== undefined) {
+          delete offlineTickets[ticketNumber];
+        }
+
+        // set offlineTickets
+        localStorage.setItem('offlineTickets', JSON.stringify(offlineTickets));
+      }
+
       entries = [...entries].filter((_, index) => index !== i);
     };
     confirmModal.ticketNumber = ticketNumber;
