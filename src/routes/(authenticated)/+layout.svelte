@@ -79,13 +79,18 @@
 									'px-6 py-3',
 									$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
 								)}
-								{href}>{label}</a
+								{href}
+								on:click={nav.toggle}
 							>
+								{label}
+							</a>
 						{/each}
 					</Card>
 				</div>
 			{/if}
 		</Portal>
 	</Card>
-	<slot />
+	<div class="flex flex-grow flex-col p-6">
+		<slot />
+	</div>
 </div>
