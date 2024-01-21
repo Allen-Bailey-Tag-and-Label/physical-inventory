@@ -15,6 +15,6 @@ model User {
   firstName    String
   isAdmin      Boolean @default(false)
   lastName     String
-  passwordHash String
+  passwordHash String?
   username     String  @unique
 }
