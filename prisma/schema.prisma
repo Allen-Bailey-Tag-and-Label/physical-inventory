@@ -10,11 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Ticket {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  count        Int
+  dateCreated  DateTime @default(now())
+  itemNumber   String
+  number       Int
+  userCountId  String   @db.ObjectId
+  userCount    User     @relation(fields: [userCountId], references: [id], name: "userCount")
+  userVerifyId String   @db.ObjectId
+  userVerify   User     @relation(fields: [userVerifyId], references: [id], name: "userVerify")
+}
+
 model User {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   firstName    String
-  isAdmin      Boolean @default(false)
+  isAdmin      Boolean  @default(false)
   lastName     String
   passwordHash String?
-  username     String  @unique
+  username     String   @unique
+  ticketCount  Ticket[] @relation("userCount")
+  ticketVerify Ticket[] @relation("userVerify")
 }

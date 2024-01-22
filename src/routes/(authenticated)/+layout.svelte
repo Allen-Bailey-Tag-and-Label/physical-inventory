@@ -44,7 +44,10 @@
 		routes: {
 			admin: [],
 			all: [],
-			default: [{ label: 'Dashboard', href: '/dashboard' }]
+			default: [
+				{ label: 'Dashboard', href: '/dashboard' },
+				{ label: 'Add Ticket', href: '/add-ticket' }
+			]
 		},
 		toggle: () => (nav.isOpen = !nav.isOpen)
 	};
@@ -55,42 +58,45 @@
 	).sort((a, b) => a.label.localeCompare(b.label));
 </script>
 
-<div class="flex max-h-[100dvh] min-h-[100dvh]">
-	<Card class="rounded-none p-0">
-		<Button
-			class={twMerge($theme.buttonTransparent, $theme.buttonIcon, 'z-[1]')}
-			on:click={nav.toggle}
-		>
-			<Icon src={nav.isOpen ? X : Menu} />
-		</Button>
+<div class="flex max-h-[100dvh] min-h-[100dvh] flex-col">
+	<div class="h-[.25rem] bg-green-500" />
+	<div class="flex flex-grow">
+		<Card class="rounded-none p-0">
+			<Button
+				class={twMerge($theme.buttonTransparent, $theme.buttonIcon, 'z-[1]')}
+				on:click={nav.toggle}
+			>
+				<Icon src={nav.isOpen ? X : Menu} />
+			</Button>
 
-		<Portal>
-			{#if nav.isOpen}
-				<button
-					class="fixed left-0 top-0 h-[100dvh] w-[100dvw] bg-black/70"
-					on:click={nav.toggle}
-					transition:fade={{ duration: 200 }}
-				/>
-				<div class="fixed left-0 top-0" transition:slide>
-					<Card class="max-h-[100dvh] min-h-[100dvh] overflow-y-auto rounded-none p-0 pt-[3rem]">
-						{#each nav.routes.all as { label, href }}
-							<a
-								class={twMerge(
-									'px-6 py-3',
-									$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
-								)}
-								{href}
-								on:click={nav.toggle}
-							>
-								{label}
-							</a>
-						{/each}
-					</Card>
-				</div>
-			{/if}
-		</Portal>
-	</Card>
-	<div class="flex flex-grow flex-col p-6">
-		<slot />
+			<Portal>
+				{#if nav.isOpen}
+					<button
+						class="fixed left-0 top-0 h-[100dvh] w-[100dvw] bg-black/70"
+						on:click={nav.toggle}
+						transition:fade={{ duration: 200 }}
+					/>
+					<div class="fixed left-0 top-0" transition:slide>
+						<Card class="max-h-[100dvh] min-h-[100dvh] overflow-y-auto rounded-none p-0 pt-[3rem]">
+							{#each nav.routes.all as { label, href }}
+								<a
+									class={twMerge(
+										'px-6 py-3',
+										$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
+									)}
+									{href}
+									on:click={nav.toggle}
+								>
+									{label}
+								</a>
+							{/each}
+						</Card>
+					</div>
+				{/if}
+			</Portal>
+		</Card>
+		<div class="flex flex-grow flex-col p-6">
+			<slot />
+		</div>
 	</div>
 </div>
