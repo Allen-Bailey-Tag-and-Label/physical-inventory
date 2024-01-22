@@ -42,7 +42,7 @@
 	const nav: Nav = {
 		isOpen: false,
 		routes: {
-			admin: [{ label: 'Item Master', href: '/item-master' }],
+			admin: [],
 			all: [],
 			default: [{ label: 'Dashboard', href: '/dashboard' }]
 		},
