@@ -56,7 +56,7 @@
 	const nav: Nav = {
 		isOpen: false,
 		routes: {
-			admin: [],
+			admin: [{ label: 'Add Initial Count', href: '/add-initial-count' }],
 			all: [],
 			default: [
 				{ label: 'Dashboard', href: '/dashboard' },

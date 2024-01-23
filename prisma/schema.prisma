@@ -10,6 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model OnHand {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  date String @unique
+  fg   String
+  raw  String
+}
+
 model Ticket {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   count        Int
