@@ -19,6 +19,7 @@ model OnHand {
 
 model Ticket {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  cost07       Float
   count        Int
   dateCreated  DateTime @default(now())
   itemNumber   String
