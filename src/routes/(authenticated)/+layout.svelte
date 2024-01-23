@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { twMerge } from 'tailwind-merge';
-	import { Button, Card, Icon, Overlay, Portal } from '$components';
-	import { Menu, X } from '$icons';
-	import { theme } from '$stores';
 	import { cubicInOut } from 'svelte/easing';
-	import { fade } from '$transitions';
+	import { twMerge } from 'tailwind-merge';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
+	import { Button, Card, Icon, Portal } from '$components';
+	import { Menu, X } from '$icons';
+	import { isOnline, theme, tickets } from '$stores';
+	import { fade } from '$transitions';
+	import { objectToFormData } from '$utilities';
 
 	type Route = {
 		label: string;
@@ -19,6 +21,18 @@
 			default: Route[];
 		};
 		toggle: () => boolean;
+	};
+
+	// handlers
+	const uploadOfflineTicket = async () => {
+		const offlineTicketIndex = $tickets.findIndex((ticket) => ticket.uploaded === false);
+		const offlineTicket = { ...$tickets[offlineTicketIndex] };
+		delete offlineTicket.uploaded;
+		await fetch('/add-ticket', {
+			method: 'POST',
+			body: objectToFormData(offlineTicket)
+		});
+		$tickets[offlineTicketIndex].uploaded = true;
 	};
 
 	// transition
@@ -53,13 +67,24 @@
 	};
 
 	// props (dynamic)
+	$: if (browser) {
+		$isOnline = window?.navigator?.onLine;
+		window.addEventListener('online', () => {
+			$isOnline = true;
+		});
+		window.addEventListener('offline', () => {
+			$isOnline = false;
+		});
+	}
+	$: if ($isOnline && [...$tickets].filter((ticket) => !ticket.uploaded).length > 0)
+		uploadOfflineTicket();
 	$: nav.routes.all = (
 		data?.user?.isAdmin ? [...nav.routes.admin, ...nav.routes.default] : [...nav.routes.default]
 	).sort((a, b) => a.label.localeCompare(b.label));
 </script>
 
 <div class="flex max-h-[100dvh] min-h-[100dvh] flex-col">
-	<div class="h-[.25rem] bg-green-500" />
+	<div class="h-[.25rem] {$isOnline ? 'bg-green-500' : 'bg-red-500'}" />
 	<div class="flex flex-grow">
 		<Card class="rounded-none p-0">
 			<Button

@@ -15,7 +15,7 @@ model Ticket {
   count        Int
   dateCreated  DateTime @default(now())
   itemNumber   String
-  number       Int
+  number       Int      @unique
   userCountId  String   @db.ObjectId
   userCount    User     @relation(fields: [userCountId], references: [id], name: "userCount")
   userVerifyId String   @db.ObjectId

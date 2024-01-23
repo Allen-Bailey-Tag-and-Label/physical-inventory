@@ -15,15 +15,31 @@
 		Thead,
 		Tr
 	} from '$components';
-	import { Check, Search, X } from '$icons';
-	import { items, ticket, theme } from '$stores';
+	import { Check, Search } from '$icons';
+	import { isOnline, items, ticket, tickets, theme } from '$stores';
+	import { formDataToObject, objectToFormData } from '$utilities';
 
 	// handlers
-	const submitHandler = (e: CustomEvent) => {
+	const submitHandler = async (e: CustomEvent) => {
 		e.preventDefault();
-		$ticket.count = '';
-		$ticket.itemNumber = '';
-		$ticket.number = (+$ticket.number + 1).toString();
+		try {
+			const body = objectToFormData($ticket);
+			body.append('dateCreated', Date.now());
+			if ($isOnline) {
+				await fetch('/add-ticket', {
+					method: 'POST',
+					body
+				});
+			}
+			if (!$isOnline) {
+				tickets.add(formDataToObject(body));
+			}
+			$ticket.count = '';
+			$ticket.itemNumber = '';
+			$ticket.number = (+$ticket.number + 1).toString();
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	// props (external)
@@ -60,7 +76,7 @@
 			<Select bind:value={$ticket.userCountId} options={data.userOptions} />
 		</Fieldset>
 		<Fieldset legend="Verifier">
-			<Select bind:value={$ticket.userVerifytId} options={data.userOptions} />
+			<Select bind:value={$ticket.userVerifyId} options={data.userOptions} />
 		</Fieldset>
 	</div>
 	<Fieldset legend="Ticket #">
@@ -72,8 +88,8 @@
 			type="number"
 		/>
 	</Fieldset>
-	<div class="grid w-full grid-cols-2 gap-6">
-		<Fieldset class="relative" legend="Item #">
+	<div class="flex items-center space-x-6">
+		<Fieldset class="relative w-[30rem]" legend="Item #">
 			<Input
 				bind:value={$ticket.itemNumber}
 				class={twMerge('')}
@@ -88,7 +104,16 @@
 				<Icon src={Search} />
 			</Button>
 		</Fieldset>
-		<Fieldset legend="Item Description">
+		<Fieldset legend="UOM">
+			<div class="flex h-[3rem] items-center space-x-6">
+				<div class={twMerge(item !== undefined ? 'text-green-500' : 'text-red-500')}>
+					{#if $ticket.itemNumber !== ''}
+						{item === undefined ? 'N/A' : item.uom}
+					{/if}
+				</div>
+			</div>
+		</Fieldset>
+		<Fieldset legend="Description">
 			<div class="flex h-[3rem] items-center space-x-6">
 				<div class={twMerge(item !== undefined ? 'text-green-500' : 'text-red-500')}>
 					{#if $ticket.itemNumber !== ''}
