@@ -18,6 +18,8 @@
 	import { Check, Search } from '$icons';
 	import { isOnline, items, ticket, tickets, theme } from '$stores';
 	import { formDataToObject, objectToFormData } from '$utilities';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	// handlers
 	const submitHandler = async (e: CustomEvent) => {
@@ -37,6 +39,9 @@
 			$ticket.count = '';
 			$ticket.itemNumber = '';
 			$ticket.number = (+$ticket.number + 1).toString();
+			if (browser) {
+				itemNumberElem.focus();
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -46,6 +51,7 @@
 	export let data;
 
 	// props (internal)
+	let itemNumberElem;
 	const modal: {
 		close?: () => boolean;
 		open?: () => boolean;
@@ -68,6 +74,12 @@
 						new RegExp(searchRegExp, 'gi').test(item.description) ||
 						new RegExp(searchRegExp, 'gi').test(item.itemNumber)
 				);
+
+	onMount(() => {
+		if (browser) {
+			itemNumberElem = document.querySelector('input[name="itemNumber"]');
+		}
+	});
 </script>
 
 <Form class="items-start" on:submit={submitHandler}>
