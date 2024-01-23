@@ -10,14 +10,10 @@ export const actions = {
 			prisma.user.findMany()
 		]);
 		const { fg: fgText, raw: rawText } = onHand;
-		const fg = fgText
-			.split('\r\n')
-			.map((item) => item.split('\t'))
-			.filter((item) => item[3] !== '0');
-		const raw = rawText
-			.split('\r\n')
-			.map((item) => item.split('\t'))
-			.filter((item) => item[6] !== '0');
+		const fg = fgText.split('\r\n').map((item) => item.split('\t'));
+		// .filter((item) => item[3] !== '0');
+		const raw = rawText.split('\r\n').map((item) => item.split('\t'));
+		// .filter((item) => item[6] !== '0');
 		let number = 5000;
 		for (let i = 0; i < fg.length; i++) {
 			const cost07 = parseFloat(fg[i][11]);
@@ -28,7 +24,7 @@ export const actions = {
 				const userIndex = Math.floor(Math.random() * users.length);
 				const userCountId = users[userIndex].id;
 				const userVerifyId = users[(userIndex + 1) % users.length].id;
-				const percent = Math.random() * 0.2 + 0.9 / tickets;
+				const percent = Math.random() * (0.2 / tickets) + 0.9 / tickets;
 				const count = Math.floor(+fg[i][3] * percent);
 				await prisma.ticket.create({
 					data: {
@@ -54,7 +50,7 @@ export const actions = {
 				const userIndex = Math.floor(Math.random() * users.length);
 				const userCountId = users[userIndex].id;
 				const userVerifyId = users[(userIndex + 1) % users.length].id;
-				const percent = Math.random() * 0.2 + 0.9 / tickets;
+				const percent = Math.random() * (0.2 / tickets) + 0.9 / tickets;
 				const count = Math.floor(+raw[i][6] * percent);
 				await prisma.ticket.create({
 					data: {

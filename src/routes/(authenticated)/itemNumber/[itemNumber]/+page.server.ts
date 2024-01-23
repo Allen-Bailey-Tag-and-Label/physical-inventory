@@ -14,7 +14,7 @@ export const load = async ({ params }) => {
 	const fg = fgText
 		.split('\r\n')
 		.map((item) => item.split('\t'))
-		.filter((item) => item[3] !== '0')
+		// .filter((item) => item[3] !== '0')
 		.map((item) => {
 			const itemNumber = item[0];
 			const description = item[1];
@@ -42,7 +42,7 @@ export const load = async ({ params }) => {
 	const raw = rawText
 		.split('\r\n')
 		.map((item) => item.split('\t'))
-		.filter((item) => item[6] !== '0')
+		// .filter((item) => item[6] !== '0')
 		.map((item) => {
 			const itemNumber = item[0];
 			const description = item[1];
