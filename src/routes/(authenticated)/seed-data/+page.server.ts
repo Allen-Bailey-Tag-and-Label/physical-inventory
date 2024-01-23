@@ -20,48 +20,56 @@ export const actions = {
 			.filter((item) => item[6] !== '0');
 		let number = 5000;
 		for (let i = 0; i < fg.length; i++) {
-			const percent = Math.random() * 0.2 + 0.9;
 			const cost07 = parseFloat(fg[i][11]);
-			const count = Math.floor(+fg[i][3] * percent);
 			const dateCreated = new Date();
 			const itemNumber = fg[i][0];
-			const userCountId = users[0].id;
-			const userVerifyId = users[1].id;
-			await prisma.ticket.create({
-				data: {
-					cost07,
-					count,
-					dateCreated,
-					itemNumber,
-					number,
-					userCountId,
-					userVerifyId
-				}
-			});
-			console.log(`created ticket #${number}`);
-			number++;
+			const tickets = Math.ceil(Math.random() * 5);
+			for (let j = 0; j < tickets; j++) {
+				const userIndex = Math.floor(Math.random() * users.length);
+				const userCountId = users[userIndex].id;
+				const userVerifyId = users[(userIndex + 1) % users.length].id;
+				const percent = Math.random() * 0.2 + 0.9 / tickets;
+				const count = Math.floor(+fg[i][3] * percent);
+				await prisma.ticket.create({
+					data: {
+						cost07,
+						count,
+						dateCreated,
+						itemNumber,
+						number,
+						userCountId,
+						userVerifyId
+					}
+				});
+				console.log(`created ticket #${number}`);
+				number++;
+			}
 		}
 		for (let i = 0; i < raw.length; i++) {
-			const percent = Math.random() * 0.2 + 0.9;
 			const cost07 = parseFloat(raw[i][5]);
-			const count = Math.floor(+raw[i][6] * percent);
 			const dateCreated = new Date();
 			const itemNumber = raw[i][0];
-			const userCountId = users[0].id;
-			const userVerifyId = users[1].id;
-			await prisma.ticket.create({
-				data: {
-					cost07,
-					count,
-					dateCreated,
-					itemNumber,
-					number,
-					userCountId,
-					userVerifyId
-				}
-			});
-			console.log(`created ticket #${number}`);
-			number++;
+			const tickets = Math.ceil(Math.random() * 5);
+			for (let j = 0; j < tickets; j++) {
+				const userIndex = Math.floor(Math.random() * users.length);
+				const userCountId = users[userIndex].id;
+				const userVerifyId = users[(userIndex + 1) % users.length].id;
+				const percent = Math.random() * 0.2 + 0.9 / tickets;
+				const count = Math.floor(+raw[i][6] * percent);
+				await prisma.ticket.create({
+					data: {
+						cost07,
+						count,
+						dateCreated,
+						itemNumber,
+						number,
+						userCountId,
+						userVerifyId
+					}
+				});
+				console.log(`created ticket #${number}`);
+				number++;
+			}
 		}
 		return { success: true };
 	}
