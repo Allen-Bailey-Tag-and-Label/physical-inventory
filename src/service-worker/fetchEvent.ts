@@ -3,12 +3,6 @@ import { CACHE_NAME } from './constants';
 export default (event: FetchEvent): void => {
 	event.respondWith(
 		caches.match(event.request).then((cacheResponse) => {
-			if (cacheResponse) {
-				console.info(`fetching from cache: ${event.request.url}`);
-
-				return cacheResponse;
-			}
-
 			console.info(`trying to fetch from server: ${event.request.url}`);
 
 			return fetch(event.request)
@@ -32,6 +26,11 @@ export default (event: FetchEvent): void => {
 					return undefined;
 				})
 				.catch((error) => {
+					if (cacheResponse) {
+						console.info(`fetching from cache: ${event.request.url}`);
+
+						return cacheResponse;
+					}
 					console.error(`"${error}: ${event.request.url}`);
 
 					return error;
