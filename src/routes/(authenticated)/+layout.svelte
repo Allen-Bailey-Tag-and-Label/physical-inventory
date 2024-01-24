@@ -60,6 +60,7 @@
 				{ label: 'Add Initial Count', href: '/add-initial-count' },
 				{ label: 'Item Number', href: '/itemNumber' },
 				{ label: 'Ticket', href: '/ticket' },
+				{ label: 'Tickets', href: '/tickets' },
 				{ label: 'Variances', href: '/variances' }
 			],
 			all: [],
@@ -90,7 +91,7 @@
 
 <div class="flex max-h-[100dvh] min-h-[100dvh] flex-col">
 	<div class="h-[.25rem] {$isOnline ? 'bg-green-500' : 'bg-red-500'}" />
-	<div class="flex flex-grow">
+	<div class="relative flex max-h-full flex-grow overflow-auto">
 		<Card class="rounded-none p-0">
 			<Button
 				class={twMerge($theme.buttonTransparent, $theme.buttonIcon, 'z-[1]')}
@@ -125,7 +126,7 @@
 				{/if}
 			</Portal>
 		</Card>
-		<div class="flex flex-grow flex-col p-6">
+		<div class="flex max-h-full flex-grow flex-col p-6">
 			<slot />
 		</div>
 	</div>
