@@ -59,6 +59,7 @@
 			admin: [
 				{ label: 'Add Initial Count', href: '/add-initial-count' },
 				{ label: 'Dashboard', href: '/dashboard' },
+				{ label: 'Employees', href: '/employees' },
 				{ label: 'Item Number', href: '/itemNumber' },
 				{ label: 'Ticket', href: '/ticket' },
 				{ label: 'Tickets', href: '/tickets' },
