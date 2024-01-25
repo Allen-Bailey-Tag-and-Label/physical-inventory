@@ -3,7 +3,6 @@
 	import { twMerge } from 'tailwind-merge';
 	import {
 		Button,
-		Form,
 		Icon,
 		Modal,
 		ProgressIndicator,
@@ -16,6 +15,7 @@
 	} from '$components';
 	import { Download } from '$icons';
 	import { theme } from '$stores';
+	import { format } from '$utilities';
 
 	const downloadHandler = async () => {
 		isOpen = true;
@@ -52,14 +52,27 @@
 				<Thead>
 					<Th>Ticket #</Th>
 					<Th>Item Number</Th>
-					<Th>Count</Th>
+					<Th class="text-right">Count</Th>
+					<Th>Is Valid Item Number?</Th>
 				</Thead>
 				<Tbody>
 					{#each data.tickets as ticket}
-						<Tr>
-							<Td>{ticket.number}</Td>
+						<Tr
+							class={ticket.isValidItemNumber
+								? undefined
+								: 'bg-red-500 text-white even:bg-red-500 dark:bg-red-500 dark:even:bg-red-500'}
+						>
+							<Td>
+								<a
+									class="underline decoration-violet-500 decoration-2 underline-offset-2"
+									href="/ticket/{ticket.number}"
+								>
+									{ticket.number}
+								</a>
+							</Td>
 							<Td>{ticket.itemNumber}</Td>
-							<Td>{ticket.count}</Td>
+							<Td class="text-right">{format.integer(ticket.count)}</Td>
+							<Td class="text-center">{ticket.isValidItemNumber ? 'TRUE' : 'FALSE'}</Td>
 						</Tr>
 					{/each}
 				</Tbody>
