@@ -18,7 +18,15 @@
 			<Tbody>
 				{#each data.rows as row}
 					<Tr>
-						<Td>{row.firstName} {row.lastName}</Td>
+						<Td>
+							<a
+								class="underline decoration-violet-500 decoration-2 underline-offset-2"
+								href="/employee/{row.firstName} {row.lastName}"
+							>
+								{row.firstName}
+								{row.lastName}
+							</a>
+						</Td>
 						<Td class="text-right">{row.counted.length}</Td>
 						<Td class="text-right">{row.verified.length}</Td>
 						<Td class="text-right">{format.currency(row.countedValuation)}</Td>
@@ -27,17 +35,15 @@
 			</Tbody>
 			<Tfoot>
 				<Th>Total</Th>
-				<Th class="text-right"
-					>{data.rows.reduce((total, row) => (total += row.counted.length), 0)}</Th
-				>
-				<Th class="text-right"
-					>{data.rows.reduce((total, row) => (total += row.verified.length), 0)}</Th
-				>
-				<Th class="text-right"
-					>{format.currency(
-						data.rows.reduce((total, row) => (total += row.countedValuation), 0)
-					)}</Th
-				>
+				<Th class="text-right">
+					{data.rows.reduce((total, row) => (total += row.counted.length), 0)}
+				</Th>
+				<Th class="text-right">
+					{data.rows.reduce((total, row) => (total += row.verified.length), 0)}
+				</Th>
+				<Th class="text-right">
+					{format.currency(data.rows.reduce((total, row) => (total += row.countedValuation), 0))}
+				</Th>
 			</Tfoot>
 		</Table>
 	</div>
