@@ -15,7 +15,7 @@ export const load = async () => {
 			const itemNumber = item[0];
 			const description = item[1];
 			const cost07 = parseFloat(item[11]);
-			const preCount = +item[3];
+			const preCount = +item[15];
 			const preValuation = preCount * cost07;
 			const itemNumberTickets = [...tickets].filter((ticket) => ticket.itemNumber === itemNumber);
 			const afterCount = itemNumberTickets.reduce((total, ticket) => (total += ticket.count), 0);
