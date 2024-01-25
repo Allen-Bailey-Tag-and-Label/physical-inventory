@@ -4,7 +4,10 @@ export const load = async ({ params }) => {
 	const { employeeName } = params;
 	const [firstName, lastName] = employeeName.split(/\s/g);
 	const [allTickets, user] = await Promise.all([
-		prisma.ticket.findMany(),
+		prisma.ticket.findMany({
+			include: { userCount: true, userVerify: true },
+			orderBy: [{ number: 'asc' }]
+		}),
 		prisma.user.findFirst({ where: { firstName, lastName } })
 	]);
 	const tickets = allTickets.filter(

@@ -34,7 +34,7 @@
 	let itemNumber = '';
 
 	onMount(() => {
-		itemNumber = data.item.itemNumber;
+		itemNumber = data?.item?.itemNumber;
 	});
 </script>
 
