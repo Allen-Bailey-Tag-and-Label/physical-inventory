@@ -8,6 +8,7 @@
 		Icon,
 		Input,
 		Modal,
+		ProgressIndicator,
 		Select,
 		Table,
 		Tbody,
@@ -25,18 +26,20 @@
 	// handlers
 	const submitHandler = async (e: CustomEvent) => {
 		e.preventDefault();
+		isOpen = true;
 		try {
 			const body = objectToFormData($ticket);
 			body.append('dateCreated', Date.now());
-			if ($isOnline) {
-				await fetch('/add-ticket', {
-					method: 'POST',
-					body
-				});
-			}
-			if (!$isOnline) {
-				tickets.add(formDataToObject(body));
-			}
+			body.delete('shouldIncrementNumber');
+			// if ($isOnline) {
+			// 	await fetch('/add-ticket', {
+			// 		method: 'POST',
+			// 		body
+			// 	});
+			// }
+			// if (!$isOnline) {
+			tickets.add(formDataToObject(body));
+			// }
 			$ticket.count = '';
 			$ticket.itemNumber = '';
 			if (browser) {
@@ -52,12 +55,14 @@
 		} catch (error) {
 			console.log(error);
 		}
+		isOpen = false;
 	};
 
 	// props (external)
 	export let data;
 
 	// props (internal)
+	let isOpen;
 	let itemNumberElem;
 	const modal: {
 		close?: () => boolean;
@@ -200,5 +205,11 @@
 				</Tbody>
 			</Table>
 		</div>
+	</div>
+</Modal>
+
+<Modal bind:isOpen>
+	<div class="flex items-center justify-center">
+		<ProgressIndicator />
 	</div>
 </Modal>
