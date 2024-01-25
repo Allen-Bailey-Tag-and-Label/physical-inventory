@@ -7,6 +7,7 @@ const defaults = {
 	count: '',
 	itemNumber: '',
 	number: '',
+	shouldIncrementNumber: true,
 	userCountId: '',
 	userVerifyId: ''
 };

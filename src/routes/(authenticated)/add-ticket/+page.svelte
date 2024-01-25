@@ -2,6 +2,7 @@
 	import { twMerge } from 'tailwind-merge';
 	import {
 		Button,
+		Checkbox,
 		Fieldset,
 		Form,
 		Icon,
@@ -38,9 +39,15 @@
 			}
 			$ticket.count = '';
 			$ticket.itemNumber = '';
-			$ticket.number = (+$ticket.number + 1).toString();
 			if (browser) {
-				itemNumberElem.focus();
+				if ($ticket.shouldIncrementNumber) {
+					$ticket.number = (+$ticket.number + 1).toString();
+					itemNumberElem.focus();
+				}
+				if (!$ticket.shouldIncrementNumber) {
+					$ticket.number = '';
+					numberElem.focus();
+				}
 			}
 		} catch (error) {
 			console.log(error);
@@ -58,6 +65,7 @@
 		isOpen?: boolean;
 		toggle?: () => boolean;
 	} = {};
+	let numberElem;
 	let search = '';
 
 	// props (dynamic)
@@ -78,11 +86,15 @@
 	onMount(() => {
 		if (browser) {
 			itemNumberElem = document.querySelector('input[name="itemNumber"]');
+			numberElem = document.querySelector('input[name="number"]');
 		}
 	});
 </script>
 
 <Form class="items-start" on:submit={submitHandler}>
+	<Fieldset legend="Auto Increment Ticket #">
+		<Checkbox bind:checked={$ticket.shouldIncrementNumber} />
+	</Fieldset>
 	<div class="flex space-x-6">
 		<Fieldset legend="Counter">
 			<Select bind:value={$ticket.userCountId} options={data.userOptions} />
