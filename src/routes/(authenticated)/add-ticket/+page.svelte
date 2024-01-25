@@ -157,7 +157,7 @@
 		<Fieldset legend="Search">
 			<Input bind:value={search} name="search" />
 		</Fieldset>
-		<div class="mt-6 flex max-h-[75dvh] flex-grow flex-col overflow-auto">
+		<div class="mt-6 flex max-h-[75vh] flex-grow flex-col overflow-auto">
 			<Table>
 				<Thead>
 					<Th></Th>

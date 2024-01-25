@@ -1,3 +1,3 @@
-<div class="flex min-h-[100dvh] flex-col items-center justify-center">
+<div class="flex min-h-[100vh] flex-col items-center justify-center">
 	<slot />
 </div>

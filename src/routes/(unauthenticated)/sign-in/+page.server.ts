@@ -24,6 +24,6 @@ export const actions = {
 			maxAge: 60 * 60 * 24 * 7
 		});
 
-		return redirect(300, '/dashboard');
+		return redirect(300, user.isAdmin ? '/dashboard' : '/add-ticket');
 	}
 };

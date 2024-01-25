@@ -58,16 +58,14 @@
 		routes: {
 			admin: [
 				{ label: 'Add Initial Count', href: '/add-initial-count' },
+				{ label: 'Dashboard', href: '/dashboard' },
 				{ label: 'Item Number', href: '/itemNumber' },
 				{ label: 'Ticket', href: '/ticket' },
 				{ label: 'Tickets', href: '/tickets' },
 				{ label: 'Variances', href: '/variances' }
 			],
 			all: [],
-			default: [
-				{ label: 'Dashboard', href: '/dashboard' },
-				{ label: 'Add Ticket', href: '/add-ticket' }
-			]
+			default: [{ label: 'Add Ticket', href: '/add-ticket' }]
 		},
 		toggle: () => (nav.isOpen = !nav.isOpen)
 	};
@@ -89,7 +87,7 @@
 	).sort((a, b) => a.label.localeCompare(b.label));
 </script>
 
-<div class="flex max-h-[100dvh] min-h-[100dvh] flex-col">
+<div class="flex max-h-[100vh] min-h-[100vh] flex-col">
 	<div class="h-[.25rem] {$isOnline ? 'bg-green-500' : 'bg-red-500'}" />
 	<div class="relative flex max-h-full flex-grow overflow-auto">
 		<Card class="rounded-none p-0">
@@ -103,24 +101,27 @@
 			<Portal>
 				{#if nav.isOpen}
 					<button
-						class="fixed left-0 top-0 h-[100dvh] w-[100dvw] bg-black/70"
+						class="fixed left-0 top-0 h-[100vh] w-[100dvw] bg-black/70"
 						on:click={nav.toggle}
 						transition:fade={{ duration: 200 }}
 					/>
 					<div class="fixed left-0 top-0" transition:slide>
-						<Card class="max-h-[100dvh] min-h-[100dvh] overflow-y-auto rounded-none p-0 pt-[3rem]">
-							{#each nav.routes.all as { label, href }}
-								<a
-									class={twMerge(
-										'px-6 py-3',
-										$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
-									)}
-									{href}
-									on:click={nav.toggle}
-								>
-									{label}
-								</a>
-							{/each}
+						<Card class="max-h-[100vh] min-h-[100vh] overflow-y-auto rounded-none p-0 pt-[3rem]">
+							<div class="flex flex-grow flex-col">
+								{#each nav.routes.all as { label, href }}
+									<a
+										class={twMerge(
+											'px-6 py-3',
+											$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
+										)}
+										{href}
+										on:click={nav.toggle}
+									>
+										{label}
+									</a>
+								{/each}
+							</div>
+							<a class={twMerge('px-6 py-3')} href="/sign-out">Sign Out</a>
 						</Card>
 					</div>
 				{/if}

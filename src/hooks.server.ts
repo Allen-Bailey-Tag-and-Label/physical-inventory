@@ -18,7 +18,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (event.locals?.user === undefined)
 			return new Response('Redirect', { status: 303, headers: { Location: '/sign-in' } });
 		if (event.url.pathname === '/')
-			return new Response('Redirect', { status: 303, headers: { Location: '/dashboard' } });
+			return new Response('Redirect', {
+				status: 303,
+				headers: { Location: event.locals.user.isAdmin ? '/dashboard' : '/add-ticket' }
+			});
 	}
 	const response = await resolve(event);
 	return response;
