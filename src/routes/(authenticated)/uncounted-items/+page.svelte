@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Table, Tbody, Td, Th, Thead, Tr } from '$components';
+	import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from '$components';
 	import { format } from '$utilities';
 
 	// props (external)
@@ -42,6 +42,37 @@
 					</Tr>
 				{/each}
 			</Tbody>
+			<Tfoot>
+				<Th colspan="3">Total</Th>
+				<Th class="text-right">
+					{format.integer(data.uncountedItems.reduce((total, item) => (total += item.preCount), 0))}
+				</Th>
+				<Th class="text-right">
+					{format.integer(
+						data.uncountedItems.reduce((total, item) => (total += item.afterCount), 0)
+					)}
+				</Th>
+				<Th class="text-right">
+					{format.integer(
+						data.uncountedItems.reduce((total, item) => (total += item.deltaCount), 0)
+					)}
+				</Th>
+				<Th class="text-right">
+					{format.currency(
+						data.uncountedItems.reduce((total, item) => (total += item.preValuation), 0)
+					)}
+				</Th>
+				<Th class="text-right">
+					{format.currency(
+						data.uncountedItems.reduce((total, item) => (total += item.afterValuation), 0)
+					)}
+				</Th>
+				<Th class="text-right">
+					{format.currency(
+						data.uncountedItems.reduce((total, item) => (total += item.deltaValuation), 0)
+					)}
+				</Th>
+			</Tfoot>
 		</Table>
 	</div>
 </div>
