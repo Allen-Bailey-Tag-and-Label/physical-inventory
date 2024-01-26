@@ -6,7 +6,7 @@ export const load = async ({ params }) => {
 	const [allTickets, user] = await Promise.all([
 		prisma.ticket.findMany({
 			include: { userCount: true, userVerify: true },
-			orderBy: [{ number: 'asc' }]
+			orderBy: [{ dateCreated: 'asc' }]
 		}),
 		prisma.user.findFirst({ where: { firstName, lastName } })
 	]);

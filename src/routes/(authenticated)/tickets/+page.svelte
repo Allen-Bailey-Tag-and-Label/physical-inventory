@@ -3,6 +3,7 @@
 	import { twMerge } from 'tailwind-merge';
 	import {
 		Button,
+		Form,
 		Icon,
 		Modal,
 		ProgressIndicator,
@@ -13,10 +14,12 @@
 		Thead,
 		Tr
 	} from '$components';
-	import { Download } from '$icons';
+	import { Download, Trash } from '$icons';
 	import { theme } from '$stores';
-	import { format } from '$utilities';
+	import { format, objectToFormData } from '$utilities';
+	import { invalidateAll } from '$app/navigation';
 
+	// handlers
 	const downloadHandler = async () => {
 		isOpen = true;
 		const response = await fetch('/tickets/download');
@@ -30,11 +33,24 @@
 		document.body.removeChild(link);
 		isOpen = false;
 	};
+	const submitHandler = async (e) => {
+		e.preventDefault();
+		isOpen = true;
+		const body = objectToFormData({ id: deleteId });
+		await fetch('/tickets', { method: 'POST', body });
+		isOpen = false;
+		deleteIsOpen = false;
+		invalidateAll();
+	};
 
 	// props (external)
 	export let data;
 
 	// props (internal)
+	let deleteId: string;
+	let deleteIsOpen: boolean;
+	let deleteNumber: number;
+	let deleteToggle: () => boolean;
 	let isOpen: boolean;
 </script>
 
@@ -50,6 +66,7 @@
 		<div class="flex max-h-full flex-col overflow-auto">
 			<Table>
 				<Thead>
+					<Th></Th>
 					<Th>Ticket #</Th>
 					<Th>Item Number</Th>
 					<Th class="text-right">Count</Th>
@@ -62,6 +79,21 @@
 								? undefined
 								: 'bg-red-500 text-white even:bg-red-500 dark:bg-red-500 dark:even:bg-red-500'}
 						>
+							<Td class="p-0">
+								<Button
+									class={twMerge(
+										$theme.buttonIcon,
+										'bg-red-500 px-1 py-1 hover:bg-red-600 focus:bg-red-600 focus:ring-red-500/30'
+									)}
+									on:click={() => {
+										deleteId = ticket.id;
+										deleteNumber = ticket.number;
+										deleteToggle();
+									}}
+								>
+									<Icon src={Trash} />
+								</Button>
+							</Td>
 							<Td>
 								<a
 									class="underline decoration-violet-500 decoration-2 underline-offset-2"
@@ -85,4 +117,20 @@
 	<div class="flex items-center justify-center">
 		<ProgressIndicator />
 	</div>
+</Modal>
+
+<Modal bind:isOpen={deleteIsOpen} bind:toggle={deleteToggle}>
+	<Form on:submit={submitHandler}>
+		<div>Are you sure you want to delete ticket #{deleteNumber}?</div>
+		<div class="grid grid-cols-2 gap-6">
+			<Button
+				class="bg-slate-800 text-white hover:bg-slate-900 focus:bg-slate-900 focus:ring-slate-800/30 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 dark:focus:bg-slate-200 dark:focus:ring-slate-50/30"
+				on:click={deleteToggle}>Cancel</Button
+			>
+			<Button
+				class="bg-red-500 px-1 py-1 hover:bg-red-600 focus:bg-red-600 focus:ring-red-500/30"
+				type="submit">Delete</Button
+			>
+		</div>
+	</Form>
 </Modal>
