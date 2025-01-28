@@ -1,9 +1,16 @@
-import { INVENTORY_DATE } from '$env/static/private';
+import { DateTime } from 'luxon';
 import { prisma } from '$lib/prisma';
 
 export const load = async ({ locals }) => {
+	console.log(locals.INVENTORY_DATE);
 	const [onHand, tickets] = await Promise.all([
-		prisma.onHand.findFirst({ where: { date: INVENTORY_DATE } }),
+		prisma.onHand.findFirst({
+			where: {
+				date: DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+					zone: 'America/New_York'
+				}).toJSDate()
+			}
+		}),
 		prisma.ticket.findMany()
 	]);
 	const myCountedTickets = [...tickets].filter((ticket) => ticket.userCountId === locals.user.id);

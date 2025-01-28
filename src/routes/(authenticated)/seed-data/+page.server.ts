@@ -1,12 +1,17 @@
-import { INVENTORY_DATE } from '$env/static/private';
+import { DateTime } from 'luxon';
 import { prisma } from '$lib/prisma/index.js';
-import { items } from '$stores/items/items.js';
 
 export const actions = {
-	default: async () => {
+	default: async ({ locals }) => {
 		await prisma.ticket.deleteMany();
 		const [onHand, users] = await Promise.all([
-			prisma.onHand.findFirst({ where: { date: INVENTORY_DATE } }),
+			prisma.onHand.findFirst({
+				where: {
+					date: DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+						zone: 'America/New_York'
+					}).toJSDate()
+				}
+			}),
 			prisma.user.findMany()
 		]);
 		const { fg: fgText, raw: rawText } = onHand;

@@ -1,14 +1,18 @@
-import { INVENTORY_DATE } from '$env/static/private';
+import { DateTime } from 'luxon';
 import { prisma } from '$lib/prisma/index.js';
 import { formDataToObject } from '$utilities';
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
 		const data = formDataToObject(await request.formData());
-		data.date = INVENTORY_DATE;
+		data.date = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+			zone: 'America/New_York'
+		}).toJSDate();
 		await prisma.onHand.upsert({
 			where: {
-				date: INVENTORY_DATE
+				date: DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+					zone: 'America/New_York'
+				}).toJSDate()
 			},
 			update: data,
 			create: data

@@ -1,5 +1,7 @@
+import Redis from 'ioredis';
 import { prisma } from '$lib/prisma';
 import type { Handle } from '@sveltejs/kit';
+import { REDIS_URL } from '$env/static/private';
 
 const getUser = async (event) => {
 	const id = event.cookies.get('session_id');
@@ -11,7 +13,11 @@ const getUser = async (event) => {
 	return event;
 };
 
+const client = new Redis(REDIS_URL);
+const INVENTORY_DATE = await client.get('inventoryDate');
+
 export const handle: Handle = async ({ event, resolve }) => {
+	event.locals.INVENTORY_DATE = INVENTORY_DATE;
 	const unauthenticatedRoutes = ['/register', '/sign-in'];
 	if (!unauthenticatedRoutes.includes(event.url.pathname)) {
 		event = await getUser(event);

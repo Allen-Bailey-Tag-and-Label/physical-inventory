@@ -11,28 +11,30 @@ datasource db {
 }
 
 model OnHand {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  date String @unique
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime
   fg   String
   raw  String
 }
 
 model Ticket {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  cost07       Float
-  count        Int
-  dateCreated  DateTime @default(now())
-  itemNumber   String
-  number       Int      @unique
-  userCountId  String   @db.ObjectId
-  userCount    User     @relation(fields: [userCountId], references: [id], name: "userCount")
-  userVerifyId String   @db.ObjectId
-  userVerify   User     @relation(fields: [userVerifyId], references: [id], name: "userVerify")
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  cost07        Float
+  count         Int
+  dateCreated   DateTime @default(now())
+  inventoryDate DateTime
+  itemNumber    String
+  number        Int      @unique
+  userCountId   String   @db.ObjectId
+  userCount     User     @relation(fields: [userCountId], references: [id], name: "userCount")
+  userVerifyId  String   @db.ObjectId
+  userVerify    User     @relation(fields: [userVerifyId], references: [id], name: "userVerify")
 }
 
 model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   firstName    String
+  isActive     Boolean  @default(true)
   isAdmin      Boolean  @default(false)
   lastName     String
   passwordHash String?
