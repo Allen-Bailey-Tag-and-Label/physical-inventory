@@ -1,10 +1,11 @@
 export const getItems = (onHand, tickets) => {
+	if (!onHand) return [];
 	const { fg: fgText, raw: rawText } = onHand;
 	const fg = fgText
 		.split('\r\n')
 		.map((item) => item.split('\t'))
 		// .filter((item) => item[3] !== '0')
-		.map((item) => {
+		.map((item, i) => {
 			const itemNumber = item[0];
 			const description = item[1];
 			const cost07 = parseFloat(item[11]);

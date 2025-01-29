@@ -70,6 +70,7 @@
 					<Th>Ticket #</Th>
 					<Th>Item Number</Th>
 					<Th class="text-right">Count</Th>
+					<Th>Date / Time</Th>
 					<Th>Is Valid Item Number?</Th>
 				</Thead>
 				<Tbody>
@@ -104,6 +105,7 @@
 							</Td>
 							<Td>{ticket.itemNumber}</Td>
 							<Td class="text-right">{format.integer(ticket.count)}</Td>
+							<Td>{DateTime.fromJSDate(ticket.dateCreated).toFormat('M/d/yy h:mm a')}</Td>
 							<Td class="text-center">{ticket.isValidItemNumber ? 'TRUE' : 'FALSE'}</Td>
 						</Tr>
 					{/each}

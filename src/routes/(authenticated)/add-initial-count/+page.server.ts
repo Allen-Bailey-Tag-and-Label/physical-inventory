@@ -4,15 +4,14 @@ import { formDataToObject } from '$utilities';
 
 export const actions = {
 	default: async ({ locals, request }) => {
-		const data = formDataToObject(await request.formData());
-		data.date = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+		const inventoryDate = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
 			zone: 'America/New_York'
 		}).toJSDate();
+		const data = formDataToObject(await request.formData());
+		data.date = inventoryDate;
 		await prisma.onHand.upsert({
 			where: {
-				date: DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
-					zone: 'America/New_York'
-				}).toJSDate()
+				date: inventoryDate
 			},
 			update: data,
 			create: data

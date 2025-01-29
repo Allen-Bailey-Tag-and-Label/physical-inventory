@@ -63,9 +63,11 @@
 				{ label: 'Employees', href: '/employees' },
 				{ label: 'Item Number', href: '/itemNumber' },
 				{ label: 'Invalid Items', href: '/invalid-items' },
+				{ label: 'Settings', href: '/settings' },
 				{ label: 'Ticket', href: '/ticket' },
 				{ label: 'Tickets', href: '/tickets' },
 				{ label: 'Uncounted Items', href: '/uncounted-items' },
+				{ label: 'User Management', href: '/user-management' },
 				{ label: 'Variances', href: '/variances' }
 			],
 			all: [],

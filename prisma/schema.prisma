@@ -12,7 +12,7 @@ datasource db {
 
 model OnHand {
   id   String   @id @default(auto()) @map("_id") @db.ObjectId
-  date DateTime
+  date DateTime @unique
   fg   String
   raw  String
 }

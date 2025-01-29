@@ -1,6 +1,7 @@
 import { prisma } from '$lib/prisma';
 import { items } from '$stores/items/items';
 import { formDataToObject } from '$utilities';
+import { DateTime } from 'luxon';
 
 export const actions = {
 	default: async ({ request }) => {
@@ -10,8 +11,13 @@ export const actions = {
 	}
 };
 
-export const load = async () => {
-	let [tickets] = await Promise.all([prisma.ticket.findMany({ orderBy: [{ number: 'asc' }] })]);
+export const load = async ({ locals }) => {
+	const inventoryDate = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+		zone: 'America/New_York'
+	}).toJSDate();
+	let [tickets] = await Promise.all([
+		prisma.ticket.findMany({ where: { inventoryDate }, orderBy: [{ number: 'asc' }] })
+	]);
 
 	tickets = tickets.map((ticket) => {
 		const item = items.find((obj) => obj.itemNumber === ticket.itemNumber);
