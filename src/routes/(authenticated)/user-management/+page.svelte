@@ -5,7 +5,6 @@
 	export let data;
 </script>
 
-pac
 <div class="flex max-h-full flex-grow flex-col items-start space-y-6">
 	<div class="flex max-h-full flex-grow flex-col space-y-6">
 		<div class="flex justify-end space-x-6"></div>
