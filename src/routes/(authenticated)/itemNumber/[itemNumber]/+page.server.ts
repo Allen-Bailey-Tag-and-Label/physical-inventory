@@ -4,16 +4,17 @@ import { getItems } from '$utilities';
 
 export const load = async ({ locals, params }) => {
 	const { itemNumber } = params;
+	const inventoryDate = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+		zone: 'America/New_York'
+	}).toJSDate();
 	const [onHand, tickets] = await Promise.all([
 		prisma.onHand.findFirst({
 			where: {
-				date: DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
-					zone: 'America/New_York'
-				}).toJSDate()
+				date: inventoryDate
 			}
 		}),
 		prisma.ticket.findMany({
-			where: { itemNumber },
+			where: { inventoryDate, itemNumber },
 			include: { userCount: true, userVerify: true }
 		})
 	]);
