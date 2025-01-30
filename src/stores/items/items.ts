@@ -4883,4 +4883,5 @@ export const items = [
 	{itemNumber: 'WRC-T591', description:'SPOOL/WIRE MILL TAGS', type: 'FG', uom:'EA', cost07:0.02183},
 	{itemNumber: 'WRC-T741V', description:'SHIPPING TAGS 4 X 6 (C V-MAX)', type: 'FG', uom:'EA', cost07:0.07111},
 	{itemNumber: 'WRC-T741V-T', description:'SHIPPING TAGS 4 X 6 (TUNDRA)', type: 'FG', uom:'EA', cost07:0.04209},
+	{itemNumber: 'ASP-6290', description:'ASP-6290 WARRANTY PARTS TAG', type: 'FG', uom:'EA', cost07:0.02942},
 ].sort((a, b) => a.itemNumber.localeCompare(b.itemNumber));
