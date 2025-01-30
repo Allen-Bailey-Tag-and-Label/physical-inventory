@@ -95,8 +95,8 @@
 
 <div class="flex max-h-[100vh] min-h-[100vh] flex-col">
 	<div class="h-[.25rem] {$isOnline ? 'bg-green-500' : 'bg-red-500'}" />
-	<div class="relative flex max-h-full flex-grow overflow-auto">
-		<Card class="rounded-none p-0">
+	<div class="relative flex max-h-full flex-grow flex-col overflow-auto lg:flex-row">
+		<Card class="order-2 items-start rounded-none p-0 lg:order-1">
 			<Button
 				class={twMerge($theme.buttonTransparent, $theme.buttonIcon, 'z-[1]')}
 				on:click={nav.toggle}
@@ -112,12 +112,12 @@
 						transition:fade={{ duration: 200 }}
 					/>
 					<div class="fixed left-0 top-0" transition:slide>
-						<Card class="max-h-[100vh] min-h-[100vh] overflow-y-auto rounded-none p-0 pt-[3rem]">
+						<Card class="max-h-[100vh] min-h-[100vh] overflow-y-auto rounded-none p-0">
 							<div class="flex flex-grow flex-col">
 								{#each nav.routes.all as { label, href }}
 									<a
 										class={twMerge(
-											'px-6 py-3',
+											'px-6 py-3 pl-[4.5rem]',
 											$page.url.pathname === href ? 'bg-violet-500 text-white' : undefined
 										)}
 										{href}
@@ -127,13 +127,13 @@
 									</a>
 								{/each}
 							</div>
-							<a class={twMerge('px-6 py-3')} href="/sign-out">Sign Out</a>
+							<a class={twMerge('px-6 py-3 pl-[4.5rem]')} href="/sign-out">Sign Out</a>
 						</Card>
 					</div>
 				{/if}
 			</Portal>
 		</Card>
-		<div class="flex max-h-full flex-grow flex-col p-6">
+		<div class="order-1 flex max-h-full flex-grow flex-col overflow-auto p-6 lg:order-2">
 			<slot />
 		</div>
 	</div>

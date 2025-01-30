@@ -14,7 +14,7 @@
 	export let data;
 </script>
 
-<div class="grid grid-cols-4 gap-6 lg:grid-cols-6">
+<div class="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-6">
 	<Items />
 	<TotalTickets {data} />
 	<MyCountedTickets {data} />
