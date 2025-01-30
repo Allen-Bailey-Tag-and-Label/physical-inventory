@@ -103,7 +103,14 @@
 									{ticket.number}
 								</a>
 							</Td>
-							<Td>{ticket.itemNumber}</Td>
+							<Td>
+								<a
+									class="underline decoration-violet-500 decoration-2 underline-offset-2"
+									href="/itemNumber/{ticket.itemNumber}"
+								>
+									{ticket.itemNumber}
+								</a>
+							</Td>
 							<Td class="text-right">{format.integer(ticket.count)}</Td>
 							<Td>{DateTime.fromJSDate(ticket.dateCreated).toFormat('M/d/yy h:mm a')}</Td>
 							<Td class="text-center">{ticket.isValidItemNumber ? 'TRUE' : 'FALSE'}</Td>
