@@ -3,9 +3,12 @@ import { prisma } from '$lib/prisma/index.js';
 import { items } from '$stores/items/items.js';
 import { formDataToObject } from '$utilities';
 
-export const load = async ({ params }) => {
+export const load = async ({ locals, params }) => {
+	const inventoryDate = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+		zone: 'America/New_York'
+	}).toJSDate();
 	const [ticket] = await Promise.all([
-		prisma.ticket.findFirst({ where: { number: +params.ticket } })
+		prisma.ticket.findFirst({ where: { inventoryDate, number: +params.ticket } })
 	]);
 
 	return { ticket };
@@ -25,6 +28,7 @@ export const actions = {
 		delete data.id;
 		await prisma.ticket.upsert({
 			where: {
+				inventoryDate,
 				number: data.number
 			},
 			update: data,

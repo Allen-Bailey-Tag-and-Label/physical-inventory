@@ -4,9 +4,12 @@ import { formDataToObject } from '$utilities';
 import { DateTime } from 'luxon';
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
+		const inventoryDate = DateTime.fromFormat(locals.INVENTORY_DATE, 'yyyy-MM-dd', {
+			zone: 'America/New_York'
+		}).toJSDate();
 		const { id } = formDataToObject(await request.formData());
-		await prisma.ticket.deleteMany({ where: { id } });
+		await prisma.ticket.deleteMany({ where: { id, inventoryDate } });
 		return { success: true };
 	}
 };

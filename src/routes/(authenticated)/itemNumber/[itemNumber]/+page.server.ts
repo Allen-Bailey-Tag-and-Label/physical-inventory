@@ -20,6 +20,7 @@ export const load = async ({ locals, params }) => {
 	]);
 	const items = getItems(onHand, tickets);
 	const item = items.find((obj) => obj.itemNumber === itemNumber);
+	console.log(item);
 
 	return { item, tickets };
 };
