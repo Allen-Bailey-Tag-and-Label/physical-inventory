@@ -24,7 +24,9 @@ export const GET = async ({ locals }) => {
 
 	tickets = tickets.map((ticket) => {
 		const item = items.find((obj) => obj.itemNumber === ticket.itemNumber);
-		const dateCreated = DateTime.fromJSDate(ticket.dateCreated).toFormat('M/d/yyyy h:mm a');
+		const dateCreated = DateTime.fromJSDate(ticket.dateCreated, {
+			zone: 'America/New_York'
+		}).toFormat('M/d/yyyy h:mm a');
 		const isValidItemNumber = item !== undefined && item !== null;
 		return {
 			...ticket,
