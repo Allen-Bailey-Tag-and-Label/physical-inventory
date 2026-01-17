@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { defineModel } from '../defineModel';
 
-export const PhysicalInventoryItem = defineModel('PhysicalInventoryItem', {
+export const Item = defineModel('Item', {
 	branchId: { type: Types.ObjectId, ref: 'Branch' },
 	stockingType: { type: String },
 	lineType: { type: String },
