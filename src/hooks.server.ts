@@ -3,7 +3,7 @@ import { User, UserSession } from '$lib/db/models';
 import { redirect, type Handle } from '@sveltejs/kit';
 
 const publicRoutes = new Set(['/sign-in', '/sign-out']);
-const protectedRoutes = new Set(['/admin', '/assign-user', '/ticket-entry']);
+const protectedRoutes = new Set(['/admin', '/assign-user', '/master-item-list', '/ticket-entry']);
 
 const handleAuthenticated = (event: any, pathname: string) => {
 	if (pathname === '/') {
