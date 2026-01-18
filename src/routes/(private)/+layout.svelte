@@ -35,7 +35,7 @@
 				return a.localeCompare(b);
 			})
 			.map((label) => ({
-				href: `/${label.toLowerCase().replace(' ', '-')}`,
+				href: `/${label.toLowerCase().replaceAll(' ', '-')}`,
 				label
 			}));
 	});
@@ -124,7 +124,7 @@
 {/if}
 
 {#snippet navItem(href: string, label: string)}
-	<A class="rounded-none" {href} variants={['buttonDefault', 'buttonGhost']}>
+	<A class="rounded-none" {href} onclick={nav.close} variants={['buttonDefault', 'buttonGhost']}>
 		{label}
 	</A>
 {/snippet}
