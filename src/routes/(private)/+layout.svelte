@@ -1,27 +1,50 @@
 <script lang="ts">
-	import { Menu } from '@lucide/svelte';
+	import { Menu, TriangleAlert } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import { clickOutside } from '$lib/attachments';
-	import { A, Button, Card, Container, Div, Header, Main, Sheet } from '$lib/components';
+	import { A, Button, Card, Container, Div, Header, Main, Modal, P } from '$lib/components';
 	import { fade, fly } from '$lib/transitions';
-	import type { LayoutData } from '../$types';
+	import { browser } from '$app/environment';
 
 	// types
 	type Props = {
 		children: Snippet;
-		data: LayoutData;
 	};
 
 	// $props
-	let { children, data }: Props = $props();
+	let { children }: Props = $props();
 
 	// $state
-	let outerWidth = $state(0);
+	let isAdmin = $state(false);
 	let nav = $state({
+		adminItems: ['Master Item List'],
 		close: () => (nav.isVisible = false),
 		isVisible: false,
+		userItems: ['Ticket Entry'],
 		open: () => (nav.isVisible = true),
 		toggle: () => (nav.isVisible = !nav.isVisible)
+	});
+	let outerWidth = $state(0);
+	let signOutIsVisible = $state(false);
+
+	// $derives
+	const navItems = $derived.by(() => {
+		let items = isAdmin ? [...nav.adminItems, ...nav.userItems] : [...nav.userItems];
+		return items
+			.sort((a, b) => {
+				return a.localeCompare(b);
+			})
+			.map((label) => ({
+				href: `/${label.toLowerCase().replace(' ', '-')}`,
+				label
+			}));
+	});
+
+	// $effects
+	$effect(() => {
+		if (browser) {
+			isAdmin = localStorage.getItem('isAdmin') === 'true';
+		}
 	});
 </script>
 
@@ -55,8 +78,53 @@
 		transition={(element) =>
 			fly(element, { duration: 200, opacity: 1, x: outerWidth < 768 ? '100%' : '-100%' })}
 	>
-		<A class="rounded-none" href="/sign-out" variants={['buttonDefault', 'buttonGhost']}>
-			Sign Out
-		</A>
+		<Div class="flex grow flex-col">
+			{#each navItems as { href, label }}
+				{@render navItem(href, label)}
+			{/each}
+		</Div>
+		<Button
+			class="rounded-none text-left"
+			onclick={() => {
+				nav.isVisible = false;
+				signOutIsVisible = true;
+			}}
+			variants={['ghost']}>Sign Out</Button
+		>
 	</Card>
 {/if}
+
+{#if signOutIsVisible}
+	<Div
+		class="fixed top-0 left-0 z-100 h-screen w-screen bg-black/70 backdrop-blur"
+		transition={(element) => fade(element, { duration: 200 })}
+	/>
+	<Card
+		{@attach clickOutside(() => (signOutIsVisible = false))}
+		class="fixed top-1/2 left-1/2 z-100 flex w-full max-w-sm -translate-x-1/2 -translate-y-1/2 flex-col space-y-6"
+		transition={(element) => fade(element, { duration: 200 })}
+	>
+		<TriangleAlert class="mx-auto h-[5rem] w-[5rem] text-red-500" />
+		<P>Are you sure you want to sign out?</P>
+		<Div class="grid grid-cols-2 gap-4 md:flex md:justify-end">
+			<Button
+				class="whitespace-nowrap"
+				onclick={() => (signOutIsVisible = false)}
+				variants={['contrast']}>Cancel</Button
+			>
+			<A
+				class="text-center whitespace-nowrap"
+				href="/sign-out"
+				variants={['buttonDefault', 'buttonError']}
+			>
+				Sign Out
+			</A>
+		</Div>
+	</Card>
+{/if}
+
+{#snippet navItem(href: string, label: string)}
+	<A class="rounded-none" {href} variants={['buttonDefault', 'buttonGhost']}>
+		{label}
+	</A>
+{/snippet}
