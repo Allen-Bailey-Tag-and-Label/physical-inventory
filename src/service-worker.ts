@@ -11,7 +11,6 @@ self.addEventListener('install', (event) => {
 		(async () => {
 			const cache = await caches.open(CACHE);
 			await cache.addAll(PRECACHE_URLS);
-
 			await self.skipWaiting();
 		})()
 	);
@@ -20,6 +19,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
 	event.waitUntil(
 		(async () => {
+			// Clear old versioned caches
 			const keys = await caches.keys();
 			await Promise.all(keys.map((k) => (k === CACHE ? Promise.resolve() : caches.delete(k))));
 			await self.clients.claim();
@@ -27,47 +27,11 @@ self.addEventListener('activate', (event) => {
 	);
 });
 
-async function networkFirst(request: Request, cache: Cache, timeoutMs = 4000) {
-	// Try network, but don’t hang forever on flaky connections.
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-	try {
-		const response = await fetch(request, { signal: controller.signal });
-
-		// Cache successful same-origin responses so they’re available offline later
-		if (response.ok && response.type === 'basic') {
-			cache.put(request, response.clone());
-		}
-
-		return response;
-	} catch {
-		const cached = await cache.match(request);
-		if (cached) return cached;
-
-		return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
-	} finally {
-		clearTimeout(timeout);
-	}
-}
-
-async function cacheFirst(request: Request, cache: Cache) {
-	const cached = await cache.match(request);
-	if (cached) return cached;
-
-	const response = await fetch(request);
-
-	if (response.ok && response.type === 'basic') {
-		cache.put(request, response.clone());
-	}
-	return response;
-}
-
 self.addEventListener('fetch', (event) => {
 	const request = event.request;
 	const url = new URL(request.url);
 
-	// Only same-origin GET requests
+	// Only handle same-origin GET requests
 	if (url.origin !== self.location.origin) return;
 	if (request.method !== 'GET') return;
 
@@ -75,23 +39,26 @@ self.addEventListener('fetch', (event) => {
 		(async () => {
 			const cache = await caches.open(CACHE);
 
-			// Pages / route navigations: INTERNET FIRST
-			if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
-				return networkFirst(request, cache, 4000);
+			// 1) NETWORK FIRST
+			try {
+				const response = await fetch(request);
+
+				// 2) On success, update cache (so offline has something later)
+				// Only cache basic (same-origin) successful responses.
+				if (response.ok && response.type === 'basic') {
+					cache.put(request, response.clone());
+				}
+
+				return response;
+			} catch {
+				// 3) If no network, fall back to cache
+				const cached = await cache.match(request);
+				if (cached) return cached;
+
+				// No offline fallback response/page; let it fail naturally.
+				// (Returning a failed fetch keeps behavior consistent with "no offline responses".)
+				return fetch(request);
 			}
-
-			// Static assets (js/css/images/fonts): usually best as CACHE FIRST
-			// (change to networkFirst if you truly want everything internet-first)
-			const isAsset =
-				url.pathname.startsWith('/_app/') ||
-				/\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|otf)$/.test(url.pathname);
-
-			if (isAsset) {
-				return cacheFirst(request, cache);
-			}
-
-			// Default for other same-origin GET (e.g., JSON endpoints): INTERNET FIRST
-			return networkFirst(request, cache, 4000);
 		})()
 	);
 });
