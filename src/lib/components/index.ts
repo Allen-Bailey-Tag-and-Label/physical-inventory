@@ -37,6 +37,7 @@ export { default as SubmitButton } from './SubmitButton/SubmitButton.svelte';
 export { default as Table } from './Table/Table.svelte';
 export { default as Tbody } from './Tbody/Tbody.svelte';
 export { default as Td } from './Td/Td.svelte';
+export { default as Textarea } from './Textarea/Textarea.svelte';
 export { default as Th } from './Th/Th.svelte';
 export { default as Thead } from './Thead/Thead.svelte';
 export { default as Tr } from './Tr/Tr.svelte';

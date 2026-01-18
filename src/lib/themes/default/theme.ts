@@ -154,7 +154,7 @@ const theme: Record<string, Record<string, string>> = {
 		min: 'py-0',
 		default: 'py-[12.5vh]'
 	},
-	Select: { default: twMerge(input) },
+	Select: {},
 	Span: { default: '' },
 	Spinner: { default: 'w-6 aspect-square' },
 	Sheet: {
@@ -174,6 +174,7 @@ const theme: Record<string, Record<string, string>> = {
 	Td: {
 		default: twMerge(padding.x, padding.y)
 	},
+	Textarea: {},
 	Th: {
 		default: twMerge(
 			padding.x,
@@ -196,6 +197,10 @@ Object.keys(theme.Button).forEach((key) => {
 		theme.Button[key]
 	);
 	theme.SubmitButton[key] = theme.Button[key];
+});
+Object.keys(theme.Input).forEach((key) => {
+	theme.Select[key] = theme.Input[key];
+	theme.Textarea[key] = theme.Input[key];
 });
 
 export { theme };
