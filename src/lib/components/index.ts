@@ -21,6 +21,7 @@ export { default as Img } from './Img/Img.svelte';
 export { default as Input } from './Input/Input.svelte';
 export { default as Label } from './Label/Label.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
+export { default as Main } from './Main/Main.svelte';
 export { default as Modal } from './Modal/Modal.svelte';
 export { default as Nav } from './Nav/Nav.svelte';
 export { default as Option } from './Option/Option.svelte';

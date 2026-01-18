@@ -16,6 +16,7 @@
 		element?: HTMLDivElement | null;
 		isBackdrop?: boolean;
 		isCloseButton?: boolean;
+		isVisible?: boolean;
 		offsetHeight?: number;
 		offsetWidth?: number;
 		position?: 'bottom' | 'left' | 'right' | 'top';
@@ -35,6 +36,7 @@
 		element = $bindable(null),
 		isBackdrop = $bindable(true),
 		isCloseButton = $bindable(true),
+		isVisible = $bindable(false),
 		offsetHeight = $bindable(0),
 		offsetWidth = $bindable(0),
 		position = $bindable('right'),
@@ -76,6 +78,7 @@
 	bind:clientWidth
 	bind:isBackdrop
 	bind:isCloseButton
+	bind:isVisible
 	bind:offsetHeight
 	bind:offsetWidth
 	bind:element

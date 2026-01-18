@@ -4,15 +4,7 @@ import { build, files, version } from '$service-worker';
 declare const self: ServiceWorkerGlobalScope;
 
 const CACHE = `cache-${version}`;
-
-// What we precache during install (app shell + static assets)
-const PRECACHE_URLS = [
-	...build, // your built JS/CSS output
-	...files // everything in /static
-];
-
-// Optional offline fallback (create static/offline.html if you want this)
-const OFFLINE_FALLBACK = '/offline.html';
+const PRECACHE_URLS = [...build, ...files];
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
@@ -20,14 +12,6 @@ self.addEventListener('install', (event) => {
 			const cache = await caches.open(CACHE);
 			await cache.addAll(PRECACHE_URLS);
 
-			// If you add an offline page, precache it too (ignore if it doesn't exist)
-			try {
-				await cache.add(OFFLINE_FALLBACK);
-			} catch {
-				// no offline.html, that's fine
-			}
-
-			// Activate updated SW immediately
 			await self.skipWaiting();
 		})()
 	);
@@ -36,65 +20,78 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
 	event.waitUntil(
 		(async () => {
-			// Remove old caches
 			const keys = await caches.keys();
-			await Promise.all(
-				keys.map((key) => (key !== CACHE ? caches.delete(key) : Promise.resolve()))
-			);
-
-			// Take control of clients right away
+			await Promise.all(keys.map((k) => (k === CACHE ? Promise.resolve() : caches.delete(k))));
 			await self.clients.claim();
 		})()
 	);
 });
 
-// Offline-first fetch handling
+async function networkFirst(request: Request, cache: Cache, timeoutMs = 4000) {
+	// Try network, but don’t hang forever on flaky connections.
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+	try {
+		const response = await fetch(request, { signal: controller.signal });
+
+		// Cache successful same-origin responses so they’re available offline later
+		if (response.ok && response.type === 'basic') {
+			cache.put(request, response.clone());
+		}
+
+		return response;
+	} catch {
+		const cached = await cache.match(request);
+		if (cached) return cached;
+
+		return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+	} finally {
+		clearTimeout(timeout);
+	}
+}
+
+async function cacheFirst(request: Request, cache: Cache) {
+	const cached = await cache.match(request);
+	if (cached) return cached;
+
+	const response = await fetch(request);
+
+	if (response.ok && response.type === 'basic') {
+		cache.put(request, response.clone());
+	}
+	return response;
+}
+
 self.addEventListener('fetch', (event) => {
-	const req = event.request;
-	const url = new URL(req.url);
+	const request = event.request;
+	const url = new URL(request.url);
 
-	// Only handle same-origin requests (avoid breaking 3rd party stuff)
+	// Only same-origin GET requests
 	if (url.origin !== self.location.origin) return;
-
-	// Don't mess with non-GET requests
-	if (req.method !== 'GET') return;
+	if (request.method !== 'GET') return;
 
 	event.respondWith(
 		(async () => {
 			const cache = await caches.open(CACHE);
 
-			// 1) Navigations: try cache first, then network, then offline fallback
-			if (req.mode === 'navigate') {
-				const cached = await cache.match(req);
-				if (cached) return cached;
-
-				try {
-					const fresh = await fetch(req);
-					// Cache the navigation response so this route works offline next time
-					cache.put(req, fresh.clone());
-					return fresh;
-				} catch {
-					// If you created static/offline.html, return it; otherwise last resort:
-					return (await cache.match(OFFLINE_FALLBACK)) ?? new Response('Offline', { status: 503 });
-				}
+			// Pages / route navigations: INTERNET FIRST
+			if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
+				return networkFirst(request, cache, 4000);
 			}
 
-			// 2) Everything else (assets / same-origin GET): cache-first, then network
-			const cached = await cache.match(req);
-			if (cached) return cached;
+			// Static assets (js/css/images/fonts): usually best as CACHE FIRST
+			// (change to networkFirst if you truly want everything internet-first)
+			const isAsset =
+				url.pathname.startsWith('/_app/') ||
+				/\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|otf)$/.test(url.pathname);
 
-			try {
-				const fresh = await fetch(req);
-
-				// Cache successful basic responses
-				if (fresh.ok && fresh.type === 'basic') {
-					cache.put(req, fresh.clone());
-				}
-				return fresh;
-			} catch {
-				// If it's an image/font/etc you might return a placeholder here if desired
-				return new Response('Offline', { status: 503 });
+			if (isAsset) {
+				return cacheFirst(request, cache);
 			}
+
+			// Default for other same-origin GET (e.g., JSON endpoints): INTERNET FIRST
+			return networkFirst(request, cache, 4000);
 		})()
 	);
 });
