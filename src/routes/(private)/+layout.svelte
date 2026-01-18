@@ -4,14 +4,16 @@
 	import { clickOutside } from '$lib/attachments';
 	import { A, Button, Card, Container, Div, Header, Main, Sheet } from '$lib/components';
 	import { fade, fly } from '$lib/transitions';
+	import type { LayoutData } from '../$types';
 
 	// types
 	type Props = {
 		children: Snippet;
+		data: LayoutData;
 	};
 
 	// $props
-	let { children }: Props = $props();
+	let { children, data }: Props = $props();
 
 	// $state
 	let outerWidth = $state(0);
@@ -26,7 +28,7 @@
 <svelte:window bind:outerWidth />
 
 <Div class="flex max-h-screen min-h-screen flex-col overflow-auto md:flex-row-reverse">
-	<Main class="flex grow flex-col p-6">
+	<Main class="flex grow flex-col overflow-auto p-6">
 		{#if children}
 			{@render children()}
 		{/if}
