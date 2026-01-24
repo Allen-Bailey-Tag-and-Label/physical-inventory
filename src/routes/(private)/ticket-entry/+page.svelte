@@ -9,10 +9,20 @@
 	import type { PageData } from './$types';
 	import { theme } from '$lib/theme';
 	import { browser } from '$app/environment';
+	import { untrack } from 'svelte';
 
 	// types
 	type Props = {
+		buttonText: string;
 		data: PageData;
+		onsubmitComplete: () => void;
+		operation: 'enter' | 'update';
+		ticketInfo: {
+			amounts: string[];
+			itemNumber: string;
+			ticketNumber: string;
+			uom: string;
+		};
 	};
 	type Search = {
 		close: () => false;
@@ -78,10 +88,6 @@
 
 		await onsubmitComplete();
 	};
-	const onsubmitComplete = async () => {
-		resetForm();
-		elements.ticketNumber?.focus();
-	};
 	const resetForm = async () => {
 		amounts = Array(10).fill('');
 		itemNumber = '';
@@ -101,10 +107,24 @@
 	};
 
 	// $props
-	let { data }: Props = $props();
+	let {
+		buttonText = $bindable('Enter Ticket'),
+		data,
+		onsubmitComplete = $bindable(async () => {
+			resetForm();
+			elements.ticketNumber?.focus();
+		}),
+		operation = $bindable('enter'),
+		ticketInfo = $bindable({
+			amounts: Array(10).fill(''),
+			itemNumber: '',
+			ticketNumber: '',
+			uom: ''
+		})
+	}: Props = $props();
 
 	// $state
-	let amounts: string[] = $state(Array(10).fill(''));
+	let amounts = $state(Array(10).fill(''));
 	let counter = $state('');
 	let date = $state('');
 	let elements: Record<string, HTMLInputElement | null> = $state({
@@ -112,6 +132,7 @@
 		itemNumber: null,
 		uom: null
 	});
+	let isAdmin = $state(false);
 	let isSubmitted = $state(false);
 	let itemNumber = $state('');
 	let physicalInventoryBranchId = $state('');
@@ -170,6 +191,16 @@
 
 	// $effects
 	$effect(() => {
+		if (JSON.stringify(ticketInfo)) {
+			untrack(() => {
+				amounts = ticketInfo.amounts;
+				itemNumber = ticketInfo.itemNumber;
+				ticketNumber = ticketInfo.ticketNumber;
+				uom = ticketInfo.uom;
+			});
+		}
+	});
+	$effect(() => {
 		if (browser) {
 			counter = localStorage.getItem('counter') ?? '';
 			date = localStorage.getItem('date') ?? '';
@@ -184,97 +215,106 @@
 			if (tickets.length > 0) submitLocalTickets(tickets);
 		}
 	});
+	$effect(() => {
+		if (browser) {
+			isAdmin = (localStorage.getItem('isAdmin') ?? 'false') === 'true';
+		}
+	});
 </script>
 
-<Form
-	action="?/ticket"
-	bind:isSubmitted
-	class="flex grow flex-col space-y-6 overflow-auto md:items-start"
-	onsubmit={navigator.online ? undefined : onsubmit}
-	{onsubmitComplete}
->
-	<Field label="Ticket #">
-		<Input
-			bind:element={elements.ticketNumber}
-			bind:value={ticketNumber}
-			class="text-right"
-			name="ticketNumber"
-			required={true}
-			type="number"
-			variants={isValidTicketNumber ? undefined : ['error']}
-		/>
-	</Field>
-	<Field label="Item #">
-		<Div class="relative w-full md:max-w-[28rem]">
+{#if !isAdmin || operation === 'update'}
+	<Form
+		action="?/ticket"
+		bind:isSubmitted
+		class="flex grow flex-col space-y-6 overflow-auto md:items-start"
+		onsubmit={navigator.online ? undefined : onsubmit}
+		{onsubmitComplete}
+	>
+		<Field label="Ticket #">
 			<Input
-				bind:element={elements.itemNumber}
-				bind:value={itemNumber}
-				class={twMerge('w-full md:min-w-[28rem]')}
-				name="itemNumber"
+				bind:element={elements.ticketNumber}
+				bind:value={ticketNumber}
+				class="text-right"
+				name="ticketNumber"
 				required={true}
-				variants={isValidItemNumber ? undefined : ['error']}
+				type="number"
+				variants={isValidTicketNumber ? undefined : ['error']}
 			/>
-			<Button
-				class="absolute top-0 right-0"
-				onclick={search.open}
-				tabindex={-1}
-				type="button"
-				variants={['icon', 'ghost']}
-			>
-				<SearchIcon />
-			</Button>
-		</Div>
-	</Field>
-	<Field label="UOM">
-		<Input
-			bind:element={elements.uom}
-			bind:value={uom}
-			name="uom"
-			required={true}
-			variants={isValidUom ? undefined : ['error']}
-		/>
-	</Field>
-	<Div class="grid grid-cols-1 overflow-auto">
-		<Label>Amount</Label>
-		<Card class="col-span-1 grid grid-cols-subgrid overflow-auto p-0">
-			{#each amounts as _, amountIndex}
+		</Field>
+		<Field label="Item #">
+			<Div class="relative w-full md:max-w-[28rem]">
 				<Input
-					bind:value={amounts[amountIndex]}
-					class={twMerge(
-						'col-span-1 rounded-none text-right',
-						amountIndex === 0 ? 'rounded-tl-md' : undefined,
-						amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
-					)}
-					name="amount{amountIndex}"
-					required={amountIndex === 0 ? true : undefined}
-					step="1"
-					type="number"
-					variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
+					bind:element={elements.itemNumber}
+					bind:value={itemNumber}
+					class={twMerge('w-full md:min-w-[28rem]')}
+					name="itemNumber"
+					required={true}
+					variants={isValidItemNumber ? undefined : ['error']}
 				/>
-			{/each}
-		</Card>
-		<Div
-			class={twMerge(
-				theme.getComponentVariant('Input', 'default'),
-				'flex justify-between rounded-none bg-transparent px-0 inset-ring-0 dark:bg-transparent'
-			)}
-		>
-			<Div class="font-semibold">Total:</Div>
-			<Div>{totalAmount}</Div>
+				<Button
+					class="absolute top-0 right-0"
+					onclick={search.open}
+					tabindex={-1}
+					type="button"
+					variants={['icon', 'ghost']}
+				>
+					<SearchIcon />
+				</Button>
+			</Div>
+		</Field>
+		<Field label="UOM">
+			<Input
+				bind:element={elements.uom}
+				bind:value={uom}
+				name="uom"
+				required={true}
+				variants={isValidUom ? undefined : ['error']}
+			/>
+		</Field>
+		<Div class="grid grid-cols-1 overflow-auto">
+			<Label>Amount</Label>
+			<Card class="col-span-1 grid grid-cols-subgrid overflow-auto p-0">
+				{#each amounts as _, amountIndex}
+					<Input
+						bind:value={amounts[amountIndex]}
+						class={twMerge(
+							'col-span-1 rounded-none text-right',
+							amountIndex === 0 ? 'rounded-tl-md' : undefined,
+							amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
+						)}
+						name="amount{amountIndex}"
+						required={amountIndex === 0 ? true : undefined}
+						step="1"
+						type="number"
+						variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
+					/>
+				{/each}
+			</Card>
+			<Div
+				class={twMerge(
+					theme.getComponentVariant('Input', 'default'),
+					'flex justify-between rounded-none bg-transparent px-0 inset-ring-0 dark:bg-transparent'
+				)}
+			>
+				<Div class="font-semibold">Total:</Div>
+				<Div>{totalAmount}</Div>
+			</Div>
 		</Div>
-	</Div>
-	<Input value={counter} class="sr-only" name="counter" type="hidden" />
-	<Input value={date} class="sr-only" name="date" type="hidden" />
-	<Input
-		value={physicalInventoryBranchId}
-		class="sr-only"
-		name="physicalInventoryBranchId"
-		type="hidden"
-	/>
-	<Input value={totalAmount} class="sr-only" name="totalAmount" type="hidden" />
-	<Input value={verifier} class="sr-only" name="verifier" type="hidden" />
-	<SubmitButton bind:isSubmitted>Enter Ticket</SubmitButton>
-</Form>
+		<Input value={counter} class="sr-only" name="counter" type="hidden" />
+		<Input value={date} class="sr-only" name="date" type="hidden" />
+		<Input
+			value={physicalInventoryBranchId}
+			class="sr-only"
+			name="physicalInventoryBranchId"
+			type="hidden"
+		/>
+		<Input value={totalAmount} class="sr-only" name="totalAmount" type="hidden" />
+		<Input value={verifier} class="sr-only" name="verifier" type="hidden" />
+		<SubmitButton bind:isSubmitted>{buttonText}</SubmitButton>
+	</Form>
+{:else}
+	You're currently logged in as an admin and cannot enter tickets
+{/if}
 
 {#if search.isVisible}
 	<Div

@@ -1,17 +1,15 @@
-import type { Actions } from '@sveltejs/kit';
+import { redirect, type Actions } from '@sveltejs/kit';
 import { Types } from 'mongoose';
 import { Ticket } from '$lib/db/models';
 
 type Ticket = {
 	amounts: number[];
 	branch: Types.ObjectId;
-	counter: Types.ObjectId;
 	date: number;
 	itemNumber: string;
 	ticketNumber: number;
 	totalAmount: number;
 	uom: string;
-	verifier: Types.ObjectId;
 };
 const sanitizeTicketData = (formData: Record<string, string>): Ticket => {
 	return {
@@ -28,13 +26,11 @@ const sanitizeTicketData = (formData: Record<string, string>): Ticket => {
 			+formData.amount9
 		],
 		branch: new Types.ObjectId(formData.physicalInventoryBranchId),
-		counter: new Types.ObjectId(formData.counter),
 		date: +formData.date,
 		itemNumber: formData.itemNumber,
 		ticketNumber: +formData.ticketNumber,
 		totalAmount: +formData.totalAmount,
-		uom: formData.uom,
-		verifier: new Types.ObjectId(formData.verifier)
+		uom: formData.uom
 	};
 };
 
@@ -71,4 +67,19 @@ export const actions: Actions = {
 
 		return { success: true };
 	}
+};
+
+export const load = async ({ params }) => {
+	const ticket = await Ticket.findOne({ ticketNumber: +params.ticketNumber });
+
+	if (!ticket) redirect(303, '/view-tickets');
+
+	return {
+		ticketInfo: {
+			amounts: ticket.amounts.map((number) => (number === 0 ? '' : number.toString())),
+			itemNumber: ticket.itemNumber,
+			ticketNumber: ticket.ticketNumber.toString(),
+			uom: ticket.uom
+		}
+	};
 };

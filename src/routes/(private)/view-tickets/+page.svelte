@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, Table, Tbody, Td, Th, Thead, Tr } from '$lib/components';
+	import { A, Card, Table, Tbody, Td, Th, Thead, Tr } from '$lib/components';
 	import { format } from '$lib/format';
 	import type { PageData } from './$types';
 
@@ -37,7 +37,9 @@
 			{:then tickets}
 				{#each tickets as ticket}
 					<Tr>
-						<Td class="sticky left-0 z-10 whitespace-nowrap">{ticket.ticketNumber}</Td>
+						<Td class="sticky left-0 z-10 whitespace-nowrap"
+							><A href="/ticket/{ticket.ticketNumber}">{ticket.ticketNumber}</A></Td
+						>
 						<Td class="whitespace-nowrap">{ticket.itemNumber}</Td>
 						<Td class="text-right whitespace-nowrap">{ticket.totalAmount}</Td>
 						<Td class="whitespace-nowrap">{ticket.uom}</Td>
