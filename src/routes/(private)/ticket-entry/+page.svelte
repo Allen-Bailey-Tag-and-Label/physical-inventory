@@ -193,7 +193,7 @@
 	$effect(() => {
 		if (JSON.stringify(ticketInfo)) {
 			untrack(() => {
-				amounts = ticketInfo.amounts;
+				amounts = [...ticketInfo.amounts];
 				itemNumber = ticketInfo.itemNumber;
 				ticketNumber = ticketInfo.ticketNumber;
 				uom = ticketInfo.uom;

@@ -7,7 +7,7 @@
 		data: PageData;
 	};
 
-	// $props()
+	// $props
 	let { data }: Props = $props();
 </script>
 

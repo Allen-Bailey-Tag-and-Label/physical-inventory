@@ -40,4 +40,5 @@ export { default as Td } from './Td/Td.svelte';
 export { default as Textarea } from './Textarea/Textarea.svelte';
 export { default as Th } from './Th/Th.svelte';
 export { default as Thead } from './Thead/Thead.svelte';
+export { default as TicketTable } from './TicketTable/TicketTable.svelte';
 export { default as Tr } from './Tr/Tr.svelte';
