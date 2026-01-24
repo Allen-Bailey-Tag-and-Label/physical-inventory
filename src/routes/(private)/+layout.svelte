@@ -45,6 +45,9 @@
 	// $effects
 	$effect(() => {
 		if (browser) {
+			const today = new Date();
+			const date = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}`;
+			localStorage.setItem('date', date);
 			isAdmin = localStorage.getItem('isAdmin') === 'true';
 			localStorage.setItem('physicalInventoryBranchId', data.physicalInventoryBranchId.value);
 		}

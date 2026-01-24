@@ -1,16 +1,48 @@
 <script lang="ts">
-	import { Search, X } from '@lucide/svelte';
+	import { Search as SearchIcon, X } from '@lucide/svelte';
 	import { twMerge } from 'tailwind-merge';
 	import { clickOutside } from '$lib/attachments';
 	import { Button, Card, Div, Field, Form, Input, Label, SubmitButton } from '$lib/components';
 	import { items } from '$lib/items/items.svelte';
+	import { navigator } from '$lib/navigator';
 	import { fade } from '$lib/transitions';
 	import type { PageData } from './$types';
-	import { navigator } from '$lib/navigator';
+	import { theme } from '$lib/theme';
+	import { browser } from '$app/environment';
 
 	// types
 	type Props = {
 		data: PageData;
+	};
+	type Search = {
+		close: () => false;
+		input: string;
+		isVisible: boolean;
+		onsubmit: (e: SubmitEvent) => Record<string, any>[] | undefined;
+		open: () => true;
+		reset: () => void;
+		results: Record<string, any>[];
+		toggle: () => boolean;
+	};
+	type Ticket = {
+		amount0: string;
+		amount1: string;
+		amount2: string;
+		amount3: string;
+		amount4: string;
+		amount5: string;
+		amount6: string;
+		amount7: string;
+		amount8: string;
+		amount9: string;
+		physicalInventoryBranchId: string;
+		counter: string;
+		date: string;
+		itemNumber: string;
+		ticketNumber: string;
+		totalAmount: number;
+		uom: string;
+		verifier: string;
 	};
 
 	// helpers
@@ -19,14 +51,27 @@
 	) => {
 		event.preventDefault();
 
-		let tickets = JSON.parse(localStorage.getItem('tickets') ?? JSON.stringify([]));
+		let tickets: Ticket[] = JSON.parse(localStorage.getItem('tickets') ?? JSON.stringify([]));
 
 		tickets.push({
-			ticketNumber,
+			amount0: amounts[0],
+			amount1: amounts[1],
+			amount2: amounts[2],
+			amount3: amounts[3],
+			amount4: amounts[4],
+			amount5: amounts[5],
+			amount6: amounts[6],
+			amount7: amounts[7],
+			amount8: amounts[8],
+			amount9: amounts[9],
+			physicalInventoryBranchId,
+			counter,
+			date,
 			itemNumber,
+			ticketNumber,
+			totalAmount,
 			uom,
-			amounts: amounts.map((amount) => +amount),
-			totalAmount
+			verifier
 		});
 
 		localStorage.setItem('tickets', JSON.stringify(tickets));
@@ -35,6 +80,7 @@
 	};
 	const onsubmitComplete = async () => {
 		resetForm();
+		elements.ticketNumber?.focus();
 	};
 	const resetForm = async () => {
 		amounts = Array(10).fill('');
@@ -42,12 +88,25 @@
 		ticketNumber = '';
 		uom = '';
 	};
+	const submitLocalTickets = async (tickets: Ticket[]) => {
+		const body = new FormData();
+		body.append('tickets', JSON.stringify(tickets));
+
+		await fetch('?/tickets', {
+			body,
+			method: 'POST'
+		});
+
+		localStorage.setItem('tickets', JSON.stringify([]));
+	};
 
 	// $props
 	let { data }: Props = $props();
 
 	// $state
 	let amounts: string[] = $state(Array(10).fill(''));
+	let counter = $state('');
+	let date = $state('');
 	let elements: Record<string, HTMLInputElement | null> = $state({
 		ticketNumber: null,
 		itemNumber: null,
@@ -55,16 +114,8 @@
 	});
 	let isSubmitted = $state(false);
 	let itemNumber = $state('');
-	let search: {
-		close: () => false;
-		input: string;
-		isVisible: boolean;
-		onsubmit: (e: SubmitEvent) => never[] | undefined;
-		open: () => true;
-		reset: () => void;
-		results: Record<string, string>[];
-		toggle: () => boolean;
-	} = $state({
+	let physicalInventoryBranchId = $state('');
+	let search: Search = $state({
 		close: () => (search.isVisible = false),
 		input: '',
 		isVisible: false,
@@ -75,12 +126,9 @@
 
 			const terms = search.input.trim().toLowerCase().split(/\s+/);
 
-			search.results = items
+			search.results = branchItems
 				.filter((item) => {
 					if (!terms.length) return true;
-
-					if (item.branch !== data.branch.number.toString()) return false;
-					if (item.stockingType === 'O') return false;
 
 					const searchableText = [item.itemNumber, item.description, item.description2]
 						.join(' ')
@@ -90,7 +138,9 @@
 				})
 				.sort((a, b) => a.itemNumber.localeCompare(b.itemNumber));
 		},
-		open: () => (search.isVisible = true),
+		open: () => {
+			search.isVisible = true;
+		},
 		reset: () => {
 			search.input = '';
 		},
@@ -99,15 +149,41 @@
 	});
 	let ticketNumber = $state('');
 	let uom = $state('');
-
-	// $effects
-	$effect(() => {});
+	let verifier = $state('');
 
 	// $derived
+	const branchItems = $derived.by(() =>
+		items
+			.filter((item) => {
+				if (item.branch !== data.branch.number.toString()) return false;
+				if (item.stockingType === 'O') return false;
+
+				return true;
+			})
+			.sort((a, b) => a.itemNumber.localeCompare(b.itemNumber))
+	);
 	const isValidTicketNumber = $derived.by(() => ticketNumber !== '');
 	const isValidItemNumber = $derived.by(() => items.some((item) => item.itemNumber === itemNumber));
 	const isValidUom = $derived.by(() => uom !== '');
+	const isValidAmount = $derived.by(() => amounts[0] !== '');
 	const totalAmount = $derived.by(() => amounts.reduce((total, amount) => total + +amount, 0));
+
+	// $effects
+	$effect(() => {
+		if (browser) {
+			counter = localStorage.getItem('counter') ?? '';
+			date = localStorage.getItem('date') ?? '';
+			physicalInventoryBranchId = localStorage.getItem('physicalInventoryBranchId') ?? '';
+			verifier = localStorage.getItem('verifier') ?? '';
+		}
+	});
+	$effect(() => {
+		if (navigator.online && browser) {
+			const tickets = JSON.parse(localStorage.getItem('tickets') ?? JSON.stringify([]));
+
+			if (tickets.length > 0) submitLocalTickets(tickets);
+		}
+	});
 </script>
 
 <Form
@@ -145,7 +221,7 @@
 				type="button"
 				variants={['icon', 'ghost']}
 			>
-				<Search />
+				<SearchIcon />
 			</Button>
 		</Div>
 	</Field>
@@ -171,12 +247,32 @@
 					)}
 					name="amount{amountIndex}"
 					required={amountIndex === 0 ? true : undefined}
+					step="1"
 					type="number"
+					variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
 				/>
 			{/each}
 		</Card>
+		<Div
+			class={twMerge(
+				theme.getComponentVariant('Input', 'default'),
+				'flex justify-between rounded-none bg-transparent px-0 inset-ring-0 dark:bg-transparent'
+			)}
+		>
+			<Div class="font-semibold">Total:</Div>
+			<Div>{totalAmount}</Div>
+		</Div>
 	</Div>
+	<Input value={counter} class="sr-only" name="counter" type="hidden" />
+	<Input value={date} class="sr-only" name="date" type="hidden" />
+	<Input
+		value={physicalInventoryBranchId}
+		class="sr-only"
+		name="physicalInventoryBranchId"
+		type="hidden"
+	/>
 	<Input value={totalAmount} class="sr-only" name="totalAmount" type="hidden" />
+	<Input value={verifier} class="sr-only" name="verifier" type="hidden" />
 	<SubmitButton bind:isSubmitted>Enter Ticket</SubmitButton>
 </Form>
 
@@ -206,7 +302,7 @@
 				</Div>
 			</Field>
 			<Button type="submit" variants={['icon']}>
-				<Search />
+				<SearchIcon />
 			</Button>
 		</Form>
 		<Field class="flex grow flex-col overflow-auto" label="Results">
