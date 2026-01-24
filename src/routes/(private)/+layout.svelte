@@ -19,7 +19,7 @@
 	// $state
 	let isAdmin = $state(false);
 	let nav = $state({
-		adminItems: ['Set Branch'],
+		adminItems: ['Set Branch', 'View Tickets'],
 		close: () => (nav.isVisible = false),
 		isVisible: false,
 		userItems: ['Ticket Entry'],
