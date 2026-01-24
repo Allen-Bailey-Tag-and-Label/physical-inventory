@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { Div } from '$lib/components';
 	import './layout.css';
+	import { navigator } from '$lib/navigator';
+	import { twMerge } from 'tailwind-merge';
 
 	// types
 	type Props = {
@@ -26,4 +29,10 @@
 	<title>Physical Inventory</title>
 </svelte:head>
 
+<Div
+	class={twMerge(
+		'pointer-events-none fixed top-0 left-0 z-200 h-1 w-full',
+		navigator.online ? 'bg-green-500' : 'bg-red-500'
+	)}
+/>
 {@render children()}

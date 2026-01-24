@@ -130,6 +130,8 @@ const theme: Record<string, Record<string, string>> = {
 	Img: { default: '' },
 	Input: {
 		default: twMerge(input),
+		error:
+			'inset-ring-red-500 dark:inset-ring-red-500 hover:inset-ring-red-500 hover:dark:inset-ring-red-500 focus:inset-ring-red-500 focus:dark:inset-ring-red-500',
 		glass: twMerge(backdropBlur, glass.light, glass.dark),
 		light: 'dark:bg-gray-50 dark:text-slate-950'
 	},

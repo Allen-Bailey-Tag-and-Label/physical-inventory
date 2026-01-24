@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import {
 		A,
@@ -21,10 +22,11 @@
 	};
 
 	// helpers
-	const onAdminClick = () => {
+	const onAdminClick = async () => {
 		localStorage.removeItem('counter');
 		localStorage.setItem('isAdmin', 'true');
 		localStorage.removeItem('verifier');
+
 		goto('/admin');
 	};
 	const onsubmit = async (e: SubmitEvent) => {
@@ -33,6 +35,7 @@
 		localStorage.setItem('counter', counter);
 		localStorage.setItem('isAdmin', 'false');
 		localStorage.setItem('verifier', verifier);
+
 		goto('/ticket-entry');
 	};
 
@@ -78,9 +81,9 @@
 					{error}
 				</Div>
 			{/if}
-			<Div class="flex flex-col space-y-3">
-				<SubmitButton bind:isSubmitted>Assign</SubmitButton>
+			<Div class="grid grid-cols-2 gap-4 md:flex md:justify-end">
 				<Button onclick={onAdminClick} type="button" variants={['contrast']}>Admin</Button>
+				<SubmitButton bind:isSubmitted>Assign</SubmitButton>
 			</Div>
 		</Form>
 	{/await}
