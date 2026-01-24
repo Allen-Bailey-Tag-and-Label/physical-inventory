@@ -6,6 +6,7 @@
 	import Div from '../Div/Div.svelte';
 	import { ChevronDown } from '@lucide/svelte';
 	import { browser } from '$app/environment';
+	import { grow } from '$lib/transitions';
 
 	// types
 	type Props = {
@@ -106,12 +107,14 @@
 							</Div>
 							<Div class="w-6">
 								{#if columnIndex === sortColumnIndex}
-									<ChevronDown
-										class={twMerge(
-											'transition duration-200',
-											sortDirection === -1 ? 'rotate-180' : 'rotate-0'
-										)}
-									/>
+									<Div transition={(element) => grow(element, { opacity: 1, scale: 0 })}>
+										<ChevronDown
+											class={twMerge(
+												'transition duration-200',
+												sortDirection === -1 ? 'rotate-180' : 'rotate-0'
+											)}
+										/>
+									</Div>
 								{/if}
 							</Div>
 						</Button>
