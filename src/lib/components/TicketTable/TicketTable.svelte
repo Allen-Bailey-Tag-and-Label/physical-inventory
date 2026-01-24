@@ -139,7 +139,11 @@
 						</Td>
 						<Td class="text-right whitespace-nowrap">{ticket.totalAmount}</Td>
 						<Td class="whitespace-nowrap">{ticket.uom}</Td>
-						<Td class="whitespace-nowrap">{ticket.counter.username}</Td>
+						<Td class="whitespace-nowrap">
+							<A href="/counter/{ticket.counter.username}">
+								{ticket.counter.username}
+							</A>
+						</Td>
 						<Td class="whitespace-nowrap">{ticket.verifier.username}</Td>
 						<Td class="whitespace-nowrap">
 							{format.date(new Date(ticket.createdAt), {
