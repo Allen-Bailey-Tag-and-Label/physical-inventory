@@ -5,14 +5,16 @@
 	import { A, Button, Card, Container, Div, Header, Main, Modal, P } from '$lib/components';
 	import { fade, fly } from '$lib/transitions';
 	import { browser } from '$app/environment';
+	import type { LayoutData } from '../$types';
 
 	// types
 	type Props = {
 		children: Snippet;
+		data: LayoutData;
 	};
 
 	// $props
-	let { children }: Props = $props();
+	let { children, data }: Props = $props();
 
 	// $state
 	let isAdmin = $state(false);
@@ -44,6 +46,7 @@
 	$effect(() => {
 		if (browser) {
 			isAdmin = localStorage.getItem('isAdmin') === 'true';
+			localStorage.setItem('physicalInventoryBranchId', data.physicalInventoryBranchId.value);
 		}
 	});
 </script>

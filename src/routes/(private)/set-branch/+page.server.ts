@@ -18,12 +18,14 @@ export const actions: Actions = {
 
 export const load = async () => {
 	const [branches, physicalIdBranchId] = await Promise.all([
-		Branch.find(),
+		Branch.find().sort({ number: 'asc' }),
 		KeyValue.findOne({ key: 'physicalInventoryBranchId' })
 	]);
 
 	return {
 		branches: JSON.parse(JSON.stringify(branches)),
-		physicalIdBranchId: JSON.parse(JSON.stringify(physicalIdBranchId))
+		physicalIdBranchId: JSON.parse(
+			JSON.stringify(physicalIdBranchId ?? { key: 'physicalInventoryBranchId', value: '' })
+		)
 	};
 };
