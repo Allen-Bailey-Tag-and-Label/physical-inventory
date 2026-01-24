@@ -144,7 +144,11 @@
 								{ticket.counter.username}
 							</A>
 						</Td>
-						<Td class="whitespace-nowrap">{ticket.verifier.username}</Td>
+						<Td class="whitespace-nowrap">
+							<A href="/verifier/{ticket.verifier.username}">
+								{ticket.verifier.username}
+							</A>
+						</Td>
 						<Td class="whitespace-nowrap">
 							{format.date(new Date(ticket.createdAt), {
 								locale: 'en-US',
