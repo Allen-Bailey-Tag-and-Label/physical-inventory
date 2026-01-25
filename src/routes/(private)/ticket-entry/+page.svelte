@@ -202,7 +202,6 @@
 		if (item === undefined) return 1;
 		return item.conversionFactors[uom] ?? 1;
 	});
-	// const item = $derived.by(() => items.find((i) => i.itemNumber === itemNumber));
 	const itemUoms = $derived.by(() => {
 		if (item === undefined) return [];
 		return Object.keys(item.conversionFactors);

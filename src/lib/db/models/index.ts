@@ -1,5 +1,6 @@
 export { Branch } from './Branch';
 export { KeyValue } from './KeyValue';
+export { PreCount } from './PreCount';
 export { Ticket } from './Ticket';
 export { User } from './User';
 export { UserPasswordReset } from './UserPasswordReset';
