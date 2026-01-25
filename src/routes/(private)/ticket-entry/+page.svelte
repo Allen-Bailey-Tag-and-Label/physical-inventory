@@ -1,15 +1,25 @@
 <script lang="ts">
 	import { Search as SearchIcon, X } from '@lucide/svelte';
+	import { untrack } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
+	import { browser } from '$app/environment';
 	import { clickOutside } from '$lib/attachments';
-	import { Button, Card, Div, Field, Form, Input, Label, SubmitButton } from '$lib/components';
-	import { items } from '$lib/items/items.svelte';
+	import {
+		Button,
+		Card,
+		Div,
+		Field,
+		Form,
+		Input,
+		Label,
+		Select,
+		SubmitButton
+	} from '$lib/components';
+	import { items, itemsMap } from '$lib/items/items.svelte';
 	import { navigator } from '$lib/navigator';
+	import { theme } from '$lib/theme';
 	import { fade } from '$lib/transitions';
 	import type { PageData } from './$types';
-	import { theme } from '$lib/theme';
-	import { browser } from '$app/environment';
-	import { untrack } from 'svelte';
 
 	// types
 	type Props = {
@@ -127,13 +137,18 @@
 	let amounts = $state(Array(10).fill(''));
 	let counter = $state('');
 	let date = $state('');
-	let elements: Record<string, HTMLInputElement | null> = $state({
+	let elements: {
+		ticketNumber: HTMLInputElement | null;
+		itemNumber: HTMLInputElement | null;
+		uom: HTMLSelectElement | null;
+	} = $state({
 		ticketNumber: null,
 		itemNumber: null,
 		uom: null
 	});
 	let isAdmin = $state(false);
 	let isSubmitted = $state(false);
+	let item: Record<string, any> | undefined = $state(undefined);
 	let itemNumber = $state('');
 	let physicalInventoryBranchId = $state('');
 	let search: Search = $state({
@@ -183,10 +198,28 @@
 			})
 			.sort((a, b) => a.itemNumber.localeCompare(b.itemNumber))
 	);
+	const conversionFactor = $derived.by(() => {
+		if (item === undefined) return 1;
+		return item.conversionFactors[uom] ?? 1;
+	});
+	// const item = $derived.by(() => items.find((i) => i.itemNumber === itemNumber));
+	const itemUoms = $derived.by(() => {
+		if (item === undefined) return [];
+		return Object.keys(item.conversionFactors);
+	});
+	const isUomPrimary = $derived.by(() => {
+		if (item === undefined) return true;
+		if (item.uom === uom) return true;
+		return false;
+	});
 	const isValidTicketNumber = $derived.by(() => ticketNumber !== '');
-	const isValidItemNumber = $derived.by(() => items.some((item) => item.itemNumber === itemNumber));
+	const isValidItemNumber = $derived.by(() => item !== undefined);
 	const isValidUom = $derived.by(() => uom !== '');
 	const isValidAmount = $derived.by(() => amounts[0] !== '');
+	const uomOptions = $derived.by(() => [
+		{ label: '', value: '' },
+		...itemUoms.map((label) => ({ label, value: label }))
+	]);
 	const totalAmount = $derived.by(() => amounts.reduce((total, amount) => total + +amount, 0));
 
 	// $effects
@@ -219,6 +252,13 @@
 		if (browser) {
 			isAdmin = (localStorage.getItem('isAdmin') ?? 'false') === 'true';
 		}
+	});
+	$effect(() => {
+		if (itemUoms.length === 0) uom = '';
+		if (itemUoms.length === 1) uom = itemUoms[0];
+	});
+	$effect(() => {
+		item = itemsMap.get(itemNumber);
 	});
 </script>
 
@@ -262,19 +302,34 @@
 				</Button>
 			</Div>
 		</Field>
-		<Field label="UOM">
-			<Input
-				bind:element={elements.uom}
-				bind:value={uom}
-				name="uom"
-				required={true}
-				variants={isValidUom ? undefined : ['error']}
-			/>
-		</Field>
-		<Div class="grid grid-cols-1 overflow-auto">
-			<Label>Amount</Label>
-			<Card class="col-span-1 grid grid-cols-subgrid overflow-auto p-0">
+		<Div class="flex space-x-4">
+			<Field label="UOM">
+				<Select
+					bind:element={elements.uom}
+					bind:value={uom}
+					options={uomOptions}
+					name="uom"
+					required={true}
+					variants={isValidUom ? undefined : ['error']}
+				/>
+			</Field>
+			<Field label="Primary UOM">
+				<Div
+					class={twMerge(
+						theme.getComponentVariant('Input', 'default'),
+						'bg-transparent px-0 shadow-none inset-ring-0 dark:bg-transparent dark:shadow-none'
+					)}
+				>
+					{item?.uom ?? ' '}
+				</Div>
+			</Field>
+		</Div>
+		<Div class="grid grid-cols-2 overflow-auto">
+			<Label>{uom === '' ? '' : `${uom} `}Amount</Label>
+			<Label>Primary Amount</Label>
+			<Card class="col-span-2 grid grid-cols-subgrid overflow-auto p-0">
 				{#each amounts as _, amountIndex}
+					{@const primaryAmount = amounts[amountIndex] * conversionFactor}
 					<Input
 						bind:value={amounts[amountIndex]}
 						class={twMerge(
@@ -288,6 +343,18 @@
 						type="number"
 						variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
 					/>
+					<Div
+						class={twMerge(
+							theme.getComponentVariant('Input', 'default'),
+							'col-span-1 rounded-none text-right',
+							amountIndex === 0 ? 'rounded-tr-md' : undefined,
+							amountIndex === amounts.length - 1 ? 'rounded-br-md' : undefined
+						)}
+					>
+						{#if amounts[amountIndex] !== ''}
+							{primaryAmount}
+						{/if}
+					</Div>
 				{/each}
 			</Card>
 			<Div
@@ -298,6 +365,14 @@
 			>
 				<Div class="font-semibold">Total:</Div>
 				<Div>{totalAmount}</Div>
+			</Div>
+			<Div
+				class={twMerge(
+					theme.getComponentVariant('Input', 'default'),
+					'rounded-none bg-transparent px-0 text-right inset-ring-0 dark:bg-transparent'
+				)}
+			>
+				{totalAmount * conversionFactor}
 			</Div>
 		</Div>
 		<Input value={counter} class="sr-only" name="counter" type="hidden" />
