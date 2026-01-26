@@ -37,6 +37,12 @@
 			currentPage?: number;
 			rows?: number;
 		};
+		snippets?: {
+			pagination?: Snippet;
+			tbody?: Snippet;
+			thead?: Snippet;
+			toolbar?: Snippet;
+		};
 		sortColumnIndex?: number;
 		sortDirection?: -1 | 1;
 		totalPages?: number;
@@ -86,6 +92,7 @@
 		isExportable = $bindable(true),
 		isToolbarVisible = $bindable('auto'),
 		pagination = $bindable({ currentPage: 0, rows: 10 }),
+		snippets,
 		sortColumnIndex = $bindable(0),
 		sortDirection = $bindable(1),
 		totalPages = $bindable(0)
@@ -138,7 +145,9 @@
 </script>
 
 <Card class="mr-auto flex max-w-full flex-col overflow-auto p-0">
-	{#if isToolbarVisible}
+	{#if snippets?.toolbar}
+		{@render snippets.toolbar()}
+	{:else if isToolbarVisible}
 		<Div class="flex items-center justify-end px-6 py-3">
 			{#if isExportable}
 				<Button onclick={exportToCSV}>Export</Button>
@@ -147,104 +156,120 @@
 	{/if}
 	<Div class="relative overflow-auto">
 		<Table>
-			<Thead>
-				<Tr>
-					{#each columns as { label }, columnIndex}
-						<Th
-							class={twMerge(
-								'sticky top-0 p-0 whitespace-nowrap',
-								columnIndex === 0 ? 'left-0 z-10' : undefined
-							)}
-						>
-							<Button
+			{#if snippets?.thead}
+				{@render snippets.thead()}
+			{:else}
+				<Thead>
+					<Tr>
+						{#each columns as { label }, columnIndex}
+							<Th
 								class={twMerge(
-									theme.getComponentVariant('Th', 'default'),
-									'flex w-full justify-between space-x-4 rounded-none hover:bg-primary-500/10 focus:bg-primary-500/10'
+									'sticky top-0 p-0 whitespace-nowrap',
+									columnIndex === 0 ? 'left-0 z-10' : undefined
 								)}
-								onclick={() => {
-									if (sortColumnIndex === columnIndex) sortDirection *= -1;
-									if (sortColumnIndex !== columnIndex) {
-										sortColumnIndex = columnIndex;
-										sortDirection = 1;
-									}
-								}}
 							>
-								<Div>
-									{label}
-								</Div>
-								<Div class="w-6">
-									{#if columnIndex === sortColumnIndex}
-										<Div transition={(element) => grow(element, { opacity: 1, scale: 0 })}>
-											<ChevronDown
-												class={twMerge(
-													'transition duration-200',
-													sortDirection === -1 ? 'rotate-180' : 'rotate-0'
-												)}
-											/>
-										</Div>
-									{/if}
-								</Div>
-							</Button>
-						</Th>
+								<Button
+									class={twMerge(
+										theme.getComponentVariant('Th', 'default'),
+										'flex w-full justify-between space-x-4 rounded-none hover:bg-primary-500/10 focus:bg-primary-500/10'
+									)}
+									onclick={() => {
+										if (sortColumnIndex === columnIndex) sortDirection *= -1;
+										if (sortColumnIndex !== columnIndex) {
+											sortColumnIndex = columnIndex;
+											sortDirection = 1;
+										}
+									}}
+								>
+									<Div>
+										{label}
+									</Div>
+									<Div class="w-6">
+										{#if columnIndex === sortColumnIndex}
+											<Div transition={(element) => grow(element, { opacity: 1, scale: 0 })}>
+												<ChevronDown
+													class={twMerge(
+														'transition duration-200',
+														sortDirection === -1 ? 'rotate-180' : 'rotate-0'
+													)}
+												/>
+											</Div>
+										{/if}
+									</Div>
+								</Button>
+							</Th>
+						{/each}
+					</Tr>
+				</Thead>
+			{/if}
+			{#if snippets?.tbody}
+				{@render snippets.tbody()}
+			{:else}
+				<Tbody>
+					{#each [...data].sort((a, b) => columns[sortColumnIndex].sortFn(a, b) * sortDirection) as row, rowIndex}
+						{#if rowIndex >= rowStartIndex && rowIndex < rowEndIndex}
+							<Tr>
+								{#each columns as { snippet, valueFn }, columnIndex}
+									{@render snippet({ columnIndex, row, rowIndex, valueFn })}
+								{/each}
+							</Tr>
+						{/if}
 					{/each}
-				</Tr>
-			</Thead>
-			<Tbody>
-				{#each [...data].sort((a, b) => columns[sortColumnIndex].sortFn(a, b) * sortDirection) as row, rowIndex}
-					{#if rowIndex >= rowStartIndex && rowIndex < rowEndIndex}
-						<Tr>
-							{#each columns as { snippet, valueFn }, columnIndex}
-								{@render snippet({ columnIndex, row, rowIndex, valueFn })}
-							{/each}
-						</Tr>
-					{/if}
-				{/each}
-			</Tbody>
+				</Tbody>
+			{/if}
 		</Table>
 	</Div>
-	<Div class="flex items-center justify-center space-x-4 px-6 py-3">
-		<Button onclick={() => (pagination.currentPage = 0)} variants={['icon']}>
-			<ChevronsLeft />
-		</Button>
-		<Button
-			onclick={() => {
-				pagination.currentPage = (pagination.currentPage ?? 1) - 1;
-			}}
-			variants={['icon']}
-		>
-			<ChevronLeft />
-		</Button>
-		<Div
-			class={twMerge(
-				theme.getComponentVariant('Input', 'default'),
-				'flex items-center space-x-4 py-0 pr-0'
-			)}
-		>
-			<Div>Rows:</Div>
-			<Input
-				bind:value={pagination.rows}
-				class="w-24 text-right shadow-none dark:shadow-none"
-				type="number"
-				min="1"
-				step="1"
-			/>
+	{#if snippets?.pagination}
+		{@render snippets.pagination()}
+	{:else}
+		<Div class="flex items-center justify-center space-x-4 px-6 py-3">
+			{#if data.length > 0}
+				<Button onclick={() => (pagination.currentPage = 0)} variants={['icon']}>
+					<ChevronsLeft />
+				</Button>
+				<Button
+					onclick={() => {
+						pagination.currentPage = (pagination.currentPage ?? 1) - 1;
+					}}
+					variants={['icon']}
+				>
+					<ChevronLeft />
+				</Button>
+				<Div
+					class={twMerge(
+						theme.getComponentVariant('Input', 'default'),
+						'flex items-center space-x-4 py-0 pr-0'
+					)}
+				>
+					<Div>Rows:</Div>
+					<Input
+						bind:value={pagination.rows}
+						class="w-24 text-right shadow-none dark:shadow-none"
+						type="number"
+						min="1"
+						step="1"
+					/>
+				</Div>
+				<Select bind:value={pagination.currentPage} options={pageOptions} />
+				<Button
+					onclick={() => {
+						pagination.currentPage = (pagination.currentPage ?? -1) + 1;
+					}}
+					variants={['icon']}
+				>
+					<ChevronRight />
+				</Button>
+				<Button
+					onclick={() => {
+						pagination.currentPage = Math.ceil(data.length / (pagination.rows ?? 10)) - 1;
+					}}
+					variants={['icon']}
+				>
+					<ChevronsRight />
+				</Button>
+			{:else}
+				<Div>No Results</Div>
+			{/if}
 		</Div>
-		<Select bind:value={pagination.currentPage} options={pageOptions} />
-		<Button
-			onclick={() => {
-				pagination.currentPage = (pagination.currentPage ?? -1) + 1;
-			}}
-			variants={['icon']}
-		>
-			<ChevronRight />
-		</Button>
-		<Button
-			onclick={() => {
-				pagination.currentPage = Math.ceil(data.length / (pagination.rows ?? 10)) - 1;
-			}}
-			variants={['icon']}
-		>
-			<ChevronsRight />
-		</Button>
-	</Div>
+	{/if}
 </Card>
