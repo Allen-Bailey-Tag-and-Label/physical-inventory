@@ -1,19 +1,23 @@
 <script lang="ts">
 	import { Search as SearchIcon, X } from '@lucide/svelte';
-	import { untrack } from 'svelte';
+	import { untrack, type Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 	import { browser } from '$app/environment';
 	import { clickOutside } from '$lib/attachments';
 	import {
 		Button,
 		Card,
+		DataTable,
 		Div,
 		Field,
 		Form,
 		Input,
 		Label,
 		Select,
-		SubmitButton
+		SubmitButton,
+		Table,
+		Td,
+		Thead
 	} from '$lib/components';
 	import { items, itemsMap } from '$lib/items/items.svelte';
 	import { navigator } from '$lib/navigator';
@@ -22,6 +26,16 @@
 	import type { PageData } from './$types';
 
 	// types
+	type CellSnippet = Snippet<
+		[
+			{
+				columnIndex: number;
+				row: Record<string, any>;
+				rowIndex: number;
+				valueFn: (row: Record<string, any>) => any;
+			}
+		]
+	>;
 	type Props = {
 		buttonText: string;
 		data: PageData;
@@ -36,6 +50,12 @@
 	};
 	type Search = {
 		close: () => false;
+		columns: {
+			label: string;
+			snippet: CellSnippet;
+			sortFn: (a: any, b: any) => number;
+			valueFn: (row: Record<string, any>) => any;
+		}[];
 		input: string;
 		isVisible: boolean;
 		onsubmit: (e: SubmitEvent) => Record<string, any>[] | undefined;
@@ -153,6 +173,32 @@
 	let physicalInventoryBranchId = $state('');
 	let search: Search = $state({
 		close: () => (search.isVisible = false),
+		columns: [
+			{
+				label: '',
+				snippet: SelectButtonSnippet,
+				sortFn: (a: any, b: any) => 0,
+				valueFn: (row: Record<string, any>) => ''
+			},
+			{
+				label: 'Item #',
+				snippet: StringSnippet,
+				sortFn: (a: any, b: any) => a.itemNumber.localeCompare(b.itemNumber),
+				valueFn: (row: Record<string, any>) => row.itemNumber
+			},
+			{
+				label: 'Description',
+				snippet: StringSnippet,
+				sortFn: (a: any, b: any) => a.description.localeCompare(b.description),
+				valueFn: (row: Record<string, any>) => row.description
+			},
+			{
+				label: 'Description 2',
+				snippet: StringSnippet,
+				sortFn: (a: any, b: any) => a.description2.localeCompare(b.description2),
+				valueFn: (row: Record<string, any>) => row.description2
+			}
+		],
 		input: '',
 		isVisible: false,
 		onsubmit: (e: SubmitEvent) => {
@@ -420,7 +466,8 @@
 			</Button>
 		</Form>
 		<Field class="flex grow flex-col overflow-auto" label="Results">
-			<Card class="grid grow grid-cols-[repeat(4,_fit-content(0px))] gap-x-4 gap-y-1 overflow-auto">
+			<DataTable columns={search.columns} data={search.results} isExportable={false} />
+			<!-- <Card class="overflow-auto">
 				<Div class="col-span-4 grid grid-cols-subgrid gap-x-4 gap-y-1">
 					<Div />
 					<Label>Item #</Label>
@@ -451,7 +498,7 @@
 						{/each}
 					{/if}
 				</Div>
-			</Card>
+			</Card> -->
 		</Field>
 		<Div class="grid grid-cols-1 gap-4 md:flex md:justify-end">
 			<Button class="whitespace-nowrap" onclick={search.close} variants={['contrast']}
@@ -460,3 +507,35 @@
 		</Div>
 	</Card>
 {/if}
+
+{#snippet SelectButtonSnippet({
+	row
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		<Button
+			onclick={() => {
+				itemNumber = row.itemNumber;
+
+				setTimeout(() => {
+					if (elements.uom) elements.uom.focus();
+					search.isVisible = false;
+				}, 0);
+			}}
+			type="button">Select</Button
+		>
+	</Td>
+{/snippet}
+{#snippet StringSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		{valueFn(row)}
+	</Td>
+{/snippet}

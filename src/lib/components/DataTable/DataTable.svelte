@@ -31,6 +31,7 @@
 			valueFn: (row: Record<string, any>) => any;
 		}[];
 		data?: Record<string, any>[];
+		isExportable?: boolean;
 		pagination?: {
 			currentPage?: number;
 			rows?: number;
@@ -80,6 +81,7 @@
 	let {
 		columns = $bindable([]),
 		data = $bindable([]),
+		isExportable = $bindable(true),
 		pagination = $bindable({ currentPage: 0, rows: 10 }),
 		sortColumnIndex = $bindable(0),
 		sortDirection = $bindable(1)
@@ -107,9 +109,11 @@
 </script>
 
 <Card class="mr-auto flex max-w-full flex-col overflow-auto p-0">
-	<Div class="flex items-center justify-end px-6 py-3">
-		<Button onclick={exportToCSV}>Export</Button>
-	</Div>
+	{#if isExportable}
+		<Div class="flex items-center justify-end px-6 py-3">
+			<Button onclick={exportToCSV}>Export</Button>
+		</Div>
+	{/if}
 	<Div class="relative overflow-auto">
 		<Table>
 			<Thead>
