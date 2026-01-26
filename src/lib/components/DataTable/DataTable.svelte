@@ -91,6 +91,10 @@
 	$effect(() => {
 		if (pagination.currentPage === undefined) pagination.currentPage = 0;
 		if (pagination.rows === undefined) pagination.rows = 10;
+
+		if (pagination.currentPage < 0) pagination.currentPage = 0;
+		if (pagination.currentPage >= Math.max(totalPages ?? 0, 0))
+			pagination.currentPage = Math.max(0, (totalPages ?? 0) - 1);
 	});
 
 	// $derives
@@ -106,6 +110,7 @@
 
 		return (pagination.currentPage + 1) * pagination.rows;
 	});
+	const totalPages = $derived.by(() => Math.ceil(data.length / (pagination.rows ?? 10)));
 </script>
 
 <Card class="mr-auto flex max-w-full flex-col overflow-auto p-0">
@@ -199,5 +204,7 @@
 		>
 			<ChevronsRight />
 		</Button>
+		<Div>{pagination.currentPage}</Div>
+		<Div>{totalPages}</Div>
 	</Div>
 </Card>
