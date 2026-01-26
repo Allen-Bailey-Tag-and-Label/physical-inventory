@@ -6,6 +6,7 @@ export { default as Canvas } from './Canvas/Canvas.svelte';
 export { default as Card } from './Card/Card.svelte';
 export { default as Checkbox } from './Checkbox/Checkbox.svelte';
 export { default as Container } from './Container/Container.svelte';
+export { default as DataTable } from './DataTable/DataTable.svelte';
 export { default as Div } from './Div/Div.svelte';
 export { default as Field } from './Field/Field.svelte';
 export { default as Footer } from './Footer/Footer.svelte';
