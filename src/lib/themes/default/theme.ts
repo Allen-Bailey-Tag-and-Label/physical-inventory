@@ -12,7 +12,7 @@ const padding = {
 	x: 'px-6',
 	y: 'py-3'
 };
-const ring = 'inset-ring inset-ring-gray-950/10 dark:inset-ring-gray-50/5';
+const ring = 'ring-inset ring-inset-gray-950/10 dark:ring-inset-gray-50/5';
 const rounded = 'rounded-md';
 const shadow = 'shadow-lg dark:shadow-black/50';
 const transition = 'transition';
@@ -25,7 +25,7 @@ const input = twMerge(
 	padding.y,
 	twMerge(
 		ring,
-		'hover:inset-ring-primary-500 focus:inset-ring-primary-500',
+		'hover:ring-inset-primary-500 focus:ring-inset-primary-500',
 		'ring-2 ring-transparent focus:ring-primary-500/30'
 	),
 	rounded,
@@ -130,7 +130,7 @@ const theme: Record<string, Record<string, string>> = {
 	Input: {
 		default: twMerge(input),
 		error:
-			'inset-ring-red-500 dark:inset-ring-red-500 hover:inset-ring-red-500 hover:dark:inset-ring-red-500 focus:inset-ring-red-500 focus:dark:inset-ring-red-500',
+			'ring-inset-red-500 dark:ring-inset-red-500 hover:ring-inset-red-500 hover:dark:ring-inset-red-500 focus:ring-inset-red-500 focus:dark:ring-inset-red-500',
 		glass: twMerge(backdropBlur, glass.light, glass.dark),
 		light: 'dark:bg-gray-50 dark:text-slate-950'
 	},
@@ -147,7 +147,7 @@ const theme: Record<string, Record<string, string>> = {
 	Radio: {
 		default: twMerge(
 			input,
-			'has-checked:inset-ring-primary-500 has-checked:bg-primary-200 dark:has-checked:bg-primary-800'
+			'has-checked:ring-inset-primary-500 has-checked:bg-primary-200 dark:has-checked:bg-primary-800'
 		)
 	},
 	RadioGroup: { default: twMerge('p-1') },
@@ -166,7 +166,7 @@ const theme: Record<string, Record<string, string>> = {
 	Table: {
 		default: twMerge(
 			shadow,
-			'inset-ring inset-ring-gray-950/10 dark:inset-ring-gray-50/5 bg-gray-50 dark:bg-gray-950 p-6'
+			'ring-inset ring-inset-gray-950/10 dark:ring-inset-gray-50/5 bg-gray-50 dark:bg-gray-950 p-6'
 		)
 	},
 	Tbody: {
