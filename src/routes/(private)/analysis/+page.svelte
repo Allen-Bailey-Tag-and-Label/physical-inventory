@@ -89,8 +89,6 @@
 	]);
 	let rows: Record<string, any>[] = $state([]);
 
-	$inspect(data);
-
 	// $effects
 	$effect(() => {
 		untrack(() => {
