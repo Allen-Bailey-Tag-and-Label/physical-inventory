@@ -24,13 +24,13 @@ export const load = async () => {
 		Ticket.find({ branch: branch._id, date })
 	]);
 
-	if (!preCount) return { branch: { number: 0 }, precountMap, tickets: [] };
+	if (preCount) {
+		preCount.csv.split('\n').forEach((row: Record<string, any>) => {
+			const [itemNumber, amount] = row.split('\t');
 
-	preCount.csv.split('\n').forEach((row) => {
-		const [itemNumber, amount] = row.split('\t');
-
-		precountMap.set(itemNumber, +amount);
-	});
+			precountMap.set(itemNumber, +amount);
+		});
+	}
 
 	return {
 		branch: JSON.parse(JSON.stringify(branch)),
