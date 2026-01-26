@@ -16,8 +16,11 @@
 		Select,
 		SubmitButton,
 		Table,
+		Tbody,
 		Td,
-		Thead
+		Th,
+		Thead,
+		Tr
 	} from '$lib/components';
 	import { items, itemsMap } from '$lib/items/items.svelte';
 	import { navigator } from '$lib/navigator';
@@ -369,57 +372,59 @@
 				</Div>
 			</Field>
 		</Div>
-		<Div class="grid grid-cols-2 overflow-auto">
-			<Label>{uom === '' ? '' : `${uom} `}Amount</Label>
-			<Label>Primary Amount</Label>
-			<Card class="col-span-2 grid grid-cols-subgrid overflow-auto p-0">
+		<Table>
+			<Thead>
+				<Tr>
+					<Th>Amount</Th>
+					<Th>Amount</Th>
+				</Tr>
+			</Thead>
+			<Tbody>
 				{#each amounts as _, amountIndex}
 					{@const primaryAmount = amounts[amountIndex] * conversionFactor}
-					<Input
-						bind:value={amounts[amountIndex]}
-						class={twMerge(
-							'col-span-1 rounded-none text-right',
-							amountIndex === 0 ? 'rounded-tl-md' : undefined,
-							amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
-						)}
-						name="amount{amountIndex}"
-						required={amountIndex === 0 ? true : undefined}
-						step="1"
-						type="number"
-						variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
-					/>
-					<Div
-						class={twMerge(
-							theme.getComponentVariant('Input', 'default'),
-							'col-span-1 rounded-none text-right',
-							amountIndex === 0 ? 'rounded-tr-md' : undefined,
-							amountIndex === amounts.length - 1 ? 'rounded-br-md' : undefined
-						)}
-					>
-						{#if amounts[amountIndex] !== ''}
-							{primaryAmount}
-						{/if}
-					</Div>
+					<Tr>
+						<Td class="px-0 py-0">
+							<Input
+								bind:value={amounts[amountIndex]}
+								class={twMerge(
+									'col-span-1 rounded-none text-right',
+									amountIndex === 0 ? 'rounded-tl-md' : undefined,
+									amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
+								)}
+								name="amount{amountIndex}"
+								required={amountIndex === 0 ? true : undefined}
+								step="1"
+								type="number"
+								variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
+							/>
+						</Td>
+						<Td
+							class={twMerge(
+								theme.getComponentVariant('Input', 'default'),
+								'col-span-1 rounded-none text-right',
+								amountIndex === 0 ? 'rounded-tr-md' : undefined,
+								amountIndex === amounts.length - 1 ? 'rounded-br-md' : undefined
+							)}
+						>
+							{#if amounts[amountIndex] !== ''}
+								{primaryAmount}
+							{/if}
+						</Td>
+					</Tr>
 				{/each}
-			</Card>
-			<Div
-				class={twMerge(
-					theme.getComponentVariant('Input', 'default'),
-					'flex justify-between rounded-none bg-transparent px-0 inset-ring-0 dark:bg-transparent'
-				)}
-			>
-				<Div class="font-semibold">Total:</Div>
-				<Div>{totalAmount}</Div>
-			</Div>
-			<Div
-				class={twMerge(
-					theme.getComponentVariant('Input', 'default'),
-					'rounded-none bg-transparent px-0 text-right inset-ring-0 dark:bg-transparent'
-				)}
-			>
-				{totalAmount * conversionFactor}
-			</Div>
-		</Div>
+				<Tr>
+					<Td>
+						<Div class="flex items-center justify-between">
+							<Div class="font-semibold">Total:</Div>
+							<Div>{totalAmount}</Div>
+						</Div>
+					</Td>
+					<Td class="text-right">
+						{totalAmount * conversionFactor}
+					</Td>
+				</Tr>
+			</Tbody>
+		</Table>
 		<Input value={counter} class="sr-only" name="counter" type="hidden" />
 		<Input value={date} class="sr-only" name="date" type="hidden" />
 		<Input
@@ -467,38 +472,6 @@
 		</Form>
 		<Field class="flex grow flex-col overflow-auto" label="Results">
 			<DataTable columns={search.columns} data={search.results} isExportable={false} />
-			<!-- <Card class="overflow-auto">
-				<Div class="col-span-4 grid grid-cols-subgrid gap-x-4 gap-y-1">
-					<Div />
-					<Label>Item #</Label>
-					<Label>Description</Label>
-					<Label>Description 2</Label>
-				</Div>
-				<Div
-					class="col-span-4 grid grow grid-cols-subgrid items-center gap-x-4 gap-y-1 overflow-auto"
-				>
-					{#if search.results.length === 0}
-						<Div class="col-span-4">No Results</Div>
-					{:else}
-						{#each search.results as result}
-							<Button
-								onclick={() => {
-									itemNumber = result.itemNumber;
-
-									setTimeout(() => {
-										if (elements.uom) elements.uom.focus();
-										search.isVisible = false;
-									}, 0);
-								}}
-								type="button">Select</Button
-							>
-							<Div class="whitespace-nowrap">{result.itemNumber}</Div>
-							<Div class="whitespace-nowrap">{result.description}</Div>
-							<Div class="whitespace-nowrap">{result.description2}</Div>
-						{/each}
-					{/if}
-				</Div>
-			</Card> -->
 		</Field>
 		<Div class="grid grid-cols-1 gap-4 md:flex md:justify-end">
 			<Button class="whitespace-nowrap" onclick={search.close} variants={['contrast']}
