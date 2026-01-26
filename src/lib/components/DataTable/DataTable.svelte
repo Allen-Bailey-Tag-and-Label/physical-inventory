@@ -8,7 +8,7 @@
 	} from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
-	import { Button, Card, Div, Table, Tbody, Th, Thead, Tr } from '$lib/components';
+	import { Button, Card, Div, Input, Select, Table, Tbody, Th, Thead, Tr } from '$lib/components';
 	import { theme } from '$lib/theme';
 	import { grow } from '$lib/transitions';
 
@@ -32,12 +32,14 @@
 		}[];
 		data?: Record<string, any>[];
 		isExportable?: boolean;
+		isToolbarVisible?: boolean | 'auto';
 		pagination?: {
 			currentPage?: number;
 			rows?: number;
 		};
 		sortColumnIndex?: number;
 		sortDirection?: -1 | 1;
+		totalPages?: number;
 	};
 
 	// helpers
@@ -82,12 +84,19 @@
 		columns = $bindable([]),
 		data = $bindable([]),
 		isExportable = $bindable(true),
+		isToolbarVisible = $bindable('auto'),
 		pagination = $bindable({ currentPage: 0, rows: 10 }),
 		sortColumnIndex = $bindable(0),
-		sortDirection = $bindable(1)
+		sortDirection = $bindable(1),
+		totalPages = $bindable(0)
 	}: Props = $props();
 
 	// $effects
+	$effect(() => {
+		if (isToolbarVisible === 'auto') {
+			isToolbarVisible = isExportable;
+		}
+	});
 	$effect(() => {
 		if (pagination.currentPage === undefined) pagination.currentPage = 0;
 		if (pagination.rows === undefined) pagination.rows = 10;
@@ -95,9 +104,25 @@
 		if (pagination.currentPage < 0) pagination.currentPage = 0;
 		if (pagination.currentPage >= Math.max(totalPages ?? 0, 0))
 			pagination.currentPage = Math.max(0, (totalPages ?? 0) - 1);
+		if (pagination.rows < 1) pagination.rows = 1;
+	});
+	$effect(() => {
+		totalPages = Math.ceil(data.length / (pagination.rows ?? 10));
 	});
 
 	// $derives
+	const pageOptions = $derived.by(() => {
+		if (!totalPages) return [];
+		return Array(totalPages)
+			.fill(0)
+			.map((_, pageIndex) => {
+				const startIndex = pageIndex * (pagination.rows ?? 10);
+				const endIndex = Math.min(startIndex + (pagination.rows ?? 10), data.length);
+				const label = `${startIndex + 1}-${endIndex}`;
+
+				return { label, value: pageIndex };
+			});
+	});
 	const rowStartIndex = $derived.by(() => {
 		if (pagination.currentPage === undefined) return 0;
 		if (pagination.rows === undefined) return 0;
@@ -110,13 +135,14 @@
 
 		return (pagination.currentPage + 1) * pagination.rows;
 	});
-	const totalPages = $derived.by(() => Math.ceil(data.length / (pagination.rows ?? 10)));
 </script>
 
 <Card class="mr-auto flex max-w-full flex-col overflow-auto p-0">
-	{#if isExportable}
+	{#if isToolbarVisible}
 		<Div class="flex items-center justify-end px-6 py-3">
-			<Button onclick={exportToCSV}>Export</Button>
+			{#if isExportable}
+				<Button onclick={exportToCSV}>Export</Button>
+			{/if}
 		</Div>
 	{/if}
 	<Div class="relative overflow-auto">
@@ -188,6 +214,22 @@
 		>
 			<ChevronLeft />
 		</Button>
+		<Div
+			class={twMerge(
+				theme.getComponentVariant('Input', 'default'),
+				'flex items-center space-x-4 py-0 pr-0'
+			)}
+		>
+			<Div>Rows:</Div>
+			<Input
+				bind:value={pagination.rows}
+				class="w-24 text-right shadow-none dark:shadow-none"
+				type="number"
+				min="1"
+				step="1"
+			/>
+		</Div>
+		<Select bind:value={pagination.currentPage} options={pageOptions} />
 		<Button
 			onclick={() => {
 				pagination.currentPage = (pagination.currentPage ?? -1) + 1;
@@ -204,7 +246,5 @@
 		>
 			<ChevronsRight />
 		</Button>
-		<Div>{pagination.currentPage}</Div>
-		<Div>{totalPages}</Div>
 	</Div>
 </Card>
