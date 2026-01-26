@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { Div } from '$lib/components';
-	import './layout.css';
-	import { navigator } from '$lib/navigator';
 	import { twMerge } from 'tailwind-merge';
+	import { Div } from '$lib/components';
+	import { navigator } from '$lib/navigator';
+	import '../app.css';
 
 	// types
 	type Props = {
