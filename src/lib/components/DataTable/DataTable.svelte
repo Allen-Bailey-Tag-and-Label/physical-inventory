@@ -41,8 +41,25 @@
 
 	// helpers
 	const exportToCSV = () => {
+		const csvEscape = (value: any) => {
+			if (value === null || value === undefined) return '';
+
+			const str = String(value);
+
+			// Escape quotes by doubling them
+			const escaped = str.replace(/"/g, '""');
+
+			// Wrap in quotes if it contains special characters
+			if (/[",\n]/.test(escaped)) {
+				return `"${escaped}"`;
+			}
+
+			return escaped;
+		};
 		const headerContent = columns.map(({ label }) => label).join(',');
-		const dataContent = data.map((row) => columns.map(({ valueFn }) => valueFn(row)).join(','));
+		const dataContent = data.map((row) =>
+			columns.map(({ valueFn }) => csvEscape(valueFn(row))).join(',')
+		);
 
 		const csvContent = [headerContent, ...dataContent].join('\n');
 
