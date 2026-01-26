@@ -372,59 +372,61 @@
 				</Div>
 			</Field>
 		</Div>
-		<Table>
-			<Thead>
-				<Tr>
-					<Th>Amount</Th>
-					<Th>Amount</Th>
-				</Tr>
-			</Thead>
-			<Tbody>
-				{#each amounts as _, amountIndex}
-					{@const primaryAmount = amounts[amountIndex] * conversionFactor}
+		<Card class="relative flex grow flex-col overflow-auto p-0">
+			<Table>
+				<Thead>
 					<Tr>
-						<Td class="px-0 py-0">
-							<Input
-								bind:value={amounts[amountIndex]}
+						<Th class="sticky top-0">{uom} Amount</Th>
+						<Th class="sticky top-0">{item?.uom ?? ''} Amount</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{#each amounts as _, amountIndex}
+						{@const primaryAmount = amounts[amountIndex] * conversionFactor}
+						<Tr>
+							<Td class="px-0 py-0">
+								<Input
+									bind:value={amounts[amountIndex]}
+									class={twMerge(
+										'col-span-1 rounded-none text-right',
+										amountIndex === 0 ? 'rounded-tl-md' : undefined,
+										amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
+									)}
+									name="amount{amountIndex}"
+									required={amountIndex === 0 ? true : undefined}
+									step="1"
+									type="number"
+									variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
+								/>
+							</Td>
+							<Td
 								class={twMerge(
+									theme.getComponentVariant('Input', 'default'),
 									'col-span-1 rounded-none text-right',
-									amountIndex === 0 ? 'rounded-tl-md' : undefined,
-									amountIndex === amounts.length - 1 ? 'rounded-bl-md' : undefined
+									amountIndex === 0 ? 'rounded-tr-md' : undefined,
+									amountIndex === amounts.length - 1 ? 'rounded-br-md' : undefined
 								)}
-								name="amount{amountIndex}"
-								required={amountIndex === 0 ? true : undefined}
-								step="1"
-								type="number"
-								variants={!isValidAmount && amountIndex === 0 ? ['error'] : undefined}
-							/>
+							>
+								{#if amounts[amountIndex] !== ''}
+									{primaryAmount}
+								{/if}
+							</Td>
+						</Tr>
+					{/each}
+					<Tr>
+						<Td>
+							<Div class="flex items-center justify-between">
+								<Div class="font-semibold">Total:</Div>
+								<Div>{totalAmount}</Div>
+							</Div>
 						</Td>
-						<Td
-							class={twMerge(
-								theme.getComponentVariant('Input', 'default'),
-								'col-span-1 rounded-none text-right',
-								amountIndex === 0 ? 'rounded-tr-md' : undefined,
-								amountIndex === amounts.length - 1 ? 'rounded-br-md' : undefined
-							)}
-						>
-							{#if amounts[amountIndex] !== ''}
-								{primaryAmount}
-							{/if}
+						<Td class="text-right">
+							{totalAmount * conversionFactor}
 						</Td>
 					</Tr>
-				{/each}
-				<Tr>
-					<Td>
-						<Div class="flex items-center justify-between">
-							<Div class="font-semibold">Total:</Div>
-							<Div>{totalAmount}</Div>
-						</Div>
-					</Td>
-					<Td class="text-right">
-						{totalAmount * conversionFactor}
-					</Td>
-				</Tr>
-			</Tbody>
-		</Table>
+				</Tbody>
+			</Table>
+		</Card>
 		<Input value={counter} class="sr-only" name="counter" type="hidden" />
 		<Input value={date} class="sr-only" name="date" type="hidden" />
 		<Input
