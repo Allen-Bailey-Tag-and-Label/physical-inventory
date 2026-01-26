@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { A, Button, Card, Table, Tbody, Td, Th, Thead, Tr } from '$lib/components';
+	import { A, Button, Card, DataTable, Table, Tbody, Td, Th, Thead, Tr } from '$lib/components';
 	import { format } from '$lib/format';
 	import { theme } from '$lib/theme';
 	import { twMerge } from 'tailwind-merge';
@@ -30,39 +30,62 @@
 	const columns = $state([
 		{
 			label: 'Ticket #',
-			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.ticketNumber - b.ticketNumber
+			snippet: TicketNumberSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.ticketNumber - b.ticketNumber,
+			valueFn: (row: Record<string, any>) => row.ticketNumber
 		},
 		{
 			label: 'Item #',
+			snippet: ItemNumberSnippet,
 			sortFn: (a: Record<string, any>, b: Record<string, any>) =>
-				a.itemNumber.localeCompare(b.itemNumber)
+				a.itemNumber.localeCompare(b.itemNumber),
+			valueFn: (row: Record<string, any>) => row.itemNumber
 		},
 		{
 			label: 'Total Amount',
-			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.ticketNumber - b.ticketNumber
+			snippet: NumberSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.ticketNumber - b.ticketNumber,
+			valueFn: (row: Record<string, any>) => row.totalAmount
 		},
 		{
 			label: 'UoM',
-			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.uom.localeCompare(b.uom)
+			snippet: StringSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.uom.localeCompare(b.uom),
+			valueFn: (row: Record<string, any>) => row.uom
 		},
 		{
 			label: 'Counter',
+			snippet: CounterSnippet,
 			sortFn: (a: Record<string, any>, b: Record<string, any>) =>
-				a.counter.username.localeCompare(b.counter.username)
+				a.counter.username.localeCompare(b.counter.username),
+			valueFn: (row: Record<string, any>) => row.counter.username
 		},
 		{
 			label: 'Verifier',
+			snippet: VerifierSnippet,
 			sortFn: (a: Record<string, any>, b: Record<string, any>) =>
-				a.verifier.username.localeCompare(b.verifier.username)
+				a.verifier.username.localeCompare(b.verifier.username),
+			valueFn: (row: Record<string, any>) => row.verifier.username
 		},
 		{
 			label: 'Created At',
+			snippet: StringSnippet,
 			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
 				const aDate = new Date(a.createdAt);
 				const bDate = new Date(b.createdAt);
 
 				return aDate.getTime() - bDate.getTime();
-			}
+			},
+			valueFn: (row: Record<string, any>) =>
+				format.date(new Date(row.createdAt), {
+					locale: 'en-US',
+					month: 'numeric',
+					day: 'numeric',
+					year: '2-digit',
+					hour: 'numeric',
+					minute: '2-digit',
+					second: '2-digit'
+				})
 		}
 	]);
 	let date = $state('');
@@ -78,94 +101,83 @@
 	});
 </script>
 
-<Card class="relative mr-auto max-w-full overflow-auto p-0">
-	<Table>
-		<Thead>
-			<Tr>
-				{#each columns as { label }, columnIndex}
-					<Th
-						class={twMerge(
-							'sticky top-0 p-0 whitespace-nowrap',
-							columnIndex === 0 ? 'left-0 z-10' : undefined
-						)}
-					>
-						<Button
-							class={twMerge(
-								theme.getComponentVariant('Th', 'default'),
-								'flex w-full justify-between space-x-4 rounded-none hover:bg-primary-500/10 focus:bg-primary-500/10'
-							)}
-							onclick={() => {
-								if (sortColumnIndex === columnIndex) sortDirection *= -1;
-								if (sortColumnIndex !== columnIndex) {
-									sortColumnIndex = columnIndex;
-									sortDirection = 1;
-								}
-							}}
-						>
-							<Div>
-								{label}
-							</Div>
-							<Div class="w-6">
-								{#if columnIndex === sortColumnIndex}
-									<Div transition={(element) => grow(element, { opacity: 1, scale: 0 })}>
-										<ChevronDown
-											class={twMerge(
-												'transition duration-200',
-												sortDirection === -1 ? 'rotate-180' : 'rotate-0'
-											)}
-										/>
-									</Div>
-								{/if}
-							</Div>
-						</Button>
-					</Th>
-				{/each}
-			</Tr>
-		</Thead>
-		<Tbody>
-			{#await tickets}
-				<Tr><Td colspan={columns.length}>Loading...</Td></Tr>
-			{:then tickets}
-				{#each tickets
-					.filter(ticketFilter)
-					.sort((a, b) => columns[sortColumnIndex].sortFn(a, b) * sortDirection) as ticket}
-					<Tr>
-						<Td class="sticky left-0 z-10 whitespace-nowrap">
-							<A href="/ticket/{ticket.ticketNumber}">
-								{ticket.ticketNumber}
-							</A>
-						</Td>
-						<Td class="whitespace-nowrap">
-							<A href="/item-number/{ticket.itemNumber}">
-								{ticket.itemNumber}
-							</A>
-						</Td>
-						<Td class="text-right whitespace-nowrap">{ticket.totalAmount}</Td>
-						<Td class="whitespace-nowrap">{ticket.uom}</Td>
-						<Td class="whitespace-nowrap">
-							<A href="/counter/{ticket.counter.username}">
-								{ticket.counter.username}
-							</A>
-						</Td>
-						<Td class="whitespace-nowrap">
-							<A href="/verifier/{ticket.verifier.username}">
-								{ticket.verifier.username}
-							</A>
-						</Td>
-						<Td class="whitespace-nowrap">
-							{format.date(new Date(ticket.createdAt), {
-								locale: 'en-US',
-								month: 'numeric',
-								day: 'numeric',
-								year: '2-digit',
-								hour: 'numeric',
-								minute: '2-digit',
-								second: '2-digit'
-							})}
-						</Td>
-					</Tr>
-				{/each}
-			{/await}
-		</Tbody>
-	</Table>
-</Card>
+{#await tickets}
+	<Card>Loading...</Card>
+{:then tickets}
+	<DataTable {columns} data={tickets.filter(ticketFilter)} />
+{/await}
+
+{#snippet CounterSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		<A href="/counter/{row.counter.username}">
+			{valueFn(row)}
+		</A>
+	</Td>
+{/snippet}
+{#snippet ItemNumberSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="text-right whitespace-nowrap">
+		<A href="/item-number/{row.itemNumber}">
+			{valueFn(row)}
+		</A>
+	</Td>
+{/snippet}
+{#snippet NumberSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="text-right whitespace-nowrap">
+		{valueFn(row)}
+	</Td>
+{/snippet}
+{#snippet StringSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		{valueFn(row)}
+	</Td>
+{/snippet}
+{#snippet TicketNumberSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="text-right whitespace-nowrap">
+		<A href="/ticket/{row.ticketNumber}">
+			{valueFn(row)}
+		</A>
+	</Td>
+{/snippet}
+{#snippet VerifierSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		<A href="/verifier/{row.verifier.username}">
+			{valueFn(row)}
+		</A>
+	</Td>
+{/snippet}
