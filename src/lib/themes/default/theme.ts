@@ -35,8 +35,7 @@ const input = twMerge(
 
 const theme: Record<string, Record<string, string>> = {
 	A: {
-		default:
-			'shadow-[0_0.09375rem_0_var(--color-primary-500)] hover:shadow-transparent transition duration-200'
+		default: 'underline decoration-primary-500 underline-offset-2 transition duration-200'
 	},
 	AnimateOnScroll: {
 		default: 'inline-block',
@@ -189,7 +188,7 @@ const theme: Record<string, Record<string, string>> = {
 	},
 	Tr: {
 		default:
-			'transition duration-200 bg-transparent [&>td]:transition [&>td]:duration-200 [&>td]:bg-white even:[&>td]:bg-gray-100 dark:[&>td]:bg-gray-950 dark:even:[&>td]:bg-gray-900 hover:[&>td]:bg-primary-50 even:hover:[&>td]:bg-primary-50 dark:hover:[&>td]:bg-primary-950 dark:even:hover:[&>td]:bg-primary-950'
+			'transition duration-200 bg-transparent even:bg-white hover:bg-primary-500/10 dark:even:bg-gray-900'
 	}
 };
 
