@@ -7,6 +7,7 @@
 	import { ChevronDown } from '@lucide/svelte';
 	import { browser } from '$app/environment';
 	import { grow } from '$lib/transitions';
+	import { itemsMap } from '$lib/items/items.svelte';
 
 	// types
 	type Props = {
@@ -40,6 +41,22 @@
 			sortFn: (a: Record<string, any>, b: Record<string, any>) =>
 				a.itemNumber.localeCompare(b.itemNumber),
 			valueFn: (row: Record<string, any>) => row.itemNumber
+		},
+		{
+			label: 'Description',
+			snippet: StringSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
+				const aItem = itemsMap.get(b.itemNumber);
+				const bItem = itemsMap.get(a.itemNumber);
+
+				if (!aItem || !bItem) return 0;
+				return aItem.description.localeCompare(bItem.description);
+			},
+			valueFn: (row: Record<string, any>) => {
+				const item = itemsMap.get(row.itemNumber);
+				if (!item) return '';
+				return item.description;
+			}
 		},
 		{
 			label: 'Total Amount',

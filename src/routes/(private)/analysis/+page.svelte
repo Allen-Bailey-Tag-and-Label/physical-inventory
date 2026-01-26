@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, DataTable, Table, Td, Thead } from '$lib/components';
+	import { A, Card, DataTable, Table, Td, Thead } from '$lib/components';
 	import { format } from '$lib/format';
 	import { items, itemsMap } from '$lib/items/items.svelte';
 	import { untrack } from 'svelte';
@@ -17,10 +17,27 @@
 	let columns = $state([
 		{
 			label: 'Item #',
-			snippet: StringSnippet,
+			snippet: ItemNumberSnippet,
 			sortFn: (a: Record<string, any>, b: Record<string, any>) =>
 				a.itemNumber.localeCompare(b.itemNumber),
 			valueFn: (row: Record<string, any>) => row.itemNumber
+		},
+		{
+			label: 'Description',
+			snippet: StringSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
+				const aItem = itemsMap.get(a.itemNumber);
+				const bItem = itemsMap.get(b.itemNumber);
+
+				if (!aItem || !bItem) return 0;
+
+				return aItem.description.localeCompare(bItem.description);
+			},
+			valueFn: (row: Record<string, any>) => {
+				const item = itemsMap.get(row.itemNumber);
+				if (!item) return '';
+				return item.description;
+			}
 		},
 		{
 			label: 'Tickets',
@@ -130,6 +147,19 @@
 
 <DataTable bind:columns bind:data={rows} />
 
+{#snippet ItemNumberSnippet({
+	row,
+	valueFn
+}: {
+	row: Record<string, any>;
+	valueFn: (row: Record<string, any>) => any;
+})}
+	<Td class="whitespace-nowrap">
+		<A href="/item-number/{row.itemNumber}">
+			{valueFn(row)}
+		</A>
+	</Td>
+{/snippet}
 {#snippet NumberSnippet({
 	row,
 	valueFn
