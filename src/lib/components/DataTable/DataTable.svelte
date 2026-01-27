@@ -66,9 +66,9 @@
 			return escaped;
 		};
 		const headerContent = columns.map(({ label }) => label).join(',');
-		const dataContent = data.map((row) =>
-			columns.map(({ valueFn }) => csvEscape(valueFn(row))).join(',')
-		);
+		const dataContent = [...data]
+			.sort((a, b) => columns[sortColumnIndex].sortFn(a, b) * sortDirection)
+			.map((row) => columns.map(({ valueFn }) => csvEscape(valueFn(row))).join(','));
 
 		const csvContent = [headerContent, ...dataContent].join('\n');
 
