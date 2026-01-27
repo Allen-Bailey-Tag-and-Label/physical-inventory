@@ -102,6 +102,16 @@
 				return aValue - bValue;
 			},
 			valueFn: (row: Record<string, any>) => format.currency(row.post.valuation - row.pre.valuation)
+		},
+		{
+			label: 'Valuation (Var. Abs.)',
+			snippet: NumberSnippet,
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
+				const aValue = Math.abs(a.post.valuation - a.pre.valuation);
+				const bValue = Math.abs(b.post.valuation - b.pre.valuation);
+				return aValue - bValue;
+			},
+			valueFn: (row: Record<string, any>) => format.currency(row.post.valuation - row.pre.valuation)
 		}
 	]);
 	let rows: Record<string, any>[] = $state([]);
