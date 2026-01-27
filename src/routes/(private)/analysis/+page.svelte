@@ -111,7 +111,8 @@
 				const bValue = Math.abs(b.post.valuation - b.pre.valuation);
 				return aValue - bValue;
 			},
-			valueFn: (row: Record<string, any>) => format.currency(row.post.valuation - row.pre.valuation)
+			valueFn: (row: Record<string, any>) =>
+				format.currency(Math.abs(row.post.valuation - row.pre.valuation))
 		}
 	]);
 	let rows: Record<string, any>[] = $state([]);
