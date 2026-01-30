@@ -5,7 +5,7 @@ export const load = async () => {
 	const precountMap: Map<string, number> = new Map();
 
 	const [physicalInventoryBranchId] = await Promise.all([
-		KeyValue.findOne({ key: 'physicalInventoryBranchId' })
+		KeyValue.findOne({ key: 'physicalInventoryBranchId' }) as Promise<Record<string, any>>
 	]);
 
 	if (!physicalInventoryBranchId) return { branch: { number: 0 }, precountMap, tickets: [] };
@@ -20,7 +20,7 @@ export const load = async () => {
 	const date = +`${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}`;
 
 	const [preCount, tickets] = await Promise.all([
-		PreCount.findOne({ branch: branch._id, date }),
+		PreCount.findOne({ branch: branch._id, date }) as Promise<Record<string, any>>,
 		Ticket.find({ branch: branch._id, date })
 	]);
 

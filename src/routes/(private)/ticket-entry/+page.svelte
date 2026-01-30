@@ -272,6 +272,10 @@
 
 	// $effects
 	$effect(() => {
+		if (itemUoms.length === 0) uom = '';
+		if (itemUoms.length === 1) uom = itemUoms[0];
+	});
+	$effect(() => {
 		if (JSON.stringify(ticketInfo)) {
 			untrack(() => {
 				amounts = [...ticketInfo.amounts];
@@ -300,10 +304,6 @@
 		if (browser) {
 			isAdmin = (localStorage.getItem('isAdmin') ?? 'false') === 'true';
 		}
-	});
-	$effect(() => {
-		if (itemUoms.length === 0) uom = '';
-		if (itemUoms.length === 1) uom = itemUoms[0];
 	});
 	$effect(() => {
 		item = itemsMap.get(itemNumber);
@@ -382,7 +382,7 @@
 				</Thead>
 				<Tbody>
 					{#each amounts as _, amountIndex}
-						{@const primaryAmount = amounts[amountIndex] * conversionFactor}
+						{@const primaryAmount = Math.floor(amounts[amountIndex] * conversionFactor)}
 						<Tr>
 							<Td class="px-0 py-0">
 								<Input
@@ -421,7 +421,7 @@
 							</Div>
 						</Td>
 						<Td class="text-right">
-							{totalAmount * conversionFactor}
+							{Math.floor(totalAmount * conversionFactor)}
 						</Td>
 					</Tr>
 				</Tbody>

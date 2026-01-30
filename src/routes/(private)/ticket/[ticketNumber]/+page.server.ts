@@ -1,6 +1,7 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import { Types } from 'mongoose';
-import { Ticket } from '$lib/db/models';
+import { KeyValue, Ticket } from '$lib/db/models';
+import { ObjectId } from 'mongodb';
 
 type Ticket = {
 	amounts: number[];
@@ -70,13 +71,15 @@ export const actions: Actions = {
 };
 
 export const load = async ({ params }) => {
-	const ticket = await Ticket.findOne({ ticketNumber: +params.ticketNumber });
+	const ticket = await (Ticket.findOne({
+		ticketNumber: +params.ticketNumber
+	}) as Promise<Record<string, any>>);
 
 	if (!ticket) redirect(303, '/view-tickets');
 
 	return {
 		ticketInfo: {
-			amounts: ticket.amounts.map((number) => (number === 0 ? '' : number.toString())),
+			amounts: ticket.amounts.map((number: number) => (number === 0 ? '' : number.toString())),
 			itemNumber: ticket.itemNumber,
 			ticketNumber: ticket.ticketNumber.toString(),
 			uom: ticket.uom

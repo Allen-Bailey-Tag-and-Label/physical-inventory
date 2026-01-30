@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { A, Button, Card, DataTable, Table, Tbody, Td, Th, Thead, Tr } from '$lib/components';
-	import { format } from '$lib/format';
-	import { theme } from '$lib/theme';
-	import { twMerge } from 'tailwind-merge';
-	import Div from '../Div/Div.svelte';
-	import { ChevronDown } from '@lucide/svelte';
 	import { browser } from '$app/environment';
-	import { grow } from '$lib/transitions';
+	import { A, Card, DataTable, Td } from '$lib/components';
 	import { itemsMap } from '$lib/items/items.svelte';
+	import { format } from '$lib/format';
 
 	// types
 	type Props = {
@@ -61,14 +56,43 @@
 		{
 			label: 'Total Amount',
 			snippet: NumberSnippet,
-			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.ticketNumber - b.ticketNumber,
-			valueFn: (row: Record<string, any>) => row.totalAmount
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
+				const aItem = itemsMap.get(a.itemNumber);
+				const bItem = itemsMap.get(b.itemNumber);
+
+				if (!aItem || !bItem) return 0;
+
+				const aValue = a.totalAmount * aItem.conversionFactors[a.uom];
+				const bValue = b.totalAmount * bItem.conversionFactors[b.uom];
+
+				return Math.floor(aValue) - Math.floor(bValue);
+			},
+			valueFn: (row: Record<string, any>) => {
+				const item = itemsMap.get(row.itemNumber);
+
+				if (!item) return 0;
+
+				return Math.floor(row.totalAmount * item.conversionFactors[row.uom]);
+			}
 		},
 		{
 			label: 'UoM',
 			snippet: StringSnippet,
-			sortFn: (a: Record<string, any>, b: Record<string, any>) => a.uom.localeCompare(b.uom),
-			valueFn: (row: Record<string, any>) => row.uom
+			sortFn: (a: Record<string, any>, b: Record<string, any>) => {
+				const aItem = itemsMap.get(a.itemNumber);
+				const bItem = itemsMap.get(b.itemNumber);
+
+				if (!aItem || !bItem) return 0;
+
+				return aItem.uom.localeCompare(bItem.uom);
+			},
+			valueFn: (row: Record<string, any>) => {
+				const item = itemsMap.get(row.itemNumber);
+
+				if (!item) return 0;
+
+				return item.uom;
+			}
 		},
 		{
 			label: 'Counter',

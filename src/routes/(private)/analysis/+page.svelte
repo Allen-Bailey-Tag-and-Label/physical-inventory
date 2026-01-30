@@ -139,7 +139,7 @@
 					row.post = {
 						count: tickets.reduce(
 							(total: number, ticket: Record<string, any>) =>
-								total + ticket.totalAmount * item.conversionFactors[ticket.uom],
+								total + Math.floor(ticket.totalAmount * item.conversionFactors[ticket.uom]),
 							0
 						)
 					};
